@@ -1,0 +1,36 @@
+body {
+  border:0mm solid;
+  margin:0mm;  
+  padding:0mm;
+}
+
+section,
+article {
+  display:block;
+}
+
+* {
+  box-sizing:border-box;
+  position:relative;
+}
+
+img {
+  border:0mm solid;
+  margin:0mm;
+  padding:0mm;
+}
+
+table {
+  border-collapse:collapse;
+  border-spacing:0mm; 
+  table-layout:fixed; 
+  width:100%; 
+}
+table td {
+  text-align:left;
+  vertical-align:top;
+}
+
+*[exists=''] {
+  display:none; 
+}
