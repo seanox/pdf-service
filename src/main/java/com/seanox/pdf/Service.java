@@ -18,7 +18,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-package javax.pdf;
+package com.seanox.pdf;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -71,7 +71,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import javax.pdf.Service.Template.Resources;
+import com.seanox.pdf.Service.Template.Resources;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 
 /**

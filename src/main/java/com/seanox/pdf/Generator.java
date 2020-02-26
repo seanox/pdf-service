@@ -18,7 +18,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-package javax.pdf;
+package com.seanox.pdf;
 
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -30,10 +30,10 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * Generator, generiert Daten durch das Bef&uuml;llen von Platzhaltern (Tags)
- * in einer Vorlage (Model/Template). Dazu wird der Vorlage eine Werte-Liste
- * mit Schl&uuml;sseln &uuml;bergeben. Entsprechen die Schl&uuml;ssel den
- * Platzhalter, wobei die Gross-/Kleinschreibung ignoriert wird, werden die
+ * Generator, generiert Daten durch das Bef&uuml;llen von Platzhaltern (Tags) in
+ * einer Vorlage (Model/Template). Dazu wird der Vorlage eine Werte-Liste mit
+ * Schl&uuml;sseln &uuml;bergeben. Entsprechen die Schl&uuml;ssel den 
+ * Platzhaltern, wobei die Gross-/Kleinschreibung ignoriert wird, werden die
  * Platzhalter durch die Werte ersetzt.<br>
  * <br>
  * Der Generator arbeitete aus Byte-Level.<br>
@@ -49,10 +49,10 @@ import java.util.Map;
  * Als Werte werden f&uuml;r Segmente die Datentypen {@link Collection} und
  * {@link Map} erwartet. Eine {@link Map} enth&auml;lt dann die Werte f&uuml;r
  * die Platzhalter innerhalb des Segments. Eine {@link Collection} f&uuml;r zu
- * einer Iteration &uuml;ber eine Menge von {@link Map} und ist vergleichbar
- * mit dem iterativen Aufruf der Methode {@link #set(String, Map)}.<br>
- * Beides, {@link Map} und {@link Collection}, erzeugt tiefe, komplexe ggf.
- * sich wiederholende und rekursive Strukturen.
+ * einer Iteration &uuml;ber eine Menge von {@link Map} und ist vergleichbar mit
+ * dem iterativen Aufruf der Methode {@link #set(String, Map)}.<br>
+ * Beides, {@link Map} und {@link Collection}, erzeugt tiefe, komplexe ggf. sich
+ * wiederholende und rekursive Strukturen.
  *
  * <h3>Beschreibung der Syntax</h3>
  * Die Syntax der Platzhalter ignoriert die Gross- und Kleinschreibung und ist
@@ -66,8 +66,8 @@ import java.util.Map;
  *       {@code #[value]}
  *     </td>
  *     <td valign="top">
- *       Setzt an dieser Stelle den Wert f&uuml;r &lt;value&gt; ein und
- *       entfernt den Platzhalter.
+ *       Setzt an dieser Stelle den Wert f&uuml;r &lt;value&gt; ein und entfernt
+ *       den Platzhalter.
  *     </td>
  *   </tr>
  *   <tr>
@@ -97,27 +97,27 @@ import java.util.Map;
  * <h3>Arbeitsweise</h3>
  * Das Model (Byte-Array) wird initial geparst.
  * Dabei werden alle Platzhalter auf syntaktische Richtigkeit gepr&uuml;ft.
- * Ggf. werden ung&uuml;ltige Platzhalter entfernt. Zudem werden die Scopes
- * mit den Segmenten (Teilvorlagen) ermittelt und durch einen einfachen
- * Platzhalter ersetzt. Nach dem Parsen entsteht ein finales Model mit
- * optimierten Platzhaltern und extrahierten Segmenten, welches zur Laufzeit
- * nicht ge&auml;ndert werden kann.<br>
+ * Ggf. werden ung&uuml;ltige Platzhalter entfernt. Zudem werden die Scopes mit
+ * den Segmenten (Teilvorlagen) ermittelt und durch einen einfachen Platzhalter
+ * ersetzt. Nach dem Parsen entsteht ein finales Model mit optimierten
+ * Platzhaltern und extrahierten Segmenten, welches zur Laufzeit nicht
+ * ge&auml;ndert werden kann.<br>
  * <br>
  * Zur Nutzung des Models stehen dann verschiedene M&ouml;glichkeiten zur
  * Verf&uuml;gung.<br>
  * <br>
  * Mit {@link #set(Map)} werden im Model die Platzhalter durch die
  * &uuml;bergeben Werte ersetzt. Platzhalter zudem keine Werte existieren,
- * bleiben erhalten. Platzhalter die ein Segment/Scope repr&auml;sentieren
+ * bleiben erhalten. Platzhalter die ein Segment/Scope repr&auml;sentieren 
  * werden diese ebenfalls gesetzt, wenn in den Werten ein korrespondierder
  * Schl&uuml;ssel existiert. Bei Segmenten/Scopes bleibt der Platzhalter zur
  * erneuten Verwendung erhalten und folgt direkt dem eingef&uuml;gten Wert.<br>
  * <br>
  * Bei {@link #set(String, Map)} wird nur der angegeben Scope bef&uuml;llt.
  * Dazu wird eine Kopie vom Segment (Teilvorlage) erstellt und mit den
- * &uuml;bergebenen Werten bef&uuml;llt, alle Platzhalter darin entfernt und
- * der Inhalt als Wert vor dem Platzhalter eingef&uuml;gt. Somit bleibt auch
- * dieser Segment-/Scope-Platzhalter zur erneuten Verwendung erhalten.<br>
+ * &uuml;bergebenen Werten bef&uuml;llt, alle Platzhalter darin entfernt und der
+ * Inhalt als Wert vor dem Platzhalter eingef&uuml;gt. Somit bleibt auch dieser
+ * Segment-/Scope-Platzhalter zur erneuten Verwendung erhalten.<br>
  * <br>
  * Die Methoden {@link #extract(String)} und {@link #extract(String, Map)}
  * dienen der exklusiven Nutzung von Segmenten (Teilvorlagen), die partiell
@@ -160,11 +160,11 @@ public class Generator {
     
     /**
      * Ermittelt ob an der angegebenen Position in einem Model(Fragmet) ein
-     * gueltiger Platzhalter beginnt. In dem Fall wird die Laenge des
-     * kompletten Platzhalters zurueckgegeben. Kann kein Platzhalter ermittelt
-     * werden, wird die Laenge 0 zurueckgegeben. Liegen im Model keine
-     * weiteren Daten zur Analyse vor (Datenende ist erreicht) wird ein
-     * negativer Wert zurueckgegeben.
+     * gueltiger Platzhalter beginnt. In dem Fall wird die Laenge des kompletten
+     * Platzhalters zurueckgegeben. Kann kein Platzhalter ermittelt werden, wird
+     * die Laenge 0 zurueckgegeben. Liegen im Model keine weiteren Daten zur
+     * Analyse vor (Datenende ist erreicht) wird ein negativer Wert
+     * zurueckgegeben.
      * @param  model  Model(Fragmet)
      * @param  cursor Position
      * @return die Position des n&auml;chsten Platzhalters oder Segments,
