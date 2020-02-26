@@ -1,0 +1,115 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="./styles/fonts.css"/>
+    <link rel="stylesheet" type="text/css" href="./styles/common.css"/>
+    <link rel="stylesheet" type="text/css" href="./styles/article.css"/>
+    <style type="text/css">
+      @page {
+        margin:36mm 18mm 40mm 18mm;
+        size:A4 portrait;
+      }
+      @page:first {
+        margin-top:18mm;
+      }
+      header {
+        padding:0mm 18mm 0mm 18mm;
+      }
+      footer {
+        padding:0mm 18mm 0mm 18mm;
+      }
+    </style>
+  </head>
+  <body lang="#[locale]">
+    #[header[[
+    <header id="header">
+      <span>ArticleSingleTemplate.html</span>
+      <img src="![PAGE_LOGO_URL]"/>
+    </header> 
+    ]]]
+    #[data[[
+    <section id="sheet">
+      #[outlet[[
+      <article id="outlet">
+        <h1>#[name]</h1>
+        <p exists="#[street-exists]">#[street]</p>
+        <p exists="#[location-exists]">#[zipCode] #[location]</p>
+        <p exists="#[phone-exists]">![ADDRESS_TEL]: #[phone]</p>
+        <p exists="#[fax-exists]">![ADDRESS_FAX]: #[fax]</p>
+        <p exists="#[email-exists]">![ADDRESS_E_MAIL]: #[email]</p>
+        <p exists="#[websiteUrl-exists]">![ADDRESS_WEB]: #[websiteUrl]</p>
+      </article>
+      ]]]
+      #[article[[
+      <article id="article">
+        <h3>![PAGE_PRODUCT_DATA_SHEET]</h3>
+        <h1>#[headline]</h1>
+        <table>
+          <tr>
+            <td>
+              <table>
+                <tr exists="#[articleNumber-exists]">
+                  <td>![ARTICLE_NUMBER]</td>
+                  <td>#[articleNumber]</td>
+                </tr>
+                <tr exists="#[colorText-exists]">
+                  <td>![ARTICLE_COLOUR]</td>
+                  <td>#[colorText]</td>
+                </tr>                                
+                <tr exists="#[materialText-exists]">
+                  <td>![ARTICLE_MATERIAL]</td>
+                  <td>#[materialText]</td>
+                </tr>
+              </table>
+              <!-- more fields with distance -->
+              <p></p>
+            </td>
+            <td rowspan="2"></td>
+            <td rowspan="2">
+              <img src="#[images[[#[large]]]]"/>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <p></p>
+              <table id="articlePrice">
+                <tr>
+                  <td>![ARTICLE_PRICE_NETT]</td>
+                  <td>#[articlePrice[[#[netText]]]]</td>
+                </tr>
+                <tr>
+                  <td>![ARTICLE_PRICE_GROSS]</td>
+                  <td>#[articlePrice[[#[grossText]]]]</td>
+                </tr>                                
+              </table>
+            </td>
+          </tr>
+        </table>
+        <h2 exists="#[description-exists]">![ARTICLE_DESCRIPTION]</h2>
+        <p id="articleDescription" exists="#[description-exists]">
+          #[description]
+        </p>
+      </article>
+      ]]]
+    </section> 
+    ]]]
+    #[footer[[
+    <footer id="footer">
+      <section>
+        <p>
+          ![PAGE_LEGAL]
+        </p>
+        <table>
+          <tr>
+            <td class="date">
+              ![SYSTEM_DATE]
+            </td>
+            <td class="page">
+              #[page] ![PAGE_FROM] #[pages]
+            </td>
+          </tr>
+        </table>
+      </section>
+    </footer>
+    ]]]
+  </body>
+</html>
