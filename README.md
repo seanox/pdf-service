@@ -11,7 +11,8 @@
 </p>
 
 # Description
-PDF service for generating/rendering PDFs based on Open HTML to PDF.
+PDF service for generating/rendering PDFs based on
+[Open HTML to PDF](https://github.com/danfickle/openhtmltopdf)..
 
 
 # Features
