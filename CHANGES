@@ -1,0 +1,26 @@
+3.4.0 2020xxxx
+  CR: Project: Migration to Maven
+  CR: Project: Migration to GitHub
+  CR: License: Migration to Apache License 2.0
+  CR: Designer: Added support for pure markup files
+      Renders HTML templates without template implementation
+  CR: Preview: Added support for pure markup files
+      Renders HTML templates without template implementation
+  
+3.3.0
+  NT: Lost
+  
+3.2.0
+  NT: Lost
+
+3.1.0
+  NT: Lost
+
+3.0.0
+  NT: Lost
+
+2.0.0
+  NT: Lost
+
+1.0.0
+  NT: Release is available
