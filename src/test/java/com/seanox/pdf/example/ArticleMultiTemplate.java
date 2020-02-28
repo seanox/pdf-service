@@ -39,7 +39,7 @@ public class ArticleMultiTemplate extends Template {
     @Override
     protected String generate(String markup, Type type, Meta meta) {
 
-        // Replication of the articles on the basis of the preview dataset.
+        //Replication of the articles on the basis of the preview dataset.
         
         try {
             for (int loop = 1; loop < 5; loop++) {

@@ -1,0 +1,118 @@
+@page {
+  margin:65mm 18mm 40mm 18mm;
+  size:A4 landscape;
+}
+header {
+  padding:0mm 18mm 0mm 18mm;
+}
+footer {
+  padding:0mm 18mm 0mm 18mm;
+}
+      
+      
+      
+body {
+  color:#333333;
+  font:10.5pt RobotoReg;
+}
+
+article + article  {
+  margin-top:6.5mm;
+}
+
+h1, h2, h3 {
+  margin:0mm;
+  padding:0mm;  
+}
+
+p {
+  margin-top:3mm;
+}
+
+
+
+#header {
+}
+#header img {
+  max-height:30mm;
+  position:absolute;
+  right:18mm;
+  top:11mm;
+}
+#header span {
+  font:6pt RobotoReg;
+  position:absolute;
+  left:5mm;
+  top:3mm;
+}
+
+
+
+#header #outlet {
+  position:absolute;
+  top:18mm;
+  left:18mm;
+}
+#header #outlet h1 {
+  font:12pt RobotoMed;
+  margin-bottom:2mm;
+}
+#header #outlet p {
+  margin:0.75mm 0mm 0mm 0mm;
+  padding:0mm;
+}
+
+
+
+#report * {
+  border:0mm solid;
+}
+#report h1 {
+  
+  font:24pt PlayfairReg;
+  margin-bottom:5mm; 
+}
+#report h2 {
+  font:10.5pt RobotoReg;
+  margin-top:8mm;
+}
+#report h3 {
+  font:10pt RobotoReg;
+  margin-bottom:0.5mm;
+}
+
+
+#report > table {
+  position:static;
+  -fs-table-paginate:paginate;
+}
+#report > table  thead  hr {
+  border:1px solid #D9D9D9;
+}
+
+
+
+#sheet + #sheet {
+  page-break-before:always;
+}
+
+
+
+#footer {
+  display:table-cell;
+  height:205mm;
+  vertical-align:bottom;
+  width:100%;
+  font-size:8.5pt;
+} 
+#footer section {
+  border-top:1px solid #D9D9D9;
+}
+#footer table {
+  margin-bottom:5mm;
+}
+#footer table td.date {
+}
+#footer table td.page {
+  text-align:right;
+}
