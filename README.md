@@ -51,6 +51,9 @@ CR: Project: Migration to GitHub
 CR: License: Migration to Apache License 2.0  
 CR: Designer: Added support for pure markup files  
 CR: Preview: Added support for pure markup files  
+CR: Examples: Added various examples  
+CR: Preview: Preview data of properties are now also available in header and footer  
+CR: Preview: Properties of the preview data are now always searched at the template location  
 
 [Read more](https://raw.githubusercontent.com/seanox/pdf-service/master/CHANGES)
 

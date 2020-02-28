@@ -140,7 +140,7 @@ import com.seanox.pdf.Service.Template.Resources;
  * Placeholder provided by {@link Service} with a collection of data objects.
  * Available in sections: content
  * 
- * @version 3.3.1
+ * @version 3.3x.1
  */
 public class Service {
     
@@ -447,7 +447,15 @@ public class Service {
         protected URL getResource(String extension)
                 throws Exception {
             
-            extension = "/" + this.getClass().getName().replace('.', '/') + "." + extension;
+            Resources resource = this.getClass().getAnnotation(Resources.class);
+            String template = resource != null ? resource.template() : "html";
+            if (!template.matches("\\w+")) {
+                String target = template.replaceAll("\\.[^\\.]*$", "." + extension);
+                if (!target.matches("^.*\\.[^\\.]*$"))
+                    target += "." + extension;
+                extension = target;
+            } else extension = "/" + this.getClass().getName().replace('.', '/') + "." + extension;
+            
             if (Service.class.getResource(extension) == null)
                 throw new FileNotFoundException(extension);
             return Service.class.getResource(extension);
@@ -497,12 +505,24 @@ public class Service {
                 throws Exception {
             return generate(new Meta() {{
                 this.setLocale(Locale.getDefault());
+                
+                this.setHeader(Template.this.getPreviewData().entrySet().stream()
+                        .filter(e -> !e.getKey().equalsIgnoreCase("static")
+                                && !(e.getValue() instanceof Collection))
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+                
                 this.setDataset(new ArrayList<Map<String, Object>>() {
                     private static final long serialVersionUID = 1L; {
                         this.add(Template.this.getPreviewData().entrySet().stream()
                                 .filter(e -> !e.getKey().equalsIgnoreCase("static"))
                                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
                 }});
+                
+                this.setFooter(Template.this.getPreviewData().entrySet().stream()
+                        .filter(e -> !e.getKey().equalsIgnoreCase("static")
+                                && !(e.getValue() instanceof Collection))
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+                
                 this.setStatics(new HashMap<String, String>() {
                     private static final long serialVersionUID = 1L; {
                         if (Template.this.getPreviewData().containsKey("static"))

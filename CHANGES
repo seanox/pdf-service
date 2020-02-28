@@ -6,7 +6,12 @@
       Renders HTML templates without template implementation
   CR: Preview: Added support for pure markup files
       Renders HTML templates without template implementation
-  
+  CR: Examples: Added various examples
+      single, multiple, with and without template implementation
+  CR: Preview: Preview data of properties are now also available in header and footer
+      Previously, only the static values were available there.         
+  CR: Preview: Properties of the preview data are now always searched at the template location
+    
 3.3.0
   NT: Lost
   
