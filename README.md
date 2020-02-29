@@ -25,10 +25,10 @@ simplifies the design process by allowing previewing without the target applicat
 Header, footer and data area are merged by overlaysand can therefore be formatted independently of the data area  
 e.g. margins of the document can be used by the header and footer
 - Native support of page numbers
-- I18n support
+- I18n support  
 The language setting is also transferred to the template and thus fonts matching the language can be used
 - Creation of markup as preview e.g. for the frontend
-- API for other markup renderers and generators
+- API for other markup renderers and generators  
 Abstract templates for individual generators and renderers
 
 
