@@ -46,6 +46,7 @@ specific language governing permissions and limitations under the License.
 
 # Changes (Change Log)
 ## 3.4.0 2020xxxx (summary of the next version)  
+BF: Service: Optimization of the overlay technique for header and footer  
 CR: Project: Migration to Maven  
 CR: Project: Migration to GitHub  
 CR: License: Migration to Apache License 2.0  
