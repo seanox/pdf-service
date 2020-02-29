@@ -26,7 +26,14 @@ import org.junit.jupiter.api.Test;
 /** 
  * Wrapper to run the {@link Designer} with the test classes and resources.
  * Test are ignored because the designer is a service and runs endlessly.
- * Please remove {@link Disabled} for designing.
+ * Please remove {@link Disabled} for designing.<br>
+ * <br>
+ * DesignerTest 3.2.0 20200229<br>
+ * Copyright (C) 2020 Seanox Software Solutions<br>
+ * Alle Rechte vorbehalten.
+ *
+ * @author  Seanox Software Solutions
+ * @version 3.2.0 20200229
  */
 public class DesignerTest {
 

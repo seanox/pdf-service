@@ -20,12 +20,17 @@
  */
 package com.seanox.pdf;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /** 
- * Wrapper to run the {@link Preview} with the test classes and resources.
- * Please remove {@link Disabled} for designing.
+ * Wrapper to run the {@link Preview} with the test classes and resources.<br>
+ * <br>
+ * PreviewTest 3.2.0 20200229<br>
+ * Copyright (C) 2020 Seanox Software Solutions<br>
+ * Alle Rechte vorbehalten.
+ *
+ * @author  Seanox Software Solutions
+ * @version 3.2.0 20200229
  */
 public class PreviewTest {
 

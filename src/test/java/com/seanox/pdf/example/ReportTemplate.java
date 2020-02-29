@@ -20,10 +20,6 @@
  */
 package com.seanox.pdf.example;
 
-import java.util.Map;
-
-import com.seanox.pdf.Service.Meta;
-import com.seanox.pdf.Service.Meta.Type;
 import com.seanox.pdf.Service.Template.Resources;
 import com.seanox.pdf.Template;
 
@@ -33,34 +29,13 @@ import com.seanox.pdf.Template;
  * The resources (css, imgaes, ...) are in the ClassPath /pdf/... and are used
  * in the template relative.<br>
  * <br>
- * ArticleMultiTemplate 1.0 20200229<br>
+ * ReportTemplate 1.0 20200229<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
  * @version 1.0 20200229
  */
-@Resources(base="/pdf")
-public class ArticleMultiTemplate extends Template {
-    
-    @Override
-    protected String generate(String markup, Type type, Meta meta) {
-
-        //Replication of the articles on the basis of the preview dataset.
-        
-        try {
-            for (int loop = 1; loop < 5; loop++) {
-                Map<String, Object> record;
-                if (loop != 0) {
-                    record = this.getPreviewData();
-                    meta.getDataset().add(record);
-                } else record = meta.getDataset().iterator().next();
-                Map<String, Object> article = (Map<String, Object>)record.get("article");
-                article.replace("articleNumber", article.get("articleNumber") + "-" + loop);
-            }
-            return super.generate(markup, type, meta);
-        } catch (Exception exception) {
-            throw new RuntimeException(exception);
-        }
-    }
+@Resources(base="/pdf", template="/pdf/report.html")
+public class ReportTemplate extends Template {
 }
