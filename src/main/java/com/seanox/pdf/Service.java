@@ -136,7 +136,7 @@ import com.seanox.pdf.Service.Template.Resources;
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer
  *  
- * <dir><code>#[data]</code></dir>
+ * <dir><code>#[dataset]</code></dir>
  * Placeholder provided by {@link Service} with a collection of data objects.
  * Available in sections: content<br>
  * <br>

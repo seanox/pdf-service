@@ -35,8 +35,7 @@ import com.openhtmltopdf.util.XRLog;
  * Deamon for the design process, for the continuous creation of PDFs if the
  * templates change. The compilation is done by the IDE and the daemon is
  * started directly in the IDE. The templates are edited in the source
- * directory. The output of the PDFs takes place in the working directory of
- * the project.<br>
+ * directory. The PDFs are output in the same directory as the template.<br>
  * <br>
  * Designer 3.2.0 20200229<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>

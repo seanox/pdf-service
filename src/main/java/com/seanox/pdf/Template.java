@@ -45,11 +45,14 @@ import org.apache.commons.lang3.StringUtils;
  * <dir><code>#[palceholder]</code></dir>
  * Simple placeholder, global or in a section.
  *  
+ * <dir><code>#[palceholder-exists]</code></dir>
+ * Pendant to any placeholder, if it exists.
+ *  
  * <dir><code>#[section[[...]]]</code></dir>
  * Section/Bock can contain more substructures.
  * Sections/blocks are only rendered if a corresponding map entry exists.
  *  
- * <dir><code>#[text:static text]</code></dir>
+ * <dir><code>![static-text]</code></dir>
  * Placeholder for static text from the ResourceBundle.
  * As language {@link Service.Meta#locale} is used.
  *  
@@ -65,7 +68,7 @@ import org.apache.commons.lang3.StringUtils;
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer
  *  
- * <dir><code>#[data]</code></dir>
+ * <dir><code>#[dataset]</code></dir>
  * Placeholder provided by {@link Service} with a collection of data objects.
  * Available in sections: content<br>
  * <br>
