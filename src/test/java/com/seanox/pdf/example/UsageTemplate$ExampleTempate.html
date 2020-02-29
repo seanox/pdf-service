@@ -1,0 +1,101 @@
+<html>
+  <head>
+    <style type="text/css">
+      @page {
+        margin:36mm 18mm 40mm 18mm;
+        size:A4 portrait;
+      }
+      body {
+        border:0mm solid;
+        margin:0mm;  
+        padding:0mm;
+        font:12px sans-serif;
+      }      
+      header {
+        display:block;
+        padding:0mm 18mm 0mm 18mm;
+      }
+      footer {
+        padding:0mm 18mm 0mm 18mm;
+      } 
+      #footer {
+        display:table-cell;
+        height:297mm;
+        vertical-align:bottom;
+      }
+      hr {
+        border:1px solid gray;
+      }       
+    </style>
+  </head>
+  <body lang="#[locale]">
+    #[header[[
+    <header id="header">
+      <p>
+        header, located in the markup but will be rendered independently and inserted on each page as overlay<br/>
+        section and placeholder for the footer are optional<br/>
+        the markup generator needs the placeholder #[0x23][header[[...#[0x5D5D5D], if it is to be used<br/>
+        the section &lt;header&gt;...&lt;/header&gt; is needed when rendering the PDF to create the overlay, if it is to be used
+      </p>
+    </header> 
+    ]]]
+    #[dataset[[
+    <section id="sheet">
+      The file name of the template is derived from the template implementation in this example.<br/>
+      Because this is an inner class, the unique file name results.<br/>
+      <br/><br/><br/>
+    
+      only the placeholder #[0x23][dataset[[...#[0x5D5D5D] is needed for the content.<br/>
+      <br/>
+      Output of outlet
+      <hr/>    
+      #[outlet[[
+        <b>#[name]</b><br/>
+        #[street]<br/>
+        #[zipCode] #[location]<br/>
+        ![ADDRESS_TEL]: #[phone]<br/>
+        ![ADDRESS_FAX]: #[fax]<br/>
+        ![ADDRESS_E_MAIL]: #[email]<br/>
+        ![ADDRESS_WEB]: #[websiteUrl]
+      ]]]<br/>
+      <br/><br/><br/>
+      Output of articles
+      <hr/>
+      #[articles[[
+        <p>
+          <b>#[title]</b><br/>
+          ![ARTICLE_NUMBER]: #[articleNumber]<br/>
+          ![ARTICLE_PRICE]: #[price]
+        </p>
+      ]]]
+      <br/><br/><br/>
+      Additional placeholders
+      <hr/>
+      #[0x23][page]<br/>
+      current page, can be used in header and footer<br/>
+      <br/>
+      #[0x23][pages]<br/>
+      total number of pages, can be used in header and footer<br/>
+      <br/>
+      #[0x23][locale]<br/>
+      locale-setting of the PDF creation,<br/>
+      can be used as attribute in the body tag to use the correct font via CSS<br/>
+      <br/>
+      #[0x23][...-exists]<br/>
+      each placeholder automatically has an exists counterpart<br/>
+      e.g. for #[0x23][name] also exists #[0x23][name-exists]<br/>
+      This can be used for CSS to react on the presence or absence of placeholders.
+    </section> 
+    ]]]
+    #[footer[[
+    <footer id="footer">
+      <p>
+        footer, located in the markup but will be rendered independently and inserted on each page as overlay<br/>
+        section and placeholder for the footer are optional<br/>
+        the markup generator needs the placeholder #[0x23][footer[[...#[0x5D5D5D], if it is to be used<br/>
+        the section &lt;footer&gt;...&lt;/footer&gt; is needed when rendering the PDF to create the overlay, if it is to be used<br/>
+      </p>
+    </footer>
+    ]]]
+  </body>
+</html>
