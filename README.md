@@ -12,11 +12,10 @@
 
 # Description
 PDF service for generating/rendering PDFs based on
-[Open HTML to PDF](https://github.com/danfickle/openhtmltopdf)..
+[Open HTML to PDF](https://github.com/danfickle/openhtmltopdf).
 
 
 # Features
-
 - Built-in markup generator   
 very simple syntax, supports placeholders and structures
 - Built-in preview and designer with mock-up support  
@@ -53,9 +52,11 @@ specific language governing permissions and limitations under the License.
 
 
 # System Requirement
+Java 8 or higher
 
 
 # Downloads
+Coming soon
 
 
 # Changes (Change Log)
