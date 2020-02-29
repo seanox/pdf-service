@@ -19,21 +19,15 @@ PDF service for generating/rendering PDFs based on
 
 - Built-in markup generator   
 very simple syntax, supports placeholders and structures
-
 - Built-in preview and designer with mock-up support  
 simplifies the design process by allowing previewing without the target application  
-
 - Independent header, data and footer areas in one template (without magic)  
 Header, footer and data area are merged by overlaysand can therefore be formatted independently of the data area  
 e.g. margins of the document can be used by the header and footer
-
 - Native support of page numbers
-
 - I18n support
 The language setting is also transferred to the template and thus fonts matching the language can be used
-
 - Creation of markup as preview e.g. for the frontend
-
 - API for other markup renderers and generators
 Abstract templates for individual generators and renderers
 
