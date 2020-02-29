@@ -36,9 +36,14 @@ import com.openhtmltopdf.util.XRLog;
 
 /**
  * Tool for the design process to create a test output of the generated PDFs
- * into the working directory.
- * 
- * @version 3.2.0
+ * into the working directory.<br>
+ * <br>
+ * Preview 3.2.0 20200229<br>
+ * Copyright (C) 2020 Seanox Software Solutions<br>
+ * Alle Rechte vorbehalten.
+ *
+ * @author  Seanox Software Solutions
+ * @version 3.2.0 20200229
  */
 public class Preview {
     
@@ -79,8 +84,16 @@ public class Preview {
     static void execute()
             throws Exception {
         
-        for (Class<Service.Template> template : Service.Template.scan())
-            Preview.execute(template);
+        for (Class<Service.Template> template : Service.Template.scan()) {
+            System.out.println("INFORMATION: " + template.getSimpleName() + " started");
+            try {
+                Preview.execute(template);
+                System.out.println("INFORMATION: " + template + " done");
+            } catch (Exception exception) {
+                System.out.println("ERROR: " + template + " failed");
+                exception.printStackTrace(System.err);
+            }
+        }
     }
 
     /**
@@ -91,19 +104,11 @@ public class Preview {
      */
     static void execute(Class<Service.Template> template)
             throws Exception {
-        
-        System.out.println("INFORMATION: " + template.getSimpleName() + " started");
-        try {
-            Template instance = (Template)template.newInstance();
-            File output = Preview.locateOutput(new File(instance.getResource("html").toURI()));
-            output.delete();
-            Files.write(output.toPath(), instance.getPreview(), StandardOpenOption.CREATE);
-        } catch (Exception exception) {
-            System.out.println("ERROR: " + template + " failed");
-            exception.printStackTrace(System.err);
-            throw exception;
-        }
-        System.out.println("INFORMATION: " + template + " done");
+
+        Template instance = (Template)template.newInstance();
+        File output = Preview.locateOutput(new File(instance.getSource().toURI()));
+        output.delete();
+        Files.write(output.toPath(), instance.getPreview(), StandardOpenOption.CREATE);
     }
     
     /**
@@ -120,47 +125,38 @@ public class Preview {
                 || !file.exists())
             return;
         
-        System.out.println("INFORMATION: " + file.getName() + " started");
-        try {
+        File output = Preview.locateOutput(file);
+        output.delete();
+        
+        Template template = new Template() {
             
-            File output = Preview.locateOutput(file);
-            output.delete();
+            @Override
+            protected URI getBaseURI() throws URISyntaxException {
+                return file.getParentFile().toURI();
+            }
             
-            Template template = new Template() {
-                
-                @Override
-                protected URI getBaseURI() throws URISyntaxException {
-                    return file.getParentFile().toURI();
-                }
-                
-                @Override
-                protected URL getSource() throws Exception {
-                    return file.toURI().toURL();
-                }
-                
-                @Override
-                protected URL getResource(String extension) throws Exception {
-                    
-                    String target = file.getAbsolutePath();
-                    target = target.replaceAll("\\.[^\\.]*$", "." + extension);
-                    if (!target.matches("^.*\\.[^\\.]*$"))
-                        target += "." + extension;
-                    
-                    File resource = new File(target);
-                    if (!resource.isFile()
-                            || !resource.exists())
-                        throw new FileNotFoundException(target);
-                    return resource.toURI().toURL();
-                }
-            };
+            @Override
+            protected URL getSource() throws Exception {
+                return file.toURI().toURL();
+            }
             
-            Files.write(output.toPath(), template.getPreview(), StandardOpenOption.CREATE);
-        } catch (Exception exception) {
-            System.out.println("ERROR: " + file.getName() + " failed");
-            exception.printStackTrace(System.err);
-            throw exception;
-        }
-        System.out.println("INFORMATION: " + file.getName() + " done");
+            @Override
+            protected URL getResource(String extension) throws Exception {
+                
+                String target = file.getAbsolutePath();
+                target = target.replaceAll("\\.[^\\.]*$", "." + extension);
+                if (!target.matches("^.*\\.[^\\.]*$"))
+                    target += "." + extension;
+                
+                File resource = new File(target);
+                if (!resource.isFile()
+                        || !resource.exists())
+                    throw new FileNotFoundException(target);
+                return resource.toURI().toURL();
+            }
+        };
+        
+        Files.write(output.toPath(), template.getPreview(), StandardOpenOption.CREATE);
     }
     
     /**
@@ -171,8 +167,12 @@ public class Preview {
      */    
     public static void main(String[] options) {
 
+        //First the simple templates, which only use static preview data from
+        //the properties. However, these may also be used later by template
+        //implementation with dynamic preview data, in which case they are
+        //simply overwritten in the next step.
+
         try {
-            Preview.execute();
             if (options != null) {
                 for (String option : options) {
                     String path = option.replaceAll("^(?:(.*)[/\\\\])*(.*)$", "$1");
@@ -180,7 +180,10 @@ public class Preview {
                     try (DirectoryStream<Path> stream = Files.newDirectoryStream(
                             Paths.get(path), glob)) {
                         stream.forEach(file -> {
-                            try {Preview.execute(file.toFile());
+                            System.out.println("INFORMATION: " + file.toFile().getName() + " started");
+                            try {
+                                Preview.execute(file.toFile());
+                                System.out.println("INFORMATION: " + file.toFile().getName() + " done");
                             } catch (Exception exception) {
                                 System.out.println("ERROR: " + file.toFile().getName() + " failed");
                                 exception.printStackTrace(System.err);
@@ -189,6 +192,8 @@ public class Preview {
                     }                    
                 }
             }
+
+            Preview.execute();
         } catch (Exception exception) {
             exception.printStackTrace(System.err);
         }

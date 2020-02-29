@@ -36,9 +36,14 @@ import com.openhtmltopdf.util.XRLog;
  * templates change. The compilation is done by the IDE and the daemon is
  * started directly in the IDE. The templates are edited in the source
  * directory. The output of the PDFs takes place in the working directory of
- * the project.
- * 
- * @version 3.2.0
+ * the project.<br>
+ * <br>
+ * Designer 3.2.0 20200229<br>
+ * Copyright (C) 2020 Seanox Software Solutions<br>
+ * Alle Rechte vorbehalten.
+ *
+ * @author  Seanox Software Solutions
+ * @version 3.2.0 20200229
  */
 public class Designer {
     
@@ -78,7 +83,7 @@ public class Designer {
             for (Class<Service.Template> template : Service.Template.scan()) {
                 File file = new File(template.newInstance().getSource().toURI());
                 Date lastModified = new Date(file.lastModified());
-                if (new File(template.getSimpleName() + ".pdf").exists()
+                if (Preview.locateOutput(file).exists()
                         && fileMap.containsKey(file)
                         && fileMap.get(file).equals(lastModified))
                     continue;
@@ -103,8 +108,7 @@ public class Designer {
                                 return;
                             try {Preview.execute(file.toFile());
                             } catch (Exception exception) {
-                                System.out.println("ERROR: " + file.toFile().getName() + " failed");
-                                exception.printStackTrace(System.err);
+                                return;
                             }
                             fileMap.put(file.toFile(), lastModified);
                         });

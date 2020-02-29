@@ -67,9 +67,14 @@ import org.apache.commons.lang3.StringUtils;
  *  
  * <dir><code>#[data]</code></dir>
  * Placeholder provided by {@link Service} with a collection of data objects.
- * Available in sections: content
- * 
- * @version 3.1.0
+ * Available in sections: content<br>
+ * <br>
+ * Template 3.1.0 20200229<br>
+ * Copyright (C) 2020 Seanox Software Solutions<br>
+ * Alle Rechte vorbehalten.
+ *
+ * @author  Seanox Software Solutions
+ * @version 3.1.0 20200229
  */
 public abstract class Template extends Service.Template {
     
@@ -138,7 +143,7 @@ public abstract class Template extends Service.Template {
     private static void collectPreviewData(Map<String, Object> map, String key, String value)
             throws PreviewDataParserException {
 
-        final String PATTERN_EXPRESSION = "^(?i)([a-z](?:[\\w\\-]*\\w)*)((?:\\[\\s*\\d+\\s*\\])*\\.[a-z](?:[\\w\\-]*\\w)*)*$";
+        final String PATTERN_EXPRESSION = "^(?i)([a-z](?:[\\w\\-]*\\w)*)((?:\\[\\s*\\d+\\s*\\])*)(\\.([a-z](?:[\\w\\-]*\\w)*)((?:\\[\\s*\\d+\\s*\\])*))*$";
         if (!key.matches(PATTERN_EXPRESSION))  
             throw new PreviewDataParserException("Invalid key: " + key);
         
@@ -160,11 +165,13 @@ public abstract class Template extends Service.Template {
                             list.set(index, new HashMap<>());
                     } else list.add(index, new HashMap<>());
                     map = (Map)list.get(index);
+                } else {
+                    if (!map.containsKey(entry)
+                            || !(map.get(entry) instanceof Map))
+                        map.put(entry, new HashMap<>());
+                    map = (Map)map.get(entry);
+                    
                 }
-                if (!map.containsKey(entry)
-                        || !(map.get(entry) instanceof Map))
-                    map.put(entry, new HashMap<>());
-                map = (Map)map.get(entry);
             }
             key = key.replaceAll("^.*\\.", "");
         }
@@ -344,7 +351,7 @@ public abstract class Template extends Service.Template {
                 private static final long serialVersionUID = 1L; {
                 Collection<Map<String, Object>> dataset = Template.escapeHtml(meta.getDataset());
                 dataset = Template.indicateEmpty(dataset);
-                put("data", dataset);
+                put("dataset", dataset);
             }});            
         } else if (Service.Meta.Type.FOOTER.equals(type)) {
             Map<String, Object> footer = Template.escapeHtml(meta.getFooter());

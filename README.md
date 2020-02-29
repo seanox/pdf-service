@@ -47,6 +47,7 @@ specific language governing permissions and limitations under the License.
 # Changes (Change Log)
 ## 3.4.0 2020xxxx (summary of the next version)  
 BF: Service: Optimization of the overlay technique for header and footer  
+BF: Preview: Correction in the creation of MockUp lists  
 CR: Project: Migration to Maven  
 CR: Project: Migration to GitHub  
 CR: License: Migration to Apache License 2.0  
@@ -55,6 +56,10 @@ CR: Preview: Added support for pure markup files
 CR: Examples: Added various examples  
 CR: Preview: Preview data of properties are now also available in header and footer  
 CR: Preview: Properties of the preview data are now always searched at the template location  
+CR: Template Generate: Change from placeholder 'data' to 'dataset'  
+CR: Preview: General optimization of the preview creation.  
+CR: Designer: General optimization of the preview creation.  
+CR: Designer: Harmonisation of data storage / PDF output  
 
 [Read more](https://raw.githubusercontent.com/seanox/pdf-service/master/CHANGES)
 
