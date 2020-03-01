@@ -60,7 +60,7 @@ Coming soon
 
 
 # Changes (Change Log)
-## 3.4.0 2020xxxx (summary of the next version)  
+## 3.4.0 20200301 (summary of the current version)  
 BF: Service: Optimization of the overlay technique for header and footer  
 BF: Preview: Correction in the creation of MockUp lists  
 CR: Project: Migration to Maven  

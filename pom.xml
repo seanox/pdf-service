@@ -12,7 +12,7 @@
 
   <groupId>seanox.de</groupId>
   <artifactId>pdf-service</artifactId>
-  <version>3.4.0-SNAPSHOT</version>
+  <version>3.4.0</version>
   <name>pdf-service</name>
   <description>PDF service for generating/rendering PDFs based on Open HTML to PDF</description>
 
