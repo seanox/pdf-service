@@ -140,12 +140,12 @@ import com.seanox.pdf.Service.Template.Resources;
  * Placeholder provided by {@link Service} with a collection of data objects.
  * Available in sections: content<br>
  * <br>
- * Service 3.3x.1 20200229<br>
+ * Service 3.4.0 20200229<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.3x.1 20200229
+ * @version 3.4.0 20200229
  */
 public class Service {
     
