@@ -84,7 +84,7 @@ public class UsageTemplate {
         //The PDF is output to the current working directory.
         //The file name is derived from the UsageTemplate class.
         try {
-            byte[] data = Service.generate(new ExampleTempate(), meta);
+            byte[] data = Service.generate(new ExampleTemplate(), meta);
             File output = new File(UsageTemplate.class.getSimpleName() + ".pdf");
             Files.write(output.toPath(), data, StandardOpenOption.CREATE);
         } catch (Exception exception) {
@@ -200,6 +200,6 @@ public class UsageTemplate {
     //Base determines where in the ClassPath the resources (fonts, imgaes,
     //styles, ...) for PDF creation are located.
     @Resources(base="/pdf")
-    private static class ExampleTempate extends Template {
+    public static class ExampleTemplate extends Template {
     }
 }
