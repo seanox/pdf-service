@@ -40,17 +40,22 @@ import com.seanox.pdf.Template;
  * The resources (css, imgaes, ...) are in the ClassPath /pdf/... and are used
  * in the template relative.<br>
  * <br>
- * UsageTemplate 1.0 20200229<br>
+ * UsageTemplate 1.0 20200301<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 1.0 20200229
+ * @version 1.0 20200301
  */
 public class UsageTemplate {
     
     public static void main(String[] options) {
  
+        //The static texts are required as a Map<String, String>.
+        //Often they are available in a similar way as properties or JSON file
+        //and can be easily converted.
+        //Static texts are available in the template in the header, dataset and
+        //footer sections.
         Map<String, String> statics = new HashMap<String, String>() {{
             put("ARTICLE_NUMBER", "Article number");
             put("ARTICLE_PRICE", "Price");
@@ -60,16 +65,24 @@ public class UsageTemplate {
             put("ADDRESS_WEB", "Web");
         }};
         
-        List<ExampleDataBean> dataset = new ArrayList<ExampleDataBean>() {{
-            add(new ExampleDataBean());
-        }};
-        
-        ObjectMapper mapper = new ObjectMapper();
-        
+        //The data is fetched from the data access layer.
+        //In this case a delegate is simulated.
+        List<ExampleEntity> dataset = ExampleDelegate.list();
+
+        //The template is configured via a meta object.
         Meta meta = new Meta();
         meta.setStatics(statics);
+
+        //The delegate returns a list of entities.
+        //The template generator expects a structured map, that means keys as
+        //string and values as collection + string.
+        //The ObjectMapper creates this map.
+        ObjectMapper mapper = new ObjectMapper();
         meta.setDataset(mapper.convertValue(dataset, List.class));
         
+        //The generate-method of the template creates the final PDF.
+        //The PDF is output to the current working directory.
+        //The file name is derived from the UsageTemplate class.
         try {
             byte[] data = Service.generate(new ExampleTempate(), meta);
             File output = new File(UsageTemplate.class.getSimpleName() + ".pdf");
@@ -79,7 +92,18 @@ public class UsageTemplate {
         }
     }
     
-    private static class ExampleDataBean {
+    //Simulation of the data access layer as delegate.
+    private static class ExampleDelegate {
+        
+        static List<ExampleEntity> list() {
+            return new ArrayList<ExampleEntity>() {{
+                add(new ExampleEntity());
+            }};
+        }
+    }
+    
+    //Simulation of the entity.
+    private static class ExampleEntity {
         
         Object outlet = new Object() {
             String name = "Jane Doe Toys Limited";
@@ -170,6 +194,11 @@ public class UsageTemplate {
         }
     }
     
+    //The template is derived from the standard template and therefore requires
+    //only a annotation. Optionally, the path from the template can also be
+    //specified if the template is not in the template implementation.
+    //Base determines where in the ClassPath the resources (fonts, imgaes,
+    //styles, ...) for PDF creation are located.
     @Resources(base="/pdf")
     private static class ExampleTempate extends Template {
     }
