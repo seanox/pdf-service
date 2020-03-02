@@ -14,6 +14,15 @@
 PDF service for generating/rendering PDFs based on
 [Open HTML to PDF](https://github.com/danfickle/openhtmltopdf).
 
+The static service contains an abstraction of templates, an API for markup
+renderers/generators, a markup generator and a preview function including mockup
+data support.  
+The templates support independent areas for header, content and footer, which
+are assembled by overlay for each page. Header and footer are borderless
+overlays and can therefore also use the border area of the content.  
+Locale dependent CSS and native page numbers and total page number are
+supported.
+
 
 # Features
 - Built-in markup generator   
