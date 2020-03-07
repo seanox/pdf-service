@@ -1,7 +1,7 @@
 /**
  * LIZENZBEDINGUNGEN - Seanox Software Solutions ist ein Open-Source-Projekt, im
  * Folgenden Seanox Software Solutions oder kurz Seanox genannt.
- *  Diese Software unterliegt der Version 2 der Apache License.
+ * Diese Software unterliegt der Version 2 der Apache License.
  *
  * PDF Service
  * Copyright (C) 2020 Seanox Software Solutions
