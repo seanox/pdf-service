@@ -1,3 +1,6 @@
+3.4.x 2020xxxx
+  CR: Test: Update of test cases
+
 3.4.0 20200301
   BF: Service: Optimization of the overlay technique for header and footer
   BF: Preview: Correction in the creation of MockUp lists

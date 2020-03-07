@@ -20,22 +20,72 @@
  */
 package com.seanox.pdf;
 
+import java.io.File;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /** 
  * Wrapper to run the {@link Preview} with the test classes and resources.<br>
  * <br>
- * PreviewTest 3.2.0 20200229<br>
+ * PreviewTest 3.2.1 2020307<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.2.0 20200229
+ * @version 3.2.1 2020307
  */
 public class PreviewTest {
 
     @Test
     public void testMain() {
+        
+        String source;
+        String target;
+
+        File root = new File(".");
+        long time = System.currentTimeMillis();
+        
         Preview.main(new String[] {"./src/test/resources/pdf/*.html", "*.html"});
+        
+        source = "src/test/resources/pdf/report_preview.pdf";
+        Assertions.assertTrue(new File(root, source).exists());
+        Assertions.assertTrue(new File(root, source).lastModified() < time);
+        target = source.replaceAll("_preview\\.pdf$", ".pdf");
+        Assertions.assertTrue(new File(root, target).exists());
+        Assertions.assertTrue(new File(root, target).lastModified() > time);
+        Assertions.assertEquals(new File(root, source).length(), new File(root, target).length());
+        
+        source = "src/test/resources/pdf/articleB_preview.pdf";
+        Assertions.assertTrue(new File(root, source).exists());
+        Assertions.assertTrue(new File(root, source).lastModified() < time);
+        target = source.replaceAll("_preview\\.pdf$", ".pdf");
+        Assertions.assertTrue(new File(root, target).exists());
+        Assertions.assertTrue(new File(root, target).lastModified() > time);
+        Assertions.assertEquals(new File(root, source).length(), new File(root, target).length());
+        
+        source = "src/test/resources/pdf/articleA_preview.pdf";
+        Assertions.assertTrue(new File(root, source).exists());
+        Assertions.assertTrue(new File(root, source).lastModified() < time);
+        target = source.replaceAll("_preview\\.pdf$", ".pdf");
+        Assertions.assertTrue(new File(root, target).exists());
+        Assertions.assertTrue(new File(root, target).lastModified() > time);
+        Assertions.assertEquals(new File(root, source).length(), new File(root, target).length());
+
+        source = "target/test-classes/com/seanox/pdf/example/ArticleSingleTemplate_preview.pdf";
+        Assertions.assertTrue(new File(root, source).exists());
+        Assertions.assertTrue(new File(root, source).lastModified() < time);
+        target = source.replaceAll("_preview\\.pdf$", ".pdf");
+        Assertions.assertTrue(new File(root, target).exists());
+        Assertions.assertTrue(new File(root, target).lastModified() > time);
+        Assertions.assertEquals(new File(root, source).length(), new File(root, target).length());
+
+        source = "target/test-classes/com/seanox/pdf/example/ArticleMultiTemplate_preview.pdf";
+        Assertions.assertTrue(new File(root, source).exists());
+        Assertions.assertTrue(new File(root, source).lastModified() < time);
+        target = source.replaceAll("_preview\\.pdf$", ".pdf");
+        Assertions.assertTrue(new File(root, target).exists());
+        Assertions.assertTrue(new File(root, target).lastModified() > time);
+        Assertions.assertEquals(new File(root, source).length(), new File(root, target).length());
     }
 }
