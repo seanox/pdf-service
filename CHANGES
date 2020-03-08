@@ -1,5 +1,6 @@
-3.4.x 2020xxxx
+3.4.1 20200308
   CR: Test: Update of test cases
+  CR: Maven: Preparation for sonatype.org + mvnrepository.com/
 
 3.4.0 20200301
   BF: Service: Optimization of the overlay technique for header and footer
