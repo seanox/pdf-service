@@ -71,7 +71,7 @@ Coming soon
 # Changes (Change Log)
 ## 3.4.1 20200308 (summary of the current version)  
 CR: Test: Update of test cases  
-CR: Maven: Preparation for sonatype.org + mvnrepository.com/  
+CR: Maven: Preparation for sonatype.org + mvnrepository.com 
 
 [Read more](https://raw.githubusercontent.com/seanox/pdf-service/master/CHANGES)
 
