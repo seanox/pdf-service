@@ -1,0 +1,29 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="./styles/fonts.css"/>
+    <link rel="stylesheet" type="text/css" href="./styles/common.css"/>
+    <link rel="stylesheet" type="text/css" href="./styles/article.css"/>
+  </head>
+  <body lang="#[locale]">
+    #include articleIncludeE_1.inc
+    #[dataset[[
+    <section id="sheet">
+      #[outlet[[
+      <article id="outlet">
+        <h1>#[name]</h1>
+        <p exists="#[street-exists]">#[street]</p>
+        <p exists="#[location-exists]">#[zipCode] #[location]</p>
+        <p exists="#[phone-exists]">![ADDRESS_TEL]: #[phone]</p>
+        <p exists="#[fax-exists]">![ADDRESS_FAX]: #[fax]</p>
+        <p exists="#[email-exists]">![ADDRESS_E_MAIL]: #[email]</p>
+        <p exists="#[websiteUrl-exists]">![ADDRESS_WEB]: #[websiteUrl]</p>
+      </article>
+      ]]]
+      #[article[[
+        #include articleIncludeE_2.inc
+      ]]]
+    </section> 
+    ]]]
+    #include articleIncludeE_1.inc
+  </body>
+</html>

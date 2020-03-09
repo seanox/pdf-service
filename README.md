@@ -65,13 +65,19 @@ Java 8 or higher
 
 
 # Downloads
-Coming soon
+https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
+```xml
+<dependency>
+    <groupId>com.seanox</groupId>
+    <artifactId>seanox-pdf-service</artifactId>
+    <version>3.4.1</version>
+</dependency>
+```
 
 
 # Changes (Change Log)
-## 3.4.1 20200308 (summary of the current version)  
-CR: Test: Update of test cases  
-CR: Maven: Preparation for sonatype.org + mvnrepository.com 
+## 3.5.0 202003xx (summary of the next version)  
+CR: Service Template: Added support for meta directive #import  
 
 [Read more](https://raw.githubusercontent.com/seanox/pdf-service/master/CHANGES)
 
