@@ -1,0 +1,19 @@
+#[footer[[
+<footer id="footer">
+  <section>
+    <p>
+      ![PAGE_LEGAL]
+    </p>
+    <table>
+      <tr>
+        <td class="date">
+          ![SYSTEM_DATE]
+        </td>
+        <td class="page">
+          #[page] ![PAGE_FROM] #[pages]
+        </td>
+      </tr>
+    </table>
+  </section>
+</footer>
+]]]
