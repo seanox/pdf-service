@@ -22,6 +22,7 @@ package com.seanox.pdf;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,12 +34,15 @@ import java.lang.annotation.Target;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -57,6 +61,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.pdfbox.io.IOUtils;
 import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.multipdf.Overlay;
@@ -140,12 +145,12 @@ import com.seanox.pdf.Service.Template.Resources;
  * Placeholder provided by {@link Service} with a collection of data objects.
  * Available in sections: content<br>
  * <br>
- * Service 3.4.0 20200229<br>
+ * Service 3.4x.0 20200309<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.4.0 20200229
+ * @version 3.4x.0 20200309
  */
 public class Service {
     
@@ -601,7 +606,34 @@ public class Service {
             if (!base.toString().endsWith("/"))
                 base = new URI(base.toString() + "/");
 
-            Multiplex multiplex = Multiplex.demux(this.getMarkup());
+            String markup = this.getMarkup();
+
+            Pattern pattern = Pattern.compile("(?i)(?:^|(?<=[\r\n]))\\s*#include(?:(?:\\s+([^\r\n]*)\\s*((?=[\r\n])|$))|(?=\\s*$))");
+            Matcher matcher = pattern.matcher(markup);
+            while (matcher.find()) {
+                if (matcher.groupCount() < 1)
+                    throw new TemplateException("Invalid include found");
+                String patch = matcher.group(1);
+                if (!patch.startsWith("/")) {
+                    if (base != null
+                            && StringUtils.isNotEmpty(base.toString())) {
+                        patch = base.toString();
+                        if (!patch.endsWith("/"))
+                            patch += "/";
+                        patch += matcher.group(1);
+                    } else patch = "/" + patch;
+                }
+                if (Service.class.getResource(patch) == null) {
+                    if (patch.toLowerCase().startsWith("file:"))
+                        patch = new File(new URI(patch)).toString();
+                    if (!new File(patch).exists())
+                        throw new FileNotFoundException(patch);
+                    patch = new String(Files.readAllBytes(new File(patch).toPath()));
+                } else patch = new String(IOUtils.toByteArray(Service.class.getResourceAsStream(patch)));
+                markup = markup.replace(matcher.group(0), patch);
+            }
+            
+            Multiplex multiplex = Multiplex.demux(markup);
 
             List<PDDocument> artifacts = new ArrayList<>();
 

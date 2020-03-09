@@ -38,12 +38,12 @@ import com.openhtmltopdf.util.XRLog;
  * Tool for the design process to create a test output of the generated PDFs.
  * The PDFs are output in the same directory as the template.<br>
  * <br>
- * Preview 3.2.0 20200229<br>
+ * Preview 3.2.0x 20200309<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.2.0 20200229
+ * @version 3.2.0x 20200309
  */
 public class Preview {
     
@@ -125,25 +125,27 @@ public class Preview {
                 || !file.exists())
             return;
         
-        File output = Preview.locateOutput(file);
+        File canonical = file.getCanonicalFile();
+        
+        File output = Preview.locateOutput(canonical);
         output.delete();
         
         Template template = new Template() {
             
             @Override
             protected URI getBaseURI() throws URISyntaxException {
-                return file.getParentFile().toURI();
+                return canonical.getParentFile().toURI();
             }
             
             @Override
             protected URL getSource() throws Exception {
-                return file.toURI().toURL();
+                return canonical.toURI().toURL();
             }
             
             @Override
             protected URL getResource(String extension) throws Exception {
                 
-                String target = file.getAbsolutePath();
+                String target = canonical.getAbsolutePath();
                 target = target.replaceAll("\\.[^\\.]*$", "." + extension);
                 if (!target.matches("^.*\\.[^\\.]*$"))
                     target += "." + extension;
@@ -153,6 +155,11 @@ public class Preview {
                         || !resource.exists())
                     throw new FileNotFoundException(target);
                 return resource.toURI().toURL();
+            }
+            
+            @Override
+            public String toString() {
+                return canonical.toString();
             }
         };
         
@@ -180,8 +187,9 @@ public class Preview {
                     try (DirectoryStream<Path> stream = Files.newDirectoryStream(
                             Paths.get(path), glob)) {
                         stream.forEach(file -> {
-                            System.out.println("INFORMATION: " + file.toFile().getName() + " started");
                             try {
+                                file = file.toFile().getCanonicalFile().toPath();
+                                System.out.println("INFORMATION: " + file.toFile().getName() + " started");
                                 Preview.execute(file.toFile());
                                 System.out.println("INFORMATION: " + file.toFile().getName() + " done");
                             } catch (Exception exception) {

@@ -72,12 +72,12 @@ import org.apache.commons.lang3.StringUtils;
  * Placeholder provided by {@link Service} with a collection of data objects.
  * Available in sections: content<br>
  * <br>
- * Template 3.1.0 20200229<br>
+ * Template 3.1.0x 20200309<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.1.0 20200229
+ * @version 3.1.0x 20200309
  */
 public abstract class Template extends Service.Template {
     
@@ -339,7 +339,7 @@ public abstract class Template extends Service.Template {
         Map<String, String> statics = meta.getStatics();
         if (statics == null)
             statics = new HashMap<>();
-        Pattern pattern = Pattern.compile("(?si)\\!\\[\\s*(.*?)\\s*\\]");
+        Pattern pattern = Pattern.compile("\\!\\[\\s*(.*?)\\s*\\]");
         Matcher matcher = pattern.matcher(markup);
         while (matcher.find())
             markup = markup.replace(matcher.group(0), Template.escapeHtml(statics.get(matcher.group(1))));
