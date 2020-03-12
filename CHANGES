@@ -3,6 +3,8 @@
       Starts a line with #import then a space and then relative or absolute the
       path expects a resource with markup to be inserted at that place.
           e.g. #import address.tile
+  CR: OpenHtmlToPdf: Update to version 1.0.2
+  CR: Test: Update of test cases  
 
 3.4.1 20200308
   CR: Test: Update of test cases
@@ -14,20 +16,20 @@
   CR: Project: Migration to Maven
   CR: Project: Migration to GitHub
   CR: License: Migration to Apache License 2.0
-  CR: Designer: Added support for pure markup files
+  CR: Template Generate: Change from placeholder 'data' to 'dataset'
       Renders HTML templates without template implementation
   CR: Preview: Added support for pure markup files
       Renders HTML templates without template implementation
-  CR: Examples: Added various examples
-      single, multiple, with and without template implementation
   CR: Preview: Preview data of properties are now also available in header and footer
       Previously, only the static values were available there.         
   CR: Preview: Properties of the preview data are now always searched at the template location
-  CR: Template Generate: Change from placeholder 'data' to 'dataset'
   CR: Preview: General optimization of the preview creation.
+  CR: Designer: Added support for pure markup files
   CR: Designer: General optimization of the preview creation.
   CR: Designer: Harmonisation of data storage / PDF output
       The output is now consistently at the place of the template 
+  CR: Examples: Added various examples
+      single, multiple, with and without template implementation
 
 3.3.0
   NT: Lost

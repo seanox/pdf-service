@@ -78,6 +78,8 @@ https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
 # Changes (Change Log)
 ## 3.5.0 202003xx (summary of the next version)  
 CR: Service Template: Added support for meta directive #import  
+CR: OpenHtmlToPdf: Update to version 1.0.2  
+CR: Test: Update of test cases  
 
 [Read more](https://raw.githubusercontent.com/seanox/pdf-service/master/CHANGES)
 

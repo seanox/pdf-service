@@ -22,21 +22,39 @@ package com.seanox.pdf;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.logging.Level;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import com.openhtmltopdf.util.XRLog;
+
 /** 
  * Wrapper to run the {@link Preview} with the test classes and resources.<br>
  * <br>
- * PreviewTest 3.2.1x 2020309<br>
+ * PreviewTest 3.2x.1x 2020312<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.2.1x 2020309
+ * @version 3.2x.1x 2020312
  */
 public class PreviewTest {
+    
+    static {
+        XRLog.setLevel("com.openhtmltopdf.config", Level.WARNING);
+        XRLog.setLevel("com.openhtmltopdf.exception", Level.WARNING);
+        XRLog.setLevel("com.openhtmltopdf.general", Level.WARNING);
+        XRLog.setLevel("com.openhtmltopdf.init", Level.WARNING);
+        XRLog.setLevel("com.openhtmltopdf.junit", Level.WARNING);
+        XRLog.setLevel("com.openhtmltopdf.load", Level.WARNING);
+        XRLog.setLevel("com.openhtmltopdf.match", Level.WARNING);
+        XRLog.setLevel("com.openhtmltopdf.cascade", Level.WARNING);
+        XRLog.setLevel("com.openhtmltopdf.load.xml-entities", Level.WARNING);
+        XRLog.setLevel("com.openhtmltopdf.css-parse", Level.WARNING);
+        XRLog.setLevel("com.openhtmltopdf.layout", Level.WARNING);
+        XRLog.setLevel("com.openhtmltopdf.render", Level.WARNING);
+    }
     
     @Test
     public void testMain() {
@@ -46,8 +64,8 @@ public class PreviewTest {
 
         File root = new File(".");
         long time = System.currentTimeMillis();
-
-        Preview.main(new String[] {"./src/test/resources/pdf/*[!E].html", "*[!E].html"});
+        
+        Preview.main(new String[] {"./src/test/resources/pdf/*.html"});
         
         source = "src/test/resources/pdf/report_preview.pdf";
         Assertions.assertTrue(new File(root, source).exists());
@@ -81,14 +99,6 @@ public class PreviewTest {
         Assertions.assertTrue(new File(root, target).lastModified() > time);
         Assertions.assertEquals(new File(root, source).length(), new File(root, target).length());
         
-        source = "src/test/resources/pdf/articleIncludeB_preview.pdf";
-        Assertions.assertTrue(new File(root, source).exists());
-        Assertions.assertTrue(new File(root, source).lastModified() < time);
-        target = source.replaceAll("_preview\\.pdf$", ".pdf");
-        Assertions.assertTrue(new File(root, target).exists());
-        Assertions.assertTrue(new File(root, target).lastModified() > time);
-        Assertions.assertEquals(new File(root, source).length(), new File(root, target).length());
-        
         source = "src/test/resources/pdf/articleIncludeC_preview.pdf";
         Assertions.assertTrue(new File(root, source).exists());
         Assertions.assertTrue(new File(root, source).lastModified() < time);
@@ -112,13 +122,30 @@ public class PreviewTest {
         Assertions.assertTrue(new File(root, target).exists());
         Assertions.assertTrue(new File(root, target).lastModified() > time);
         Assertions.assertEquals(new File(root, source).length(), new File(root, target).length());
+
+        try {
+            Preview.execute(new File("src/test/resources/pdf/articleIncludeB.html"));
+            Assertions.fail();
+        } catch (Exception exception) {
+            Assertions.assertTrue(exception instanceof FileNotFoundException);
+            Assertions.assertTrue(exception.toString().replace("\\", "/") .contains("/pdf/pdf/articleA.html"));
+        }
         
         try {
             Preview.execute(new File("src/test/resources/pdf/articleIncludeE.html"));
             Assertions.fail();
         } catch (Exception exception) {
             Assertions.assertTrue(exception instanceof FileNotFoundException);
-            Assertions.assertTrue(exception.toString().contains("articleIncludeE_1.inc"));
+            Assertions.assertTrue(exception.toString().contains("articleIncludeE_1.html"));
         }
+        
+        try {
+            Preview.execute(new File("src/test/resources/pdf/articleIncludeF.html"));
+            Assertions.fail();
+        } catch (Exception exception) {
+            Assertions.assertTrue(exception instanceof Service.Template.TemplateException);
+            Assertions.assertTrue(exception.toString().contains("Recursion found in:"));
+            Assertions.assertTrue(exception.toString().contains("articleIncludeF_2.html"));
+        }        
     }
 }

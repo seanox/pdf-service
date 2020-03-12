@@ -1,0 +1,6 @@
+#[header[[
+<header id="header">
+  <span>articleA.html</span>
+  <img src="![PAGE_LOGO_URL]"/>
+</header> 
+]]]

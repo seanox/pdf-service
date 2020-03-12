@@ -21,15 +21,16 @@
 package com.seanox.pdf;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.Properties;
 import java.util.logging.Level;
 
 import com.openhtmltopdf.util.XRLog;
@@ -38,12 +39,12 @@ import com.openhtmltopdf.util.XRLog;
  * Tool for the design process to create a test output of the generated PDFs.
  * The PDFs are output in the same directory as the template.<br>
  * <br>
- * Preview 3.2.0x 20200309<br>
+ * Preview 3.2x.0x 20200312<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.2.0x 20200309
+ * @version 3.2x.0x 20200312
  */
 public class Preview {
     
@@ -106,7 +107,7 @@ public class Preview {
             throws Exception {
 
         Template instance = (Template)template.newInstance();
-        File output = Preview.locateOutput(new File(instance.getSource().toURI()));
+        File output = Preview.locateOutput(new File(instance.getSource()));
         output.delete();
         Files.write(output.toPath(), instance.getPreview(), StandardOpenOption.CREATE);
     }
@@ -133,30 +134,62 @@ public class Preview {
         Template template = new Template() {
             
             @Override
-            protected URI getBaseURI() throws URISyntaxException {
+            protected URI getBase() {
                 return canonical.getParentFile().toURI();
             }
-            
+
             @Override
-            protected URL getSource() throws Exception {
-                return canonical.toURI().toURL();
+            protected String getSourcePath() {
+                return "/" + canonical.getName();
             }
             
             @Override
-            protected URL getResource(String extension) throws Exception {
-                
-                String target = canonical.getAbsolutePath();
-                target = target.replaceAll("\\.[^\\.]*$", "." + extension);
-                if (!target.matches("^.*\\.[^\\.]*$"))
-                    target += "." + extension;
-                
-                File resource = new File(target);
-                if (!resource.isFile()
-                        || !resource.exists())
-                    throw new FileNotFoundException(target);
-                return resource.toURI().toURL();
+            protected URI getSource()
+                    throws Exception {
+                return new URI(this.getSourcePath());
             }
             
+            @Override
+            protected InputStream getSourceStream()
+                    throws Exception {
+                return this.getResourceStream(this.getSourcePath());
+            }
+            
+            @Override
+            protected URI getResource(String resource)
+                    throws Exception {
+                
+                File target = new File(canonical.getParentFile(), resource).getCanonicalFile(); 
+                if (!target.isFile()
+                        || !target.exists())
+                    throw new FileNotFoundException(target.toString());
+                return target.toURI();
+            }
+            
+            @Override
+            protected InputStream getResourceStream(String resource)
+                    throws Exception {
+
+                File target = new File(canonical.getParentFile(), resource).getCanonicalFile(); 
+                if (!target.isFile()
+                        || !target.exists())
+                    throw new FileNotFoundException(target.toString());
+                return new FileInputStream(target);
+            }
+            
+            @Override
+            protected Properties getPreviewProperties()
+                    throws Exception {
+                
+                String resource = this.getSourcePath();
+                resource = resource.replaceAll("[^\\\\/\\.]+$", "") + "properties";
+                
+                Properties properties = new Properties();
+                properties.load(this.getResourceStream(resource));        
+                
+                return properties;
+            }
+
             @Override
             public String toString() {
                 return canonical.toString();

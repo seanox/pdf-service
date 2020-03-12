@@ -72,12 +72,12 @@ import org.apache.commons.lang3.StringUtils;
  * Placeholder provided by {@link Service} with a collection of data objects.
  * Available in sections: content<br>
  * <br>
- * Template 3.1.0x 20200309<br>
+ * Template 3.1x.0x 20200312<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.1.0x 20200309
+ * @version 3.1x.0x 20200312
  */
 public abstract class Template extends Service.Template {
     
@@ -180,6 +180,26 @@ public abstract class Template extends Service.Template {
         }
         map.put(key, value);
     }
+    
+    /**
+     * Returns the preview data for the template as properties.
+     * The properties file are in the same package and use the same name.<br>
+     * <dir>e.g. ArticleTemplateImpl -&gt; ArticleTemplateImpl.properties</dir>
+     * @return the preview for one data record as preview
+     * @throws Exception
+     *     In case of unexpected errors.
+     */
+    protected Properties getPreviewProperties()
+            throws Exception {
+        
+        String resource = this.getSourcePath();
+        resource = resource.replaceAll("[^\\\\/\\.]+$", "") + "properties";
+        
+        Properties properties = new Properties();
+        properties.load(this.getResourceStream(resource));        
+        
+        return properties;
+    }
 
     /**
      * Creates preview data based on a properties file corresponding to impl.
@@ -193,9 +213,9 @@ public abstract class Template extends Service.Template {
     @Override
     protected Map<String, Object> getPreviewData()
             throws Exception {
-        
-        Properties properties = new Properties();
-        properties.load(this.getResourceStream("properties"));
+
+        Properties properties = this.getPreviewProperties();
+
         Map<String, Object> map = new HashMap<>();
         Set keySet = new TreeSet<>(new NaturalComparator());
         keySet.addAll(properties.keySet());
@@ -204,6 +224,7 @@ public abstract class Template extends Service.Template {
             String target = source.replaceAll("(^\\.+)|(\\.+$)", "");
             Template.collectPreviewData(map, target, properties.getProperty(source));
         }
+        
         return map;
     }
     

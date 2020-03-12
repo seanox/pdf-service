@@ -22,7 +22,6 @@ package com.seanox.pdf;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,8 +32,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -145,12 +142,12 @@ import com.seanox.pdf.Service.Template.Resources;
  * Placeholder provided by {@link Service} with a collection of data objects.
  * Available in sections: content<br>
  * <br>
- * Service 3.4x.0 20200309<br>
+ * Service 3.4x.0 20200312<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.4x.0 20200309
+ * @version 3.4x.0 20200312
  */
 public class Service {
     
@@ -165,7 +162,7 @@ public class Service {
     public static byte[] generate(Template template, Meta meta)
             throws ServiceException {
         
-        try {new URI(template.getBaseURI().toString());
+        try {new URI(template.getBase().toString());
         } catch (Exception exception) {
             throw new Template.TemplateException("Invalid base URI", exception);
         }
@@ -333,10 +330,13 @@ public class Service {
          */
         public static enum Type {
 
+            /** Meta-Type HEADER */
             HEADER,
 
+            /** Meta-Type DATA */
             DATA,
 
+            /** Meta-Type FOOTER */
             FOOTER
         }
     }
@@ -357,14 +357,18 @@ public class Service {
         @Retention(RetentionPolicy.RUNTIME)
         public @interface Resources {
 
-            /** Base URI of the resources in the ClassPath */
+            /** 
+             * Base URI of the resources in the ClassPath.
+             * Default value is the root in the ClassPath.
+             */
             String base() default "/";
 
             /** 
-             * Path of the markup template or only the extension, if the
-             * template is in the same package.
+             * Path of the markup template in the ClassPath.
+             * Default value is path of the class in the ClassPath with the
+             * extension 'html'.
              */
-            String template() default "html";
+            String template() default "";
         }
         
         /** Array of template implementations detected in the ClassPath */
@@ -410,28 +414,47 @@ public class Service {
          * @return the base URI of resources
          * @throws URISyntaxException
          *     In case of an invalid URI syntax.
+         * @throws Exception
+         *     In case of unexpected errors.
          */
-        protected URI getBaseURI()
-                throws URISyntaxException {
+        protected URI getBase()
+                throws Exception {
             
             Resources resource = this.getClass().getAnnotation(Resources.class);
             return new URI(resource != null ? resource.base() : "/");
         }
         
         /**
-         * Returns the markup template.
-         * @return the markup template
+         * Returns the URI of the markup template.
+         * @return the URI of the markup template
+         * @throws FileNotFoundException
+         *     If the template cannot be found in the ClassPath.
          * @throws Exception
          *     In case of unexpected errors.
          */
-        protected URL getSource()
-                throws Exception {
+        protected String getSourcePath() {
             
+            String template = "/" + this.getClass().getName().replace('.', '/') + ".html";    
             Resources resource = this.getClass().getAnnotation(Resources.class);
-            String template = resource != null ? resource.template() : "html";
-            if (template.matches("\\w+"))
-                return this.getResource(template);
-            return Service.class.getResource(template);
+            if (StringUtils.isNotEmpty(resource.template())) {
+                template = resource.template().trim();
+                if (!template.startsWith("/"))
+                    template = "/" + template;
+            }
+            return template;
+        }        
+        
+        /**
+         * Returns the URI of the markup template.
+         * @return the URI of the markup template
+         * @throws FileNotFoundException
+         *     If the template cannot be found in the ClassPath.
+         * @throws Exception
+         *     In case of unexpected errors.
+         */
+        protected URI getSource()
+                throws Exception {
+            return this.getResource(this.getSourcePath());
         }
 
         /**
@@ -442,53 +465,47 @@ public class Service {
          */
         protected InputStream getSourceStream()
                 throws Exception {
-            
-            byte[] data = IOUtils.toByteArray(this.getSource().openStream());
-            return new ByteArrayInputStream(data);
+            return this.getResourceStream(this.getSourcePath());
         }
         
         /**
-         * Returns the template extension with the same name in the same package.
-         * @param  extension
-         * @return the template extension
+         * Returns the URI of a resource in the ClassPath.
+         * @param  resource
+         * @return the URI of a resource in the ClassPath
+         * @throws FileNotFoundException
+         *     If the resource cannot be found in the ClassPath.
          * @throws Exception
          *     In case of unexpected errors.
          */
-        protected URL getResource(String extension)
+        protected URI getResource(String resource)
                 throws Exception {
-            
-            Resources resource = this.getClass().getAnnotation(Resources.class);
-            String template = resource != null ? resource.template() : "html";
-            if (!template.matches("\\w+")) {
-                String target = template.replaceAll("\\.[^\\.]*$", "." + extension);
-                if (!target.matches("^.*\\.[^\\.]*$"))
-                    target += "." + extension;
-                extension = target;
-            } else extension = "/" + this.getClass().getName().replace('.', '/') + "." + extension;
-            
-            if (Service.class.getResource(extension) == null)
-                throw new FileNotFoundException(extension);
-            return Service.class.getResource(extension);
+
+            if (StringUtils.isEmpty(resource))
+                throw new FileNotFoundException();
+            if (Service.class.getResource(resource) == null)
+                throw new FileNotFoundException(resource);
+            return Service.class.getResource(resource).toURI();
         }
 
         /**
-         * Returns the {@link InputStream} to template extension.
-         * @param  extension
-         * @return the {@link InputStream} to the template extension
+         * Returns the {@link InputStream} for a resource in the ClassPath.
+         * @param  resource
+         * @return the {@link InputStream} for a resource in the ClassPath
+         * @throws FileNotFoundException
+         *     If the resource cannot be found in the ClassPath.
          * @throws Exception
          *     In case of unexpected errors.
          */
-        protected InputStream getResourceStream(String extension)
+        protected InputStream getResourceStream(String resource)
                 throws Exception {
-            
-            byte[] data = IOUtils.toByteArray(this.getResource(extension).openStream());
-            return new ByteArrayInputStream(data);
+            return Service.class.getResourceAsStream(resource);
         }
         
         /**
          * Returns the markup of the template.
          * @return the markup of the template
          * @throws Exception
+         *     In case of unexpected errors.
          */
         protected String getMarkup()
                 throws Exception {
@@ -573,6 +590,112 @@ public class Service {
         }
         
         /**
+         * Normalizes a path.
+         * Relative directives like . and .. are balanced out.
+         * If necessary, backslashes are uniformly converted to slashes.
+         * The return value contains at least one slash.
+         * @param  path
+         * @return the normalizes a path
+         */
+        private static String normalizePath(String path) {
+            
+            String string;
+            String stream;
+            
+            int    cursor;
+
+            //path is changed to slash
+            string = path.replace('\\', '/').trim();
+
+            //multiple slashes are combined
+            while ((cursor = string.indexOf("//")) >= 0)
+                string = string.substring(0, cursor).concat(string.substring(cursor +1));
+
+            //path is balanced if necessary /abc/./def/../ghi -> /abc/ghi
+            //path is balanced by /.
+            if (string.endsWith("/."))
+                string = string.concat("/");
+
+            while ((cursor = string.indexOf("/./")) >= 0)
+                string = string.substring(0, cursor).concat(string.substring(cursor +2));
+
+            //path is balanced by /..
+            if (string.endsWith("/.."))
+                string = string.concat("/");
+
+            while ((cursor = string.indexOf("/../")) >= 0) {
+
+                stream = string.substring(cursor +3);
+                string = string.substring(0, cursor);
+
+                cursor = string.lastIndexOf("/");
+                cursor = Math.max(0, cursor);
+                string = string.substring(0, cursor).concat(stream);
+            }
+
+            //multiple slashes are combined
+            while ((cursor = string.indexOf("//")) >= 0)
+                string = string.substring(0, cursor).concat(string.substring(cursor +1));
+            
+            return string;
+        }
+        
+        /**
+         * Resolves meta directives #include in markup recursively.
+         * @param  path
+         * @param  markup
+         * @param  stack
+         * @return the markup with resolved includes
+         * @throws Exception
+         *     In case of unexpected errors.
+         */
+        private String resolveInlcudes(String path, String markup, List<String> stack)
+                throws Exception {
+            
+            Pattern pattern = Pattern.compile("(?i)(?:^|(?<=[\r\n]))\\s*#include(?:(?:\\s+([^\r\n]*)\\s*((?=[\r\n])|$))|(?=\\s*$))");
+            Matcher matcher = pattern.matcher(markup);
+            while (matcher.find()) {
+                if (matcher.groupCount() < 1)
+                    throw new TemplateException("Invalid include found");
+                String patch = matcher.group(1);
+                patch = this.followInlcudes(path, patch, stack);
+                markup = markup.replace(matcher.group(0), patch);
+            }
+            return markup;
+        }
+
+        /**
+         * Follows includes in markup recursively.
+         * @param  path
+         * @param  markup
+         * @param  stack
+         * @return the markup with resolved includes
+         * @throws Exception
+         *     In case of unexpected errors.
+         */
+        private String followInlcudes(String path, String include, List<String> stack)
+                throws Exception {
+            
+            include = normalizePath("/" + path + "/" + include);
+            if (stack.contains(include))
+                throw new TemplateRecursionException();
+            stack.add(include);
+            String markup = new String(IOUtils.toByteArray(this.getResourceStream(include)));
+            try {return this.resolveInlcudes(normalizePath(include + "/.."), markup, stack);
+            } catch (TemplateRecursionException exception) {
+                throw new TemplateException("Recursion found in: " + this.getResource(include));
+            }
+        }
+        
+        private static class TemplateRecursionException extends Exception {
+
+            private static final long serialVersionUID = 6981096067851899978L;
+            
+            private TemplateRecursionException() {
+            }
+        }
+        
+        /**
          * Creates the PDF based on the data records as meta object.
          * @param  meta data records as map array
          * @return the created PDF as byte array
@@ -597,7 +720,7 @@ public class Service {
                 meta.footer = new HashMap<>();
             else meta.footer = new HashMap<>(meta.footer);
 
-            URI base = getBaseURI();
+            URI base = this.getBase();
             if (base.getScheme() == null) {
                 if (Service.class.getResource(base.toString()) == null)
                     throw new FileNotFoundException(base.toString());
@@ -607,32 +730,7 @@ public class Service {
                 base = new URI(base.toString() + "/");
 
             String markup = this.getMarkup();
-
-            Pattern pattern = Pattern.compile("(?i)(?:^|(?<=[\r\n]))\\s*#include(?:(?:\\s+([^\r\n]*)\\s*((?=[\r\n])|$))|(?=\\s*$))");
-            Matcher matcher = pattern.matcher(markup);
-            while (matcher.find()) {
-                if (matcher.groupCount() < 1)
-                    throw new TemplateException("Invalid include found");
-                String patch = matcher.group(1);
-                if (!patch.startsWith("/")) {
-                    if (base != null
-                            && StringUtils.isNotEmpty(base.toString())) {
-                        patch = base.toString();
-                        if (!patch.endsWith("/"))
-                            patch += "/";
-                        patch += matcher.group(1);
-                    } else patch = "/" + patch;
-                }
-                if (Service.class.getResource(patch) == null) {
-                    if (patch.toLowerCase().startsWith("file:"))
-                        patch = new File(new URI(patch)).toString();
-                    if (!new File(patch).exists())
-                        throw new FileNotFoundException(patch);
-                    patch = new String(Files.readAllBytes(new File(patch).toPath()));
-                } else patch = new String(IOUtils.toByteArray(Service.class.getResourceAsStream(patch)));
-                markup = markup.replace(matcher.group(0), patch);
-            }
-            
+            markup = this.resolveInlcudes("/", markup, new ArrayList<>());
             Multiplex multiplex = Multiplex.demux(markup);
 
             List<PDDocument> artifacts = new ArrayList<>();
@@ -714,7 +812,12 @@ public class Service {
                     release.save(output);
                     return output.toByteArray();
                 }
-            } 
+            }
+        }
+         
+        @Override
+        public String toString() {
+            return this.getSourcePath();
         }
 
         /**
