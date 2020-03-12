@@ -17,16 +17,16 @@ PDF service for generating/rendering PDFs based on
 The static service contains an abstraction of templates, an API for markup
 renderers/generators, a markup generator and a preview function including mockup
 data support.  
-The templates support independent areas for header, content and footer, which
-are assembled by overlay for each page. Header and footer are borderless
-overlays and can therefore also use the border area of the content.  
+The templates supports includes and independent areas for header, content and
+footer, which are assembled by overlay for each page. Header and footer are
+borderless overlays and can therefore also use the border area of the content.  
 Locale dependent CSS and native page numbers and total page number are
 supported.
 
 
 # Features
 - Built-in markup generator   
-very simple syntax, supports placeholders and structures
+very simple syntax, supports placeholders, structures and includes
 - Built-in preview and designer with mock-up support  
 simplifies the design process by allowing previewing without the target application  
 - Independent header, data and footer areas in one template (without magic)  
