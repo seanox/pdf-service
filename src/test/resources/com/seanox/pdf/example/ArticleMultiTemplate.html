@@ -5,13 +5,10 @@
     <link rel="stylesheet" type="text/css" href="./styles/article.css"/>
   </head>
   <body lang="#[locale]">
-    #[header[[
     <header id="header">
       <span>ArticleMultiTemplate.html</span>
       <img src="![PAGE_LOGO_URL]"/>
     </header> 
-    ]]]
-    #[dataset[[
     <section id="sheet">
       #[outlet[[
       <article id="outlet">
@@ -24,7 +21,8 @@
         <p exists="#[websiteUrl-exists]">![ADDRESS_WEB]: #[websiteUrl]</p>
       </article>
       ]]]
-      #[article[[
+      #[articles[[
+        #[article[[
       <article id="article">
         <h3>![PAGE_PRODUCT_DATA_SHEET]</h3>
         <h1>#[headline]</h1>
@@ -74,10 +72,9 @@
           #[description]
         </p>
       </article>
+        ]]]
       ]]]
     </section> 
-    ]]]
-    #[footer[[
     <footer id="footer">
       <section>
         <p>
@@ -95,6 +92,5 @@
         </table>
       </section>
     </footer>
-    ]]]
   </body>
 </html>

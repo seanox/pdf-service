@@ -66,18 +66,14 @@ import org.apache.commons.lang3.StringUtils;
  *  
  * <dir><code>#[pages]</code></dir>
  * Placeholder provided by {@link Service} with the total page number.
- * Available in sections: header, footer
- *  
- * <dir><code>#[dataset]</code></dir>
- * Placeholder provided by {@link Service} with a collection of data objects.
- * Available in sections: content<br>
+ * Available in sections: header, footer<br>
  * <br>
- * Template 3.1x.0x 20200312<br>
+ * Template 3.1x.0x 20200313<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.1x.0x 20200312
+ * @version 3.1x.0x 20200313
  */
 public abstract class Template extends Service.Template {
     
@@ -369,18 +365,15 @@ public abstract class Template extends Service.Template {
         if (Service.Meta.Type.HEADER.equals(type)) {
             Map<String, Object> header = Template.escapeHtml(meta.getHeader());
             header = Template.indicateEmpty(header);
-            generator.set(type.toString(), header);
+            generator.set(header);
         } else if (Service.Meta.Type.DATA.equals(type)) {
-            generator.set(new HashMap<String, Object>() {
-                private static final long serialVersionUID = 1L; {
-                Collection<Map<String, Object>> dataset = Template.escapeHtml(meta.getDataset());
-                dataset = Template.indicateEmpty(dataset);
-                put("dataset", dataset);
-            }});            
+            Map<String, Object> data = Template.escapeHtml(meta.getData());
+            data = Template.indicateEmpty(data);
+            generator.set(data);
         } else if (Service.Meta.Type.FOOTER.equals(type)) {
             Map<String, Object> footer = Template.escapeHtml(meta.getFooter());
             footer = Template.indicateEmpty(footer);
-            generator.set(type.toString(), footer);
+            generator.set(footer);
         }
         
         generator.set(new HashMap<String, Object>() {

@@ -144,7 +144,8 @@ p {
 
 
 
-#sheet + #sheet {
+#sheet + #sheet,
+#article + #article {
   page-break-before:always;
 }
   

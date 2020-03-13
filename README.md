@@ -77,8 +77,12 @@ https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
 
 # Changes (Change Log)
 ## 3.5.0 202003xx (summary of the next version)  
-CR: Service Template: Added support for meta directive #import  
 CR: OpenHtmlToPdf: Update to version 1.0.2  
+CR: Service Template: Added support for meta directive #import  
+CR: Service Template Meta: Renaming from dataset to data  
+CR: Service Template Meta: Change of the data type from data(set) to Map  
+CR: Service Template Meta: Omission of option smart  
+CR: Template: Omission of the generator sections (header, dataset, footer)  
 CR: Test: Update of test cases  
 
 [Read more](https://raw.githubusercontent.com/seanox/pdf-service/master/CHANGES)

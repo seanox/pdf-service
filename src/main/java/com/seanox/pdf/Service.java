@@ -136,18 +136,14 @@ import com.seanox.pdf.Service.Template.Resources;
  *  
  * <dir><code>#[pages]</code></dir>
  * Placeholder provided by {@link Service} with the total page number.
- * Available in sections: header, footer
- *  
- * <dir><code>#[dataset]</code></dir>
- * Placeholder provided by {@link Service} with a collection of data objects.
- * Available in sections: content<br>
+ * Available in sections: header, footer<br>
  * <br>
- * Service 3.4x.0 20200312<br>
+ * Service 3.4x.0 20200313<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.4x.0 20200312
+ * @version 3.4x.0 20200313
  */
 public class Service {
     
@@ -195,21 +191,13 @@ public class Service {
         private Map<String, Object> header;
 
         /** key-value map for the content */
-        private Collection<Map<String, Object>> dataset;
+        private Map<String, Object> data;
         
         /** key-value map for the static texts */
         private Map<String, String> statics;
 
         /** key-value map for the footer */
         private Map<String, Object> footer;
-        
-        /** 
-         * Enables that for each data record a new PDF begins, which is later
-         * combined into one. This option forces the styles to be repeated on
-         * the first and last page.
-         * Default value: {@code false} (disabled)
-         */
-        private boolean smart;
         
         /** Constructor, creates a new Meta object. */
         public Meta() {
@@ -248,19 +236,19 @@ public class Service {
         }
 
         /**
-         * Return value of dataset.
-         * @return value of dataset
+         * Return value of data.
+         * @return value of data
          */
-        public Collection<Map<String, Object>> getDataset() {
-            return this.dataset;
+        public Map<String, Object> getData() {
+            return this.data;
         }
 
         /**
-         * Set value of dataset.
-         * @param dataset value of dataset
+         * Set value of data.
+         * @param data value of data
          */
-        public void setDataset(Collection<Map<String, Object>> dataset) {
-            this.dataset = dataset;
+        public void setData(Map<String, Object> data) {
+            this.data = data;
         }
 
         /**
@@ -295,32 +283,15 @@ public class Service {
             this.footer = footer;
         }
         
-        /**
-         * Return value of smart.
-         * @return value of smart
-         */
-        public boolean isSmart() {
-            return this.smart;
-        }
-
-        /**
-         * Set value of smart.
-         * @param smart value of smart
-         */
-        public void setSmart(boolean smart) {
-            this.smart = smart;
-        }
-
         @Override
         protected Object clone() {
             
             Meta meta = new Meta();
-            meta.dataset = this.dataset;
+            meta.data    = this.data;
             meta.footer  = this.footer;
             meta.header  = this.header;
             meta.locale  = this.locale;
             meta.statics = this.statics;
-            meta.smart   = this.smart;
             return meta;
         }
 
@@ -530,7 +501,7 @@ public class Service {
         @SuppressWarnings("unchecked")
         protected byte[] getPreview()
                 throws Exception {
-            return generate(new Meta() {{
+            return this.generate(new Meta() {{
                 this.setLocale(Locale.getDefault());
                 
                 this.setHeader(Template.this.getPreviewData().entrySet().stream()
@@ -538,13 +509,10 @@ public class Service {
                                 && !(e.getValue() instanceof Collection))
                         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
                 
-                this.setDataset(new ArrayList<Map<String, Object>>() {
-                    private static final long serialVersionUID = 1L; {
-                        this.add(Template.this.getPreviewData().entrySet().stream()
-                                .filter(e -> !e.getKey().equalsIgnoreCase("static"))
-                                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
-                }});
-                
+                this.setData(Template.this.getPreviewData().entrySet().stream()
+                        .filter(e -> !e.getKey().equalsIgnoreCase("static"))
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+
                 this.setFooter(Template.this.getPreviewData().entrySet().stream()
                         .filter(e -> !e.getKey().equalsIgnoreCase("static")
                                 && !(e.getValue() instanceof Collection))
@@ -708,8 +676,8 @@ public class Service {
             if (meta == null)
                 meta = new Meta();
 
-            if (meta.dataset == null)
-                meta.dataset = new ArrayList<>();
+            if (meta.data == null)
+                meta.data = new HashMap<>();
 
             //Header and footer are copied on the first level because both are
             //manipulated for the additional values 'page' and 'pages'.
@@ -735,30 +703,14 @@ public class Service {
 
             List<PDDocument> artifacts = new ArrayList<>();
 
-            if (meta.dataset != null
-                    && !meta.dataset.isEmpty()
-                    && meta.isSmart()) {
-                Meta temp = (Meta)meta.clone();
-                for (Map<String, Object> data : meta.dataset) {
-                    temp.dataset = new ArrayList<>();
-                    temp.dataset.add(data);
-                    
-                    ByteArrayOutputStream content = new ByteArrayOutputStream();
-                    PdfRendererBuilder builder = new PdfRendererBuilder();
-                    builder.withHtmlContent(this.generate(multiplex.content, Meta.Type.DATA, temp), base.toString());
-                    builder.toStream(content);
-                    builder.run();
-                    
-                    artifacts.add(PDDocument.load(content.toByteArray()));
-                }
-            } else {
-                ByteArrayOutputStream content = new ByteArrayOutputStream();
-                PdfRendererBuilder builder = new PdfRendererBuilder();
-                builder.withHtmlContent(this.generate(multiplex.content, Meta.Type.DATA, meta), base.toString());
-                builder.toStream(content);
-                builder.run();
-                artifacts.add(PDDocument.load(content.toByteArray()));
-            }
+            PdfRendererBuilder builder;
+            
+            ByteArrayOutputStream content = new ByteArrayOutputStream();
+            builder = new PdfRendererBuilder();
+            builder.withHtmlContent(this.generate(multiplex.content, Meta.Type.DATA, meta), base.toString());
+            builder.toStream(content);
+            builder.run();
+            artifacts.add(PDDocument.load(content.toByteArray()));
 
             try (PDDocument document = Service.Template.merge(artifacts)) {
 
@@ -770,8 +722,6 @@ public class Service {
                 for (PDDocument page : new ArrayList<>(pages)) {
                     
                     int offset = pages.indexOf(page);
-                    
-                    PdfRendererBuilder builder;
                     
                     meta.header.put("page", String.valueOf(offset +1));
                     ByteArrayOutputStream header = new ByteArrayOutputStream();
