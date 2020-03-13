@@ -3,13 +3,13 @@
   CR: Service Template: Added support for meta directive #import 
       Starts a line with #import then a space and then relative or absolute the
       path expects a resource with markup to be inserted at that place.
-          e.g. #import address.tile
+          e.g. #import address.html
       The sections are independent and now use the global scope.
   CR: Service Template Meta: Renaming from dataset to data
-  CR: Service Template Meta: Change of the data type from data(set) to Map
+  CR: Service Template Meta: Change of the data type from data/dataset to Map
   CR: Service Template Meta: Omission of option smart
       The same effect can be achieved with CSS + page break.
-  CR: Template: Omission of the generator sections (header, dataset, footer)
+  CR: Template: Omission of the generator sections (header, data/dataset, footer)
   CR: Test: Update of test cases
 
 3.4.1 20200308
