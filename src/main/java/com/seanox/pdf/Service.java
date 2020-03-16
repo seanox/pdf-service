@@ -99,8 +99,8 @@ import com.seanox.pdf.Service.Template.TemplateException;
  * determine the content.
  *  
  * <dir><b>Useful information:</b></dir>
- * Templates are based on an implementation of the {@link Service.Template} and
- * the annoation {@link Resources}, which with {@link Resources#base()} and
+ * Templates are based on an implementation of the {@link Template} and the
+ * annoation {@link Resources}, which with {@link Resources#base()} and
  * {@link Resources#template()}) contains information about the base directory
  * of the resources (stylesheets, images, fonts, ...), as well the path of the
  * markup template with the same name.
@@ -339,11 +339,11 @@ public class Service {
         
         /**
          * Templates are based on an implementation of the
-         * {@link Service.Template} and the annoation {@link Resources}, which
-         * with {@link Resources#base()} and {@link Resources#template()})
-         * contains information about the base directory of the resources
-         * (stylesheets, images, fonts, ...), as well the path of the markup
-         * template with the same name.
+         * {@link Template} and the annoation {@link Resources}, which with
+         * {@link Resources#base()} and {@link Resources#template()}) contains 
+         * information about the base directory of the resources (stylesheets,
+         * images, fonts, ...), as well the path of the markup template with the
+         * same name.
          */
         @Documented
         @Target(ElementType.TYPE)
@@ -675,7 +675,7 @@ public class Service {
         /**
          * Follows includes in markup recursively.
          * @param  path
-         * @param  markup
+         * @param  include
          * @param  stack
          * @return the markup with resolved includes
          * @throws Exception
@@ -688,14 +688,14 @@ public class Service {
                     || include.startsWith("\\"))
                 include = Template.normalizePath(include);
             else include = Template.normalizePath("/" + path + "/" + include);
-            
             if (stack.contains(include))
                 throw new TemplateRecursionException();
-            stack.add(include);
+            List<String> recursions = new ArrayList<>(stack);
+            recursions.add(include);
             if (this.getResource(include) == null)
                 throw new TemplateResourceNotFoundException(include);
             String markup = new String(IOUtils.toByteArray(this.getResourceStream(include)));
-            try {return this.resolveInlcudes(normalizePath(include + "/.."), markup, stack);
+            try {return this.resolveInlcudes(Template.normalizePath(include + "/.."), markup, recursions);
             } catch (TemplateRecursionException exception) {
                 throw new TemplateException("Recursion found in: " + this.getResource(include));
             }
@@ -788,7 +788,7 @@ public class Service {
             builder.run();
             artifacts.add(PDDocument.load(content.toByteArray()));
 
-            try (PDDocument document = Service.Template.merge(artifacts)) {
+            try (PDDocument document = Template.merge(artifacts)) {
 
                 Splitter splitter = new Splitter();
                 List<PDDocument> pages = splitter.split(document);
@@ -833,7 +833,7 @@ public class Service {
                     pages.remove(offset);
                 }
                 
-                try (PDDocument release = Service.Template.merge(pages)) {
+                try (PDDocument release = Template.merge(pages)) {
                     ByteArrayOutputStream output = new ByteArrayOutputStream();
                     release.save(output);
                     return output.toByteArray();
