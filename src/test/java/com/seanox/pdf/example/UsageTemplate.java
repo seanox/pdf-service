@@ -37,15 +37,15 @@ import com.seanox.pdf.Template;
 /** 
  * Example of using the PDF service.
  * Template and preview data are in the same package.
- * The resources (css, imgaes, ...) are in the ClassPath /pdf/... and are used
+ * The resources (css, images, ...) are in the ClassPath /pdf/... and are used
  * in the template relative.<br>
  * <br>
- * UsageTemplate 1.0x 20200313<br>
+ * UsageTemplate 1.0.1 20200316<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 1.0x 20200313
+ * @version 1.0.1 20200316
  */
 public class UsageTemplate {
     
@@ -84,7 +84,7 @@ public class UsageTemplate {
         //The PDF is output to the current working directory.
         //The file name is derived from the UsageTemplate class.
         try {
-            byte[] data = Service.generate(new ExampleTemplate(), meta);
+            byte[] data = Service.generate(ExampleTemplate.class, meta);
             File output = new File(UsageTemplate.class.getSimpleName() + ".pdf");
             Files.write(output.toPath(), data, StandardOpenOption.CREATE);
         } catch (Exception exception) {
@@ -197,7 +197,7 @@ public class UsageTemplate {
     //The template is derived from the standard template and therefore requires
     //only a annotation. Optionally, the path from the template can also be
     //specified if the template is not in the template implementation.
-    //Base determines where in the ClassPath the resources (fonts, imgaes,
+    //Base determines where in the ClassPath the resources (fonts, images,
     //styles, ...) for PDF creation are located.
     @Resources(base="/pdf")
     public static class ExampleTemplate extends Template {

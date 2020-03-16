@@ -26,15 +26,15 @@ import com.seanox.pdf.Template;
 /** 
  * Example of using the PDF service.
  * Template and preview data are in the same package.
- * The resources (css, imgaes, ...) are in the ClassPath /pdf/... and are used
+ * The resources (css, images, ...) are in the ClassPath /pdf/... and are used
  * in the template relative.<br>
  * <br>
- * ReportTemplate 1.0 20200229<br>
+ * ReportTemplate 1.0.0 20200229<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 1.0 20200229
+ * @version 1.0.0 20200229
  */
 @Resources(base="/pdf", template="/pdf/report.html")
 public class ReportTemplate extends Template {

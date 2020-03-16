@@ -20,8 +20,8 @@
  */
 package com.seanox.pdf.example;
 
-import com.seanox.pdf.Service.Template.Resources;
 import com.seanox.pdf.Template;
+import com.seanox.pdf.Service.Template.Resources;
 
 /** 
  * Example of using the PDF service.
@@ -29,13 +29,13 @@ import com.seanox.pdf.Template;
  * The resources (css, images, ...) are in the ClassPath /pdf/... and are used
  * in the template relative.<br>
  * <br>
- * ArticleMultiTemplate 1.0.0 20200313<br>
+ * ArticleSingleIncludeTemplate 1.0.0 20200316<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 1.0.0 20200313
+ * @version 1.0.0 20200316
  */
 @Resources(base="/pdf")
-public class ArticleMultiTemplate extends Template {
+public class ArticleSingleIncludeTemplate extends Template {
 }

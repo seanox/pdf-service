@@ -1,3 +1,14 @@
+3.5.1 202003xx
+  BF: Service Template Includes: Correction when following includes with absolute path
+  BF: Service Template Generate: Correction for using the resource base as the basis of the includes
+  BF: Documentation: Corrections der Versions in the sources
+  CR: Service Template: Use TemplateResourceNotFoundException for FileNotFoundException
+      When a resource cannot be found.
+  CR: Service Template Meta: Added method Meta::GetBasePath
+      Returns the resources path.
+  CR: Service Generate: Added an version with template class
+  CR: Test: Updates of test cases
+
 3.5.0 20200313
   CR: OpenHtmlToPdf: Update to version 1.0.2
   CR: Service Template: Added support for meta directive #import 

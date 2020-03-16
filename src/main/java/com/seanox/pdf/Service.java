@@ -22,7 +22,6 @@ package com.seanox.pdf;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Documented;
@@ -31,7 +30,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -75,6 +73,7 @@ import org.w3c.dom.NodeList;
 
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import com.seanox.pdf.Service.Template.Resources;
+import com.seanox.pdf.Service.Template.TemplateException;
 
 /**
  * Static service for creating PDF based on templates and meta-objects.
@@ -138,17 +137,42 @@ import com.seanox.pdf.Service.Template.Resources;
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer<br>
  * <br>
- * Service 3.4x.0 20200313<br>
+ * Service 3.5.1 20200316<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.4x.0 20200313
+ * @version 3.5.1 20200316
  */
 public class Service {
     
     /**
-     * Creates a PDF for a template and data records as meta object.
+     * Creates a PDF for a template and data as meta object.
+     * @param  template {@link Template}
+     * @param  meta     {@link Meta}
+     * @return the created PDF as byte array
+     * @throws TemplateException
+     *     In case of unexpected errors.
+     * @throws ServiceException
+     *     In case of unexpected errors.
+     */
+    public static byte[] generate(Class<? extends Template> template, Meta meta)
+            throws ServiceException {
+        
+        Template instance;
+        try {instance = Template.class.newInstance();
+        } catch (Exception exception) {
+            throw new Template.TemplateException(exception);
+        }        
+        
+        try {return Service.generate(instance, meta);
+        } catch (Exception exception) {
+            throw new ServiceException(exception);
+        }
+    }   
+    
+    /**
+     * Creates a PDF for a template and data as meta object.
      * @param  template {@link Template}
      * @param  meta     {@link Meta}
      * @return the created PDF as byte array
@@ -175,12 +199,10 @@ public class Service {
      * Meta object for creating PDFs.
      * The PDF creation is based on templates and is decoupled from the business
      * logic. The templates only know placeholders and structures.
-     * Templates consist of the parts: header, content and footer.
-     * Content is based on a set/collection of data objects that are projected
-     * here in the form of key-value-maps, comparable to JSON as a nested data
-     * structure. Header and footer have their own key-value-maps.
-     * In this meta object, the maps for the different parts of a PDF are
-     * summarized/collected.
+     * Templates consist of the parts: header, data and footer.
+     * These are three map objects that contain keys and values. The values can
+     * be strings or maps and collections with deeper structures, comparable to
+     * JSON as a nested data structure.
      */
     public static class Meta {
 
@@ -190,15 +212,15 @@ public class Service {
         /** key-value map for the header */
         private Map<String, Object> header;
 
-        /** key-value map for the content */
+        /** key-value map for the data */
         private Map<String, Object> data;
         
+        /** key-value map for the footer */
+        private Map<String, Object> footer;
+
         /** key-value map for the static texts */
         private Map<String, String> statics;
 
-        /** key-value map for the footer */
-        private Map<String, Object> footer;
-        
         /** Constructor, creates a new Meta object. */
         public Meta() {
         }
@@ -381,24 +403,35 @@ public class Service {
         }
 
         /**
-         * Returns the base URI of resources (stylesheets, images, fonts, ...)
-         * @return the base URI of resources
-         * @throws URISyntaxException
-         *     In case of an invalid URI syntax.
+         * Returns the resources path (stylesheets, images, fonts, ...)
+         * @return the resources path
+         */
+        protected String getBasePath() {
+            
+            Resources resource = this.getClass().getAnnotation(Resources.class);
+            if (resource == null
+                    || resource.base().trim().isEmpty())
+                return "/";
+            return resource.base().trim();
+        }  
+        
+        /**
+         * Returns the URI of resources path (stylesheets, images, fonts, ...)
+         * @return the URI of resources path
+         * @throws TemplateResourceNotFoundException
+         *     If the resources path cannot be found in the ClassPath.
          * @throws Exception
          *     In case of unexpected errors.
          */
         protected URI getBase()
                 throws Exception {
-            
-            Resources resource = this.getClass().getAnnotation(Resources.class);
-            return new URI(resource != null ? resource.base() : "/");
+            return this.getResource(this.getBasePath());
         }
         
         /**
          * Returns the URI of the markup template.
          * @return the URI of the markup template
-         * @throws FileNotFoundException
+         * @throws TemplateResourceNotFoundException
          *     If the template cannot be found in the ClassPath.
          * @throws Exception
          *     In case of unexpected errors.
@@ -418,7 +451,7 @@ public class Service {
         /**
          * Returns the URI of the markup template.
          * @return the URI of the markup template
-         * @throws FileNotFoundException
+         * @throws TemplateResourceNotFoundException
          *     If the template cannot be found in the ClassPath.
          * @throws Exception
          *     In case of unexpected errors.
@@ -431,6 +464,8 @@ public class Service {
         /**
          * Returns the {@link InputStream} to the markup template.
          * @return the {@link InputStream} to the markup template
+         * @throws TemplateResourceNotFoundException
+         *     If the source cannot be found in the ClassPath.
          * @throws Exception
          *     In case of unexpected errors.
          */
@@ -443,7 +478,7 @@ public class Service {
          * Returns the URI of a resource in the ClassPath.
          * @param  resource
          * @return the URI of a resource in the ClassPath
-         * @throws FileNotFoundException
+         * @throws TemplateResourceNotFoundException
          *     If the resource cannot be found in the ClassPath.
          * @throws Exception
          *     In case of unexpected errors.
@@ -452,9 +487,9 @@ public class Service {
                 throws Exception {
 
             if (StringUtils.isEmpty(resource))
-                throw new FileNotFoundException();
+                throw new TemplateResourceNotFoundException();
             if (Service.class.getResource(resource) == null)
-                throw new FileNotFoundException(resource);
+                throw new TemplateResourceNotFoundException(resource);
             return Service.class.getResource(resource).toURI();
         }
 
@@ -462,13 +497,18 @@ public class Service {
          * Returns the {@link InputStream} for a resource in the ClassPath.
          * @param  resource
          * @return the {@link InputStream} for a resource in the ClassPath
-         * @throws FileNotFoundException
+         * @throws TemplateResourceNotFoundException
          *     If the resource cannot be found in the ClassPath.
          * @throws Exception
          *     In case of unexpected errors.
          */
         protected InputStream getResourceStream(String resource)
                 throws Exception {
+            
+            if (StringUtils.isEmpty(resource))
+                throw new TemplateResourceNotFoundException();
+            if (Service.class.getResource(resource) == null)
+                throw new TemplateResourceNotFoundException(resource);
             return Service.class.getResourceAsStream(resource);
         }
         
@@ -643,11 +683,17 @@ public class Service {
          */
         private String followInlcudes(String path, String include, List<String> stack)
                 throws Exception {
+
+            if (include.startsWith("/")
+                    || include.startsWith("\\"))
+                include = Template.normalizePath(include);
+            else include = Template.normalizePath("/" + path + "/" + include);
             
-            include = normalizePath("/" + path + "/" + include);
             if (stack.contains(include))
                 throw new TemplateRecursionException();
             stack.add(include);
+            if (this.getResource(include) == null)
+                throw new TemplateResourceNotFoundException(include);
             String markup = new String(IOUtils.toByteArray(this.getResourceStream(include)));
             try {return this.resolveInlcudes(normalizePath(include + "/.."), markup, stack);
             } catch (TemplateRecursionException exception) {
@@ -655,11 +701,41 @@ public class Service {
             }
         }
         
-        private static class TemplateRecursionException extends Exception {
+        /** Exception for endless recursions. */
+        private static class TemplateRecursionException extends TemplateException {
 
             private static final long serialVersionUID = 6981096067851899978L;
             
             private TemplateRecursionException() {
+                super();
+            }
+        }
+        
+        /** Exception when accessing and using template resources. */
+        static class TemplateResourceException extends TemplateException {
+            
+            private static final long serialVersionUID = -6452881833015318785L;
+            
+            TemplateResourceException() {
+                super();
+            }
+
+            TemplateResourceException(String message) {
+                super(message);
+            }
+        }
+
+        /** Exception if template resources are not found. */
+        static class TemplateResourceNotFoundException extends TemplateResourceException {
+
+            private static final long serialVersionUID = -4532058335049427299L;
+
+            TemplateResourceNotFoundException() {
+                super();
+            }
+
+            TemplateResourceNotFoundException(String message) {
+                super(message);
             }
         }
         
@@ -691,14 +767,14 @@ public class Service {
             URI base = this.getBase();
             if (base.getScheme() == null) {
                 if (Service.class.getResource(base.toString()) == null)
-                    throw new FileNotFoundException(base.toString());
+                    throw new TemplateResourceNotFoundException(base.toString());
                 base = Service.class.getResource(base.toString()).toURI();
             }
             if (!base.toString().endsWith("/"))
                 base = new URI(base.toString() + "/");
 
             String markup = this.getMarkup();
-            markup = this.resolveInlcudes("/", markup, new ArrayList<>());
+            markup = this.resolveInlcudes(this.getBasePath(), markup, new ArrayList<>());
             Multiplex multiplex = Multiplex.demux(markup);
 
             List<PDDocument> artifacts = new ArrayList<>();
@@ -912,11 +988,24 @@ public class Service {
 
             private static final long serialVersionUID = 2701029837610928746L;
 
+            /** TemplateException */
+            TemplateException() {
+                super();
+            }
+
+            /**
+             * TemplateException
+             * @param cause
+             */
+            TemplateException(Throwable cause) {
+                super(cause);
+            }
+
             /**
              * TemplateException
              * @param message
              */
-            public TemplateException(String message) {
+            TemplateException(String message) {
                 super(message);
             }
             
@@ -925,7 +1014,7 @@ public class Service {
              * @param message
              * @param cause
              */
-            public TemplateException(String message, Throwable cause) {
+            TemplateException(String message, Throwable cause) {
                 super(message, cause);
             }               
         }
@@ -936,28 +1025,33 @@ public class Service {
 
         private static final long serialVersionUID = -6124067136782291330L;
 
+        /** ServiceException */
+        ServiceException() {
+            super();
+        } 
+
+        /**
+         * ServiceException
+         * @param cause
+         */
+        ServiceException(Throwable cause) {
+            super(cause);
+        } 
+
         /**
          * ServiceException
          * @param message
          */
-        public ServiceException(String message) {
+        ServiceException(String message) {
             super(message);
         }
         
         /**
          * ServiceException
-         * @param cause
-         */
-        public ServiceException(Throwable cause) {
-            super(cause);
-        }        
-        
-        /**
-         * ServiceException
          * @param message
          * @param cause
          */
-        public ServiceException(String message, Throwable cause) {
+        ServiceException(String message, Throwable cause) {
             super(message, cause);
         }        
     }

@@ -21,23 +21,23 @@
 package com.seanox.pdf;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.logging.Level;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import com.openhtmltopdf.util.XRLog;
+import com.seanox.pdf.Service.Template;
 
 /** 
  * Wrapper to run the {@link Preview} with the test classes and resources.<br>
  * <br>
- * PreviewTest 3.2x.1x 2020312<br>
+ * PreviewTest 3.3.1 20200316<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.2x.1x 2020312
+ * @version 3.3.1 20200316
  */
 public class PreviewTest {
     
@@ -54,6 +54,8 @@ public class PreviewTest {
         XRLog.setLevel("com.openhtmltopdf.css-parse", Level.WARNING);
         XRLog.setLevel("com.openhtmltopdf.layout", Level.WARNING);
         XRLog.setLevel("com.openhtmltopdf.render", Level.WARNING);
+        
+        XRLog.setLoggingEnabled(false);
     }
     
     @Test
@@ -114,6 +116,14 @@ public class PreviewTest {
         Assertions.assertTrue(new File(root, target).exists());
         Assertions.assertTrue(new File(root, target).lastModified() > time);
         Assertions.assertEquals(new File(root, source).length(), new File(root, target).length());
+        
+        source = "target/test-classes/com/seanox/pdf/example/ArticleSingleIncludeTemplate_preview.pdf";
+        Assertions.assertTrue(new File(root, source).exists());
+        Assertions.assertTrue(new File(root, source).lastModified() < time);
+        target = source.replaceAll("_preview\\.pdf$", ".pdf");
+        Assertions.assertTrue(new File(root, target).exists());
+        Assertions.assertTrue(new File(root, target).lastModified() > time);
+        Assertions.assertEquals(new File(root, source).length(), new File(root, target).length());
 
         source = "target/test-classes/com/seanox/pdf/example/ArticleMultiTemplate_preview.pdf";
         Assertions.assertTrue(new File(root, source).exists());
@@ -127,7 +137,7 @@ public class PreviewTest {
             Preview.execute(new File("src/test/resources/pdf/articleIncludeB.html"));
             Assertions.fail();
         } catch (Exception exception) {
-            Assertions.assertTrue(exception instanceof FileNotFoundException);
+            Assertions.assertTrue(exception instanceof Template.TemplateResourceNotFoundException);
             Assertions.assertTrue(exception.toString().replace("\\", "/") .contains("/pdf/pdf/articleA.html"));
         }
         
@@ -135,7 +145,7 @@ public class PreviewTest {
             Preview.execute(new File("src/test/resources/pdf/articleIncludeE.html"));
             Assertions.fail();
         } catch (Exception exception) {
-            Assertions.assertTrue(exception instanceof FileNotFoundException);
+            Assertions.assertTrue(exception instanceof Template.TemplateResourceNotFoundException);
             Assertions.assertTrue(exception.toString().contains("articleIncludeE_1.html"));
         }
         
