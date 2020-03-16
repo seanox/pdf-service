@@ -76,14 +76,15 @@ https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
 
 
 # Changes (Change Log)
-## 3.5.0 20200313 (summary of the current version)  
-CR: OpenHtmlToPdf: Update to version 1.0.2  
-CR: Service Template: Added support for meta directive #import  
-CR: Service Template Meta: Renaming from dataset to data  
-CR: Service Template Meta: Change of the data type from data/dataset to Map  
-CR: Service Template Meta: Omission of option smart  
-CR: Template: Omission of the generator sections (header, data/dataset, footer)  
-CR: Test: Update of test cases  
+## 3.5.1 20200316 (summary of the current version)  
+BF: Service Template Includes: Correction when following includes with absolute path  
+BF: Service Template Includes: Optimization for recursion detection  
+BF: Service Template Generate: Correction for using the resource base as the basis of the includes  
+BF: Documentation: Corrections der Versions in the sources  
+CR: Service Template: Use TemplateResourceNotFoundException for FileNotFoundException  
+CR: Service Template Meta: Added method Meta::GetBasePath  
+CR: Service Generate: Added an version with template class  
+CR: Test: Updates of test cases  
 
 [Read more](https://raw.githubusercontent.com/seanox/pdf-service/master/CHANGES)
 

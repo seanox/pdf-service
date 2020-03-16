@@ -1,5 +1,6 @@
-3.5.1 202003xx
+3.5.1 20200316
   BF: Service Template Includes: Correction when following includes with absolute path
+  BF: Service Template Includes: Optimization for recursion detection 
   BF: Service Template Generate: Correction for using the resource base as the basis of the includes
   BF: Documentation: Corrections der Versions in the sources
   CR: Service Template: Use TemplateResourceNotFoundException for FileNotFoundException
