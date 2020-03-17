@@ -70,7 +70,7 @@ https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
 <dependency>
     <groupId>com.seanox</groupId>
     <artifactId>seanox-pdf-service</artifactId>
-    <version>3.5.0</version>
+    <version>3.5.1</version>
 </dependency>
 ```
 
