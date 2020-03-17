@@ -1,3 +1,6 @@
+3.5.2 20200316
+  BF: Service Generate: Correction of unclosed document artifacts during merging
+
 3.5.1 20200316
   BF: Service Template Includes: Correction when following includes with absolute path
   BF: Service Template Includes: Optimization for recursion detection 

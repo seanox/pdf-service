@@ -137,12 +137,12 @@ import com.seanox.pdf.Service.Template.TemplateException;
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer<br>
  * <br>
- * Service 3.5.1 20200316<br>
+ * Service 3.5.2 20200317<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.5.1 20200316
+ * @version 3.5.2 20200317
  */
 public class Service {
     
@@ -778,66 +778,73 @@ public class Service {
             Multiplex multiplex = Multiplex.demux(markup);
 
             List<PDDocument> artifacts = new ArrayList<>();
-
-            PdfRendererBuilder builder;
             
-            ByteArrayOutputStream content = new ByteArrayOutputStream();
-            builder = new PdfRendererBuilder();
-            builder.withHtmlContent(this.generate(multiplex.content, Meta.Type.DATA, meta), base.toString());
-            builder.toStream(content);
-            builder.run();
-            artifacts.add(PDDocument.load(content.toByteArray()));
+            try {
 
-            try (PDDocument document = Template.merge(artifacts)) {
-
-                Splitter splitter = new Splitter();
-                List<PDDocument> pages = splitter.split(document);
-                meta.header.put("pages", String.valueOf(pages.size()));
-                meta.footer.put("pages", String.valueOf(pages.size()));
+                PdfRendererBuilder builder;
                 
-                for (PDDocument page : new ArrayList<>(pages)) {
+                ByteArrayOutputStream content = new ByteArrayOutputStream();
+                builder = new PdfRendererBuilder();
+                builder.withHtmlContent(this.generate(multiplex.content, Meta.Type.DATA, meta), base.toString());
+                builder.toStream(content);
+                builder.run();
+                artifacts.add(PDDocument.load(content.toByteArray()));
+
+                try (PDDocument document = Template.merge(artifacts)) {
+
+                    Splitter splitter = new Splitter();
+                    List<PDDocument> pages = splitter.split(document);
+                    meta.header.put("pages", String.valueOf(pages.size()));
+                    meta.footer.put("pages", String.valueOf(pages.size()));
                     
-                    int offset = pages.indexOf(page);
-                    
-                    meta.header.put("page", String.valueOf(offset +1));
-                    ByteArrayOutputStream header = new ByteArrayOutputStream();
-                    builder = new PdfRendererBuilder();
-                    builder.withHtmlContent(this.generate(multiplex.header, Meta.Type.HEADER, meta), base.toString());
-                    builder.toStream(header);
-                    builder.run();
-                    
-                    try (Overlay overlay = new Overlay()) {
-                        overlay.setInputPDF(page);
-                        overlay.setAllPagesOverlayPDF(PDDocument.load(header.toByteArray()));
-                        ByteArrayOutputStream output = new ByteArrayOutputStream();
-                        overlay.overlay(new HashMap<>()).save(output);
-                        page = PDDocument.load(output.toByteArray());
+                    for (PDDocument page : new ArrayList<>(pages)) {
+                        
+                        int offset = pages.indexOf(page);
+                        
+                        meta.header.put("page", String.valueOf(offset +1));
+                        ByteArrayOutputStream header = new ByteArrayOutputStream();
+                        builder = new PdfRendererBuilder();
+                        builder.withHtmlContent(this.generate(multiplex.header, Meta.Type.HEADER, meta), base.toString());
+                        builder.toStream(header);
+                        builder.run();
+                        
+                        try (Overlay overlay = new Overlay()) {
+                            overlay.setInputPDF(page);
+                            overlay.setAllPagesOverlayPDF(PDDocument.load(header.toByteArray()));
+                            ByteArrayOutputStream output = new ByteArrayOutputStream();
+                            overlay.overlay(new HashMap<>()).save(output);
+                            page = PDDocument.load(output.toByteArray());
+                        }
+                        
+                        meta.footer.put("page", String.valueOf(offset +1));
+                        ByteArrayOutputStream footer = new ByteArrayOutputStream();
+                        builder = new PdfRendererBuilder();
+                        builder.withHtmlContent(this.generate(multiplex.footer, Meta.Type.FOOTER, meta), base.toString());
+                        builder.toStream(footer);
+                        builder.run();  
+                        
+                        try (Overlay overlay = new Overlay()) {
+                            overlay.setInputPDF(page);
+                            overlay.setAllPagesOverlayPDF(PDDocument.load(footer.toByteArray()));
+                            ByteArrayOutputStream output = new ByteArrayOutputStream();
+                            overlay.overlay(new HashMap<>()).save(output);
+                            page = PDDocument.load(output.toByteArray());
+                        }
+                        
+                        pages.add(offset +1, page);
+                        pages.remove(offset);
                     }
                     
-                    meta.footer.put("page", String.valueOf(offset +1));
-                    ByteArrayOutputStream footer = new ByteArrayOutputStream();
-                    builder = new PdfRendererBuilder();
-                    builder.withHtmlContent(this.generate(multiplex.footer, Meta.Type.FOOTER, meta), base.toString());
-                    builder.toStream(footer);
-                    builder.run();  
-                    
-                    try (Overlay overlay = new Overlay()) {
-                        overlay.setInputPDF(page);
-                        overlay.setAllPagesOverlayPDF(PDDocument.load(footer.toByteArray()));
+                    try (PDDocument release = Template.merge(pages)) {
                         ByteArrayOutputStream output = new ByteArrayOutputStream();
-                        overlay.overlay(new HashMap<>()).save(output);
-                        page = PDDocument.load(output.toByteArray());
+                        release.save(output);
+                        return output.toByteArray();
                     }
-                    
-                    pages.add(offset +1, page);
-                    pages.remove(offset);
                 }
-                
-                try (PDDocument release = Template.merge(pages)) {
-                    ByteArrayOutputStream output = new ByteArrayOutputStream();
-                    release.save(output);
-                    return output.toByteArray();
-                }
+
+            } finally {
+                for (PDDocument artifact : artifacts)
+                    artifact.close();
             }
         }
          
