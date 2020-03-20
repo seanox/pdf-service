@@ -68,12 +68,12 @@ import org.apache.commons.lang3.StringUtils;
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer<br>
  * <br>
- * Template 3.1x.0x 20200313<br>
+ * Template 3.2.0 20200320<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.1x.0x 20200313
+ * @version 3.2.0 20200320
  */
 public abstract class Template extends Service.Template {
     
@@ -362,19 +362,9 @@ public abstract class Template extends Service.Template {
             markup = markup.replace(matcher.group(0), Template.escapeHtml(statics.get(matcher.group(1))));
 
         Generator generator = Generator.parse(markup.getBytes());
-        if (Service.Meta.Type.HEADER.equals(type)) {
-            Map<String, Object> header = Template.escapeHtml(meta.getHeader());
-            header = Template.indicateEmpty(header);
-            generator.set(header);
-        } else if (Service.Meta.Type.DATA.equals(type)) {
-            Map<String, Object> data = Template.escapeHtml(meta.getData());
-            data = Template.indicateEmpty(data);
-            generator.set(data);
-        } else if (Service.Meta.Type.FOOTER.equals(type)) {
-            Map<String, Object> footer = Template.escapeHtml(meta.getFooter());
-            footer = Template.indicateEmpty(footer);
-            generator.set(footer);
-        }
+        Map<String, Object> data = Template.escapeHtml(meta.getData());
+        data = Template.indicateEmpty(data);
+        generator.set(data);
         
         generator.set(new HashMap<String, Object>() {
             private static final long serialVersionUID = 1L; {

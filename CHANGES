@@ -1,5 +1,9 @@
-3.5.2 2020xxxx
+3.6.0 202004xx
   BF: Service Generate: Correction of unclosed document artifacts during merging
+  CR: Service Template Meta: Consolidation of header, data and footer in data only
+      Exclusive data can be separated using custom keys such as header, data and footer.
+      The overlays for header and footer thus also support collections.
+      Functionally there is now no difference between header, data and footer.
 
 3.5.1 20200316
   BF: Service Template Includes: Correction when following includes with absolute path

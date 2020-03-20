@@ -137,12 +137,12 @@ import com.seanox.pdf.Service.Template.TemplateException;
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer<br>
  * <br>
- * Service 3.5.2 20200317<br>
+ * Service 3.6.0 20200320<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.5.2 20200317
+ * @version 3.6.0 20200320
  */
 public class Service {
     
@@ -209,15 +209,9 @@ public class Service {
         /** locale */
         private Locale locale;
 
-        /** key-value map for the header */
-        private Map<String, Object> header;
-
         /** key-value map for the data */
         private Map<String, Object> data;
         
-        /** key-value map for the footer */
-        private Map<String, Object> footer;
-
         /** key-value map for the static texts */
         private Map<String, String> statics;
 
@@ -239,22 +233,6 @@ public class Service {
          */
         public void setLocale(Locale locale) {
             this.locale = locale;
-        }
-
-        /**
-         * Return value of header.
-         * @return value of header
-         */
-        public Map<String, Object> getHeader() {
-            return this.header;
-        }
-
-        /**
-         * Set value of header.
-         * @param header value of header
-         */
-        public void setHeader(Map<String, Object> header) {
-            this.header = header;
         }
 
         /**
@@ -289,29 +267,11 @@ public class Service {
             this.statics = statics;
         }
 
-        /**
-         * Return value of footer.
-         * @return value of footer
-         */
-        public Map<String, Object> getFooter() {
-            return this.footer;
-        }
-
-        /**
-         * Set value of footer.
-         * @param footer value of footer
-         */
-        public void setFooter(Map<String, Object> footer) {
-            this.footer = footer;
-        }
-        
         @Override
         protected Object clone() {
             
             Meta meta = new Meta();
             meta.data    = this.data;
-            meta.footer  = this.footer;
-            meta.header  = this.header;
             meta.locale  = this.locale;
             meta.statics = this.statics;
             return meta;
@@ -543,21 +503,9 @@ public class Service {
                 throws Exception {
             return this.generate(new Meta() {{
                 this.setLocale(Locale.getDefault());
-                
-                this.setHeader(Template.this.getPreviewData().entrySet().stream()
-                        .filter(e -> !e.getKey().equalsIgnoreCase("static")
-                                && !(e.getValue() instanceof Collection))
-                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
-                
                 this.setData(Template.this.getPreviewData().entrySet().stream()
                         .filter(e -> !e.getKey().equalsIgnoreCase("static"))
                         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
-
-                this.setFooter(Template.this.getPreviewData().entrySet().stream()
-                        .filter(e -> !e.getKey().equalsIgnoreCase("static")
-                                && !(e.getValue() instanceof Collection))
-                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
-                
                 this.setStatics(new HashMap<String, String>() {
                     private static final long serialVersionUID = 1L; {
                         if (Template.this.getPreviewData().containsKey("static"))
@@ -755,14 +703,11 @@ public class Service {
             if (meta.data == null)
                 meta.data = new HashMap<>();
 
-            //Header and footer are copied on the first level because both are
-            //manipulated for the additional values 'page' and 'pages'.
-            if (meta.header == null)
-                meta.header = new HashMap<>();
-            else meta.header = new HashMap<>(meta.header);
-            if (meta.footer == null)
-                meta.footer = new HashMap<>();
-            else meta.footer = new HashMap<>(meta.footer);
+            //Data is copied because it is manipulated later for the header and
+            //footer by adding the keys and values for locale, page and pages.
+            if (meta.data == null)
+                meta.data = new HashMap<>();
+            else meta.data = new HashMap<>(meta.data);
 
             URI base = this.getBase();
             if (base.getScheme() == null) {
@@ -794,14 +739,14 @@ public class Service {
 
                     Splitter splitter = new Splitter();
                     List<PDDocument> pages = splitter.split(document);
-                    meta.header.put("pages", String.valueOf(pages.size()));
-                    meta.footer.put("pages", String.valueOf(pages.size()));
+                    meta.data.put("pages", String.valueOf(pages.size()));
                     
                     for (PDDocument page : new ArrayList<>(pages)) {
                         
                         int offset = pages.indexOf(page);
                         
-                        meta.header.put("page", String.valueOf(offset +1));
+                        meta.data.put("page", String.valueOf(offset +1));
+                        
                         ByteArrayOutputStream header = new ByteArrayOutputStream();
                         builder = new PdfRendererBuilder();
                         builder.withHtmlContent(this.generate(multiplex.header, Meta.Type.HEADER, meta), base.toString());
@@ -816,7 +761,6 @@ public class Service {
                             page = PDDocument.load(output.toByteArray());
                         }
                         
-                        meta.footer.put("page", String.valueOf(offset +1));
                         ByteArrayOutputStream footer = new ByteArrayOutputStream();
                         builder = new PdfRendererBuilder();
                         builder.withHtmlContent(this.generate(multiplex.footer, Meta.Type.FOOTER, meta), base.toString());
