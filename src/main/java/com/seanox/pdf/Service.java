@@ -80,9 +80,9 @@ import com.seanox.pdf.Service.Template.TemplateException;
  *
  * <dir><b>Examples of use:</b></dir>
  * <pre>
- *   Service.generate(template, meta);
+ *   Service.render(template, meta);
  *    
- *   Files.write(new File(template + ".pdf").toPath(), Service.generate(template, meta), StandardOpenOption.CREATE);
+ *   Files.write(new File(template + ".pdf").toPath(), Service.render(template, meta), StandardOpenOption.CREATE);
  * </pre>
  *  
  * <dir><b>How it works:</b></dir>
@@ -137,12 +137,12 @@ import com.seanox.pdf.Service.Template.TemplateException;
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer<br>
  * <br>
- * Service 3.6.0 20200320<br>
+ * Service 3.6.0 20200401<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.6.0 20200320
+ * @version 3.6.0 20200401
  */
 public class Service {
     
@@ -156,7 +156,7 @@ public class Service {
      * @throws ServiceException
      *     In case of unexpected errors.
      */
-    public static byte[] generate(Class<? extends Template> template, Meta meta)
+    public static byte[] render(Class<? extends Template> template, Meta meta)
             throws ServiceException {
         
         Template instance;
@@ -165,7 +165,7 @@ public class Service {
             throw new Template.TemplateException(exception);
         }        
         
-        try {return Service.generate(instance, meta);
+        try {return Service.render(instance, meta);
         } catch (Exception exception) {
             throw new ServiceException(exception);
         }
@@ -179,7 +179,7 @@ public class Service {
      * @throws ServiceException
      *     In case of unexpected errors.
      */
-    public static byte[] generate(Template template, Meta meta)
+    public static byte[] render(Template template, Meta meta)
             throws ServiceException {
         
         try {new URI(template.getBase().toString());
@@ -189,7 +189,7 @@ public class Service {
 
         if (meta == null)
             meta = new Meta();
-        try {return template.generate(meta);
+        try {return template.render(meta);
         } catch (Exception exception) {
             throw new ServiceException(exception);
         }
@@ -501,7 +501,7 @@ public class Service {
         @SuppressWarnings("unchecked")
         protected byte[] getPreview()
                 throws Exception {
-            return this.generate(new Meta() {{
+            return this.render(new Meta() {{
                 this.setLocale(Locale.getDefault());
                 this.setData(Template.this.getPreviewData().entrySet().stream()
                         .filter(e -> !e.getKey().equalsIgnoreCase("static"))
@@ -694,7 +694,7 @@ public class Service {
          * @throws Exception
          *     In case of unexpected errors.
          */
-         final protected byte[] generate(Meta meta)
+         final protected byte[] render(Meta meta)
                 throws Exception {
 
             if (meta == null)

@@ -4,6 +4,10 @@
       Exclusive data can be separated using custom keys such as header, data and footer.
       The overlays for header and footer thus also support collections.
       Functionally there is now no difference between header, data and footer.
+  CR: Service: Separation of the terms/functions render and generate
+  CR: Service Template: Separation of the terms/functions render and generate
+      Generate: Creates and prepares the markup for the PDF
+      Render: Creates the PDF from the final markup
 
 3.5.1 20200316
   BF: Service Template Includes: Correction when following includes with absolute path

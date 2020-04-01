@@ -40,12 +40,12 @@ import com.seanox.pdf.Template;
  * The resources (css, images, ...) are in the ClassPath /pdf/... and are used
  * in the template relative.<br>
  * <br>
- * UsageTemplate 1.0.1 20200316<br>
+ * UsageTemplate 1.1.0 20200401<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 1.0.1 20200316
+ * @version 1.1.0 20200401
  */
 public class UsageTemplate {
     
@@ -80,11 +80,11 @@ public class UsageTemplate {
         ObjectMapper mapper = new ObjectMapper();
         meta.setData(mapper.convertValue(dataset, Map.class));
         
-        //The generate-method of the template creates the final PDF.
+        //The render-method of the template creates the final PDF.
         //The PDF is output to the current working directory.
         //The file name is derived from the UsageTemplate class.
         try {
-            byte[] data = Service.generate(ExampleTemplate.class, meta);
+            byte[] data = Service.render(ExampleTemplate.class, meta);
             File output = new File(UsageTemplate.class.getSimpleName() + ".pdf");
             Files.write(output.toPath(), data, StandardOpenOption.CREATE);
         } catch (Exception exception) {

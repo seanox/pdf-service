@@ -35,7 +35,7 @@ import java.util.logging.Level;
 import com.openhtmltopdf.util.XRLog;
 
 /**
- * Tool for the design process to create a test output of the generated PDFs.
+ * Tool for the design process to create a test output of the rendered PDFs.
  * The PDFs are output in the same directory as the template.<br>
  * <br>
  * Preview 3.3.1 20200316<br>
