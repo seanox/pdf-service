@@ -1,4 +1,4 @@
-3.6.0 202004xx
+3.6.0 20200404
   BF: Service Generate: Correction of unclosed document artifacts during merging
   CR: Service Template Meta: Consolidation of header, data and footer in data only
       Exclusive data can be separated using custom keys such as header, data and footer.
@@ -8,6 +8,9 @@
   CR: Service Template: Separation of the terms/functions render and generate
       Generate: Creates and prepares the markup for the PDF
       Render: Creates the PDF from the final markup
+  CR: Service Template: Stricter use of header and footer
+      The markup of header and footer is now only based on BODY + HEADER / BODY + FOOTER,
+      possibly other elements in the body are removed for header and footer.
 
 3.5.1 20200316
   BF: Service Template Includes: Correction when following includes with absolute path
@@ -23,9 +26,9 @@
 
 3.5.0 20200313
   CR: OpenHtmlToPdf: Update to version 1.0.2
-  CR: Service Template: Added support for meta directive #import 
-      Starts a line with #import then a space and then relative or absolute the
-      path expects a resource with markup to be inserted at that place.
+  CR: Service Template: Added support for meta directive #import
+      Starts a line with #import, a space is expected, and then a relative or
+      absolute path to a resource whose markup is inserted at that position.
           e.g. #import address.html
       The sections are independent and now use the global scope.
   CR: Service Template Meta: Renaming from dataset to data

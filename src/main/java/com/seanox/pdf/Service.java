@@ -32,6 +32,7 @@ import java.lang.annotation.Target;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -137,12 +138,12 @@ import com.seanox.pdf.Service.Template.TemplateException;
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer<br>
  * <br>
- * Service 3.6.0 20200401<br>
+ * Service 3.6.0 20200404<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.6.0 20200401
+ * @version 3.6.0 20200404
  */
 public class Service {
     
@@ -271,8 +272,8 @@ public class Service {
         protected Object clone() {
             
             Meta meta = new Meta();
-            meta.data    = this.data;
-            meta.locale  = this.locale;
+            meta.locale = this.locale;
+            meta.data = this.data;
             meta.statics = this.statics;
             return meta;
         }
@@ -747,32 +748,38 @@ public class Service {
                         
                         meta.data.put("page", String.valueOf(offset +1));
                         
-                        ByteArrayOutputStream header = new ByteArrayOutputStream();
-                        builder = new PdfRendererBuilder();
-                        builder.withHtmlContent(this.generate(multiplex.header, Meta.Type.HEADER, meta), base.toString());
-                        builder.toStream(header);
-                        builder.run();
-                        
-                        try (Overlay overlay = new Overlay()) {
-                            overlay.setInputPDF(page);
-                            overlay.setAllPagesOverlayPDF(PDDocument.load(header.toByteArray()));
-                            ByteArrayOutputStream output = new ByteArrayOutputStream();
-                            overlay.overlay(new HashMap<>()).save(output);
-                            page = PDDocument.load(output.toByteArray());
+                        if (multiplex.header != null
+                                && !multiplex.header.trim().isEmpty()) {
+                            ByteArrayOutputStream header = new ByteArrayOutputStream();
+                            builder = new PdfRendererBuilder();
+                            builder.withHtmlContent(this.generate(multiplex.header, Meta.Type.HEADER, meta), base.toString());
+                            builder.toStream(header);
+                            builder.run();
+                            
+                            try (Overlay overlay = new Overlay()) {
+                                overlay.setInputPDF(page);
+                                overlay.setAllPagesOverlayPDF(PDDocument.load(header.toByteArray()));
+                                ByteArrayOutputStream output = new ByteArrayOutputStream();
+                                overlay.overlay(new HashMap<>()).save(output);
+                                page = PDDocument.load(output.toByteArray());
+                            }
                         }
-                        
-                        ByteArrayOutputStream footer = new ByteArrayOutputStream();
-                        builder = new PdfRendererBuilder();
-                        builder.withHtmlContent(this.generate(multiplex.footer, Meta.Type.FOOTER, meta), base.toString());
-                        builder.toStream(footer);
-                        builder.run();  
-                        
-                        try (Overlay overlay = new Overlay()) {
-                            overlay.setInputPDF(page);
-                            overlay.setAllPagesOverlayPDF(PDDocument.load(footer.toByteArray()));
-                            ByteArrayOutputStream output = new ByteArrayOutputStream();
-                            overlay.overlay(new HashMap<>()).save(output);
-                            page = PDDocument.load(output.toByteArray());
+
+                        if (multiplex.footer != null
+                                && !multiplex.footer.trim().isEmpty()) {
+                            ByteArrayOutputStream footer = new ByteArrayOutputStream();
+                            builder = new PdfRendererBuilder();
+                            builder.withHtmlContent(this.generate(multiplex.footer, Meta.Type.FOOTER, meta), base.toString());
+                            builder.toStream(footer);
+                            builder.run();  
+                            
+                            try (Overlay overlay = new Overlay()) {
+                                overlay.setInputPDF(page);
+                                overlay.setAllPagesOverlayPDF(PDDocument.load(footer.toByteArray()));
+                                ByteArrayOutputStream output = new ByteArrayOutputStream();
+                                overlay.overlay(new HashMap<>()).save(output);
+                                page = PDDocument.load(output.toByteArray());
+                            }
                         }
                         
                         pages.add(offset +1, page);
@@ -821,6 +828,23 @@ public class Service {
 
             /** markup of footer */
             private String footer;
+            
+            /**
+             * Creates a list of nodes from a NodeList.
+             * @param  nodes
+             * @return list of nodes
+             */
+            private static List<Node> convertNodeList(NodeList nodes) {
+                
+                if (nodes == null
+                        || nodes.getLength() == 0)
+                    return Collections.<Node>emptyList();
+                
+                List<Node> list = new ArrayList<>();
+                for (int loop = 0; loop < nodes.getLength(); loop++)
+                    list.add(nodes.item(loop));
+                return list;
+            } 
 
             /**
              * Creates a copy of the passed document.
@@ -838,6 +862,41 @@ public class Service {
                 clone.appendChild(clone.importNode(root, true));
 
                 return clone;
+            }
+
+            /**
+             * Fetch a node to a selector.
+             * If the selector matches multiple nodes, it will return the first. 
+             * @param  document
+             * @param  selector
+             * @return the first matching node, otherwise {@code null}
+             * @throws XPathExpressionException
+             */
+            private static Node documentFetchNode(Document document, String selector)
+                    throws XPathExpressionException {
+
+                XPath xpath = XPathFactory.newInstance().newXPath();
+                XPathExpression expression = xpath.compile(selector);
+                return (Node)expression.evaluate(document, XPathConstants.NODE);
+            }
+            
+            /**
+             * Removes all children in a node.
+             * @param  document
+             * @param  selector
+             * @throws XPathExpressionException
+             */
+            private static void documentEmptyNode(Document document, String selector)
+                    throws XPathExpressionException {
+
+                XPath xpath = XPathFactory.newInstance().newXPath();
+                XPathExpression expression = xpath.compile(selector);
+                NodeList nodes = (NodeList)expression.evaluate(document, XPathConstants.NODESET);
+                for (Node node : Multiplex.convertNodeList(nodes)) {
+                    NodeList childs = node.getChildNodes();
+                    for (Node child : Multiplex.convertNodeList(childs))
+                        node.removeChild(child);
+                }
             }
 
             /**
@@ -921,14 +980,27 @@ public class Service {
                 multiplex.content = Multiplex.documentToString(content);
 
                 Document header = Multiplex.documentClone(document);
-                Multiplex.documentRemoveNode(header, "/html/body/*[name() != 'header']");
-                Multiplex.documentBorderless(header);
-                multiplex.header = Multiplex.documentToString(header);
+                Node headerNode = Multiplex.documentFetchNode(document, "/html/body/header");
+                if (headerNode != null) {
+                    Multiplex.documentEmptyNode(header, "/html/body");
+                    Node headerBody =  Multiplex.documentFetchNode(header, "/html/body");
+                    headerNode = header.importNode(headerNode, true);
+                    headerBody.appendChild(headerNode);
+                    Multiplex.documentBorderless(header);
+                    multiplex.header = Multiplex.documentToString(header);
+                }
                 
                 Document footer = Multiplex.documentClone(document);
-                Multiplex.documentRemoveNode(footer, "/html/body/*[name() != 'footer']");
-                Multiplex.documentBorderless(footer);
-                multiplex.footer = Multiplex.documentToString(footer);
+                Node footerNode = Multiplex.documentFetchNode(document, "/html/body/footer");
+                if (footerNode != null) {
+                    footerNode = footerNode.cloneNode(true);
+                    Multiplex.documentEmptyNode(footer, "/html/body");
+                    Node footerBody =  Multiplex.documentFetchNode(footer, "/html/body");
+                    footerNode = footer.importNode(footerNode, true);
+                    footerBody.appendChild(footerNode);
+                    Multiplex.documentBorderless(footer);
+                    multiplex.footer = Multiplex.documentToString(footer);
+                }
                 
                 return multiplex;
             }
