@@ -9,8 +9,9 @@
       Generate: Creates and prepares the markup for the PDF
       Render: Creates the PDF from the final markup
   CR: Service Template: Stricter use of header and footer
-      The markup of header and footer is now only based on BODY + HEADER / BODY + FOOTER,
-      possibly other elements in the body are removed for header and footer.
+      The markup of header and footer is now based exclusively on BODY + HEADER /
+      BODY + FOOTER, possibly additional elements in the body for header and footer
+      are removed. Overlays for headers and footers are only created if they exist. 
 
 3.5.1 20200316
   BF: Service Template Includes: Correction when following includes with absolute path

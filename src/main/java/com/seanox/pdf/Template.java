@@ -318,7 +318,7 @@ public abstract class Template extends Service.Template {
      * This hack is necessary because CSS :empty has no effect in OpenHtmlToPdf
      * and empty elements cannot be smoothed out by CSS. Therefore the inverted
      * exists solution.
-     * @param  collection
+     * @param  map
      * @return collection with additional exists keys
      */    
     @SuppressWarnings({"rawtypes", "unchecked"})
