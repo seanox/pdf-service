@@ -108,6 +108,14 @@ public class PreviewTest {
         Assertions.assertTrue(new File(root, target).exists());
         Assertions.assertTrue(new File(root, target).lastModified() > time);
         Assertions.assertEquals(new File(root, source).length(), new File(root, target).length());
+        
+        source = "src/test/resources/pdf/articleIncludeX_preview.pdf";
+        Assertions.assertTrue(new File(root, source).exists());
+        Assertions.assertTrue(new File(root, source).lastModified() < time);
+        target = source.replaceAll("_preview\\.pdf$", ".pdf");
+        Assertions.assertTrue(new File(root, target).exists());
+        Assertions.assertTrue(new File(root, target).lastModified() > time);
+        Assertions.assertEquals(new File(root, source).length(), new File(root, target).length());
 
         source = "target/test-classes/com/seanox/pdf/example/ArticleSingleTemplate_preview.pdf";
         Assertions.assertTrue(new File(root, source).exists());

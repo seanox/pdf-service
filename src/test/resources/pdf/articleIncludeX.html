@@ -1,0 +1,19 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="./styles/fonts.css"/>
+    <link rel="stylesheet" type="text/css" href="./styles/common.css"/>
+    <link rel="stylesheet" type="text/css" href="./styles/article.css"/>
+  </head>
+  <body lang="#[locale]">
+    #include shares/header.html
+    <section id="sheet">
+      #include shares/outlet.html
+      #include shares/empty.html
+      #include shares/empty.html
+      #[article[[
+        #include shares/article.html
+      ]]]
+    </section>
+    #include shares/footer.html
+  </body>
+</html>
