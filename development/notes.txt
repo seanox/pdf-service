@@ -1,0 +1,18 @@
+    Release
+    ----
+1. Search and solve all TODO ebtries
+2. Check and if necessary update the version and time stamp of all components
+   Comparison with the tag from the last release.
+3. Final test
+   mvn clean test   
+4. Final update of CHANGES
+5. Final update of README.md
+   incl. the Maven-dependency version
+6. Update the version in pom.xml
+7. Final commit of the release
+8. Create tag with the short form of the release notes
+
+A. Release to the Maven Repository
+   mvn clean deploy
+   see also https://oss.sonatype.org/#nexus-search;quick~com.seanox
+   see also https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service 
