@@ -32,12 +32,12 @@ import com.seanox.pdf.Service.Template;
 /** 
  * Wrapper to run the {@link Preview} with the test classes and resources.<br>
  * <br>
- * PreviewTest 3.3.1 20200316<br>
+ * PreviewTest 3.3.2 20200405<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.3.1 20200316
+ * @version 3.3.2 20200405
  */
 public class PreviewTest {
     
