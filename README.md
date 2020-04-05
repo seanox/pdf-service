@@ -30,14 +30,14 @@ very simple syntax, supports placeholders, structures and includes
 - Built-in preview and designer with mock-up support  
 simplifies the design process by allowing previewing without the target application  
 - Independent header, data and footer areas in one template (without magic)  
-Header, footer and data area are merged by overlaysand can therefore be formatted independently of the data area  
+header, footer and data area are merged by overlaysand can therefore be formatted independently of the data area  
 e.g. margins of the document can be used by the header and footer
 - Native support of page numbers
 - I18n support  
-The language setting is also transferred to the template and thus fonts matching the language can be used
+language setting is also transferred to the template and thus fonts matching the language can be used
 - Creation of markup as preview e.g. for the frontend
 - API for other markup renderers and generators  
-Abstract templates for individual generators and renderers
+abstract templates for individual generators and renderers
 
 
 # Licence Agreement
@@ -70,21 +70,18 @@ https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
 <dependency>
     <groupId>com.seanox</groupId>
     <artifactId>seanox-pdf-service</artifactId>
-    <version>3.5.1</version>
+    <version>3.6.0</version>
 </dependency>
 ```
 
 
 # Changes (Change Log)
-## 3.5.1 20200316 (summary of the current version)  
-BF: Service Template Includes: Correction when following includes with absolute path  
-BF: Service Template Includes: Optimization for recursion detection  
-BF: Service Template Generate: Correction for using the resource base as the basis of the includes  
-BF: Documentation: Corrections der Versions in the sources  
-CR: Service Template: Use TemplateResourceNotFoundException for FileNotFoundException  
-CR: Service Template Meta: Added method Meta::GetBasePath  
-CR: Service Generate: Added an version with template class  
-CR: Test: Updates of test cases  
+## 3.6.0 20200405 (summary of the current version)  
+BF: Service Generate: Correction of unclosed document artifacts during merging  
+CR: Service Template Meta: Consolidation of header, data and footer in data only  
+CR: Service: Separation of the terms/functions render and generate  
+CR: Service Template: Separation of the terms/functions render and generate  
+CR: Service Template: Stricter use of header and footer  
 
 [Read more](https://raw.githubusercontent.com/seanox/pdf-service/master/CHANGES)
 

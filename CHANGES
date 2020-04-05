@@ -1,4 +1,4 @@
-3.6.0 20200404
+3.6.0 20200405
   BF: Service Generate: Correction of unclosed document artifacts during merging
   CR: Service Template Meta: Consolidation of header, data and footer in data only
       Exclusive data can be separated using custom keys such as header, data and footer.
