@@ -138,12 +138,12 @@ import com.seanox.pdf.Service.Template.TemplateException;
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer<br>
  * <br>
- * Service 3.6.0 20200404<br>
+ * Service 3.7.0 20200417<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.6.0 20200404
+ * @version 3.7.0 20200417
  */
 public class Service {
     
@@ -214,7 +214,7 @@ public class Service {
         private Map<String, Object> data;
         
         /** key-value map for the static texts */
-        private Map<String, String> statics;
+        private Map<String, CharSequence> statics;
 
         /** Constructor, creates a new Meta object. */
         public Meta() {
@@ -256,7 +256,7 @@ public class Service {
          * Return value of statics.
          * @return value of statics
          */
-        public Map<String, String> getStatics() {
+        public Map<String, CharSequence> getStatics() {
             return this.statics;
         }
 
@@ -264,7 +264,7 @@ public class Service {
          * Set value of statics.
          * @param statics value of statics
          */
-        public void setStatics(Map<String, String> statics) {
+        public void setStatics(Map<String, CharSequence> statics) {
             this.statics = statics;
         }
 
@@ -507,7 +507,7 @@ public class Service {
                 this.setData(Template.this.getPreviewData().entrySet().stream()
                         .filter(e -> !e.getKey().equalsIgnoreCase("static"))
                         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
-                this.setStatics(new HashMap<String, String>() {
+                this.setStatics(new HashMap<String, CharSequence>() {
                     private static final long serialVersionUID = 1L; {
                         if (Template.this.getPreviewData().containsKey("static"))
                             this.putAll((HashMap<String, String>)Template.this.getPreviewData().get("static"));

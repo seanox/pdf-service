@@ -1,3 +1,7 @@
+3.7.0 202005xx
+  CR: Service: Added support of data type Markup for values
+  CR: Service Template: Added support of data type Markup for values
+
 3.6.0 20200405
   BF: Service Generate: Correction of unclosed document artifacts during merging
   CR: Service Template Meta: Consolidation of header, data and footer in data only

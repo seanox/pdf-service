@@ -37,12 +37,12 @@ import com.openhtmltopdf.util.XRLog;
  * started directly in the IDE. The templates are edited in the source
  * directory. The PDFs are output in the same directory as the template.<br>
  * <br>
- * Designer 3.2x.0x 20200312<br>
+ * Designer 3.2.0 20200312<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.2x.0x 20200312
+ * @version 3.2.0 20200312
  */
 public class Designer {
     

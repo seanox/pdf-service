@@ -32,6 +32,7 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -68,14 +69,63 @@ import org.apache.commons.lang3.StringUtils;
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer<br>
  * <br>
- * Template 3.2.0 20200320<br>
+ * Template 3.3.0 20200417<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.2.0 20200320
+ * @version 3.3.0 20200417
  */
 public abstract class Template extends Service.Template {
+    
+    /** 
+     * CharSequence for Markup.
+     * Markup works like a string, but is not escaped.
+     * It can be used if markup is to be inserted as value in the template.
+     */
+    public static class Markup implements CharSequence {
+        
+        private String string;
+        
+        /**
+         * Construcor, creates a new Markup object.
+         * The value {@code null} is interpreted like an empty string.
+         * @param string
+         */
+        public Markup(String string) {
+            this.string = string;
+        }
+        
+        @Override
+        public int length() {
+            return this.string.length();
+        }
+
+        @Override
+        public char charAt(int index) {
+            return this.string.charAt(index);
+        }
+
+        @Override
+        public CharSequence subSequence(int start, int end) {
+            return this.string.subSequence(start, start);
+        }
+
+        @Override
+        public IntStream codePoints() {
+            return this.string.codePoints();
+        }
+
+        @Override
+        public IntStream chars() {
+            return this.string.chars();
+        }
+        
+        @Override
+        public String toString() {
+            return this.string;
+        }
+    }
     
     /** Naturally sort comparator */
     private static class NaturalComparator implements Comparator<String> {
@@ -240,6 +290,10 @@ public abstract class Template extends Service.Template {
                 build.append("&#").append((int)digit).append(";");
             else if (digit == '&')
                 build.append("&amp;");
+            else if (digit == '<')
+                build.append("&lt;");
+            else if (digit == '>')
+                build.append("&gt;");
             else build.append(digit);
         }
         text = build.toString();
@@ -261,6 +315,8 @@ public abstract class Template extends Service.Template {
             return Template.escapeHtml((Collection)object);
         if (object instanceof Map)
             return Template.escapeHtml((Map)object);
+        if (object instanceof Markup)
+            return ((Markup)object).toString();
         return Template.escapeHtml(String.valueOf(object));
     } 
 
@@ -353,13 +409,17 @@ public abstract class Template extends Service.Template {
     @Override
     protected String generate(String markup, Service.Meta.Type type, Service.Meta meta) {
 
-        Map<String, String> statics = meta.getStatics();
+        Map<String, CharSequence> statics = meta.getStatics();
         if (statics == null)
             statics = new HashMap<>();
         Pattern pattern = Pattern.compile("\\!\\[\\s*(.*?)\\s*\\]");
         Matcher matcher = pattern.matcher(markup);
-        while (matcher.find())
-            markup = markup.replace(matcher.group(0), Template.escapeHtml(statics.get(matcher.group(1))));
+        while (matcher.find()) {
+            CharSequence value = statics.get(matcher.group(1));
+            if (!(value instanceof Markup))
+                value = Template.escapeHtml(value.toString());
+            markup = markup.replace(matcher.group(0), value);
+        }
 
         Generator generator = Generator.parse(markup.getBytes());
         Map<String, Object> data = Template.escapeHtml(meta.getData());

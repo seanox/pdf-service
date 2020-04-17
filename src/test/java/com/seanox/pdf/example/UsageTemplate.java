@@ -56,7 +56,7 @@ public class UsageTemplate {
         //and can be easily converted.
         //Static texts are available in the template in the header, dataset and
         //footer sections.
-        Map<String, String> statics = new HashMap<String, String>() {{
+        Map<String, CharSequence> statics = new HashMap<String, CharSequence>() {{
             put("ARTICLE_NUMBER", "Article number");
             put("ARTICLE_PRICE", "Price");
             put("ADDRESS_TEL", "Tel");
