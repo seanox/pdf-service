@@ -75,6 +75,7 @@ import org.w3c.dom.NodeList;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import com.seanox.pdf.Service.Template.Resources;
 import com.seanox.pdf.Service.Template.TemplateException;
+import com.seanox.pdf.Template.Markup;
 
 /**
  * Static service for creating PDF based on templates and meta-objects.
@@ -202,8 +203,9 @@ public class Service {
      * logic. The templates only know placeholders and structures.
      * Templates consist of the parts: header, data and footer.
      * These are three map objects that contain keys and values. The values can
-     * be strings or maps and collections with deeper structures, comparable to
-     * JSON as a nested data structure.
+     * be text ({@link String} / {@link Markup}) or {@link Map} and
+     * {@link Collection} with deeper structures, comparable to JSON as a nested
+     * data structure.
      */
     public static class Meta {
 

@@ -1,6 +1,7 @@
 3.7.0 202005xx
   CR: Service: Added support of data type Markup for values
   CR: Service Template: Added support of data type Markup for values
+  CR: Service Template Mockup: Added support for markup in properties
 
 3.6.0 20200405
   BF: Service Generate: Correction of unclosed document artifacts during merging

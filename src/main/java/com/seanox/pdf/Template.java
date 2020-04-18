@@ -69,18 +69,18 @@ import org.apache.commons.lang3.StringUtils;
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer<br>
  * <br>
- * Template 3.3.0 20200417<br>
+ * Template 3.3.0 20200418<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.3.0 20200417
+ * @version 3.3.0 20200418
  */
 public abstract class Template extends Service.Template {
     
     /** 
      * CharSequence for Markup.
-     * Markup works like a string, but is not escaped.
+     * {@link Markup} works like a {@link String}, but no HTML symbols are escaped.
      * It can be used if markup is to be inserted as value in the template.
      */
     public static class Markup implements CharSequence {
@@ -89,11 +89,14 @@ public abstract class Template extends Service.Template {
         
         /**
          * Construcor, creates a new Markup object.
-         * The value {@code null} is interpreted like an empty string.
-         * @param string
+         * The value {@code null} is interpreted like an empty text.
+         * @param text
          */
-        public Markup(String string) {
-            this.string = string;
+        public Markup(CharSequence text) {
+            
+            if (text == null)
+                text = new String();
+            this.string = String.valueOf(text);
         }
         
         @Override
@@ -178,15 +181,24 @@ public abstract class Template extends Service.Template {
     
     /**
      * Creates a nested map structure for a data object, comparable to JSON.
-     * The nesting is based on the dot as separator in the key.
-     * The map structure supports three data types: Map, Collection, String.
-     * Map and Collection are only used for nesting.
-     * At the end a key with a string value must always be used.
+     * The nesting is based on the dot as separator in the key.<br>
+     * The map structure supports three data types: {@link Map},
+     * {@link Collection}, Text.<br>
+     * Text can be a {@link String} or {@link Markup} if it contains sequences:
+     *     {@code <.../>}, {@code >...</} {@code  &...;}.<br>
+     * With {@link Markup} ({@link CharSequence}) there is no escape of HTML symbols.
+     * At the end a key with a String or Markup as value must always be used.<br>
+     * <br>
      * Rules:
-     *   - each dot in the key creates/uses a sub-map
-     *   - if a (partial)key ends with [n], a list with a map is created/used
+     * <ul>
+     *   <li>
+     *     each dot in the key creates/uses a sub-map
+     *   </li>
+     *   <li>
+     *     if a (partial)key ends with [n], a list with a map is created/used<br>
      *     n is the index in the list
-     *      
+     *   </li>
+     * </ul>
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
     private static void collectPreviewData(Map<String, Object> map, String key, String value)
@@ -219,12 +231,16 @@ public abstract class Template extends Service.Template {
                             || !(map.get(entry) instanceof Map))
                         map.put(entry, new HashMap<>());
                     map = (Map)map.get(entry);
-                    
                 }
             }
             key = key.replaceAll("^.*\\.", "");
         }
-        map.put(key, value);
+        
+        if (value == null)
+            value = "";
+        if (value.matches(".*(((<|>).*(<\\s*/)|(/\\s*>))|(&#*\\w+;)).*"))
+            map.put(key, new Markup(value));
+        else map.put(key, value);
     }
     
     /**
