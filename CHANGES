@@ -1,5 +1,9 @@
 3.7.0 20200520
   CR: Service: Added support of data type Markup for values
+      Service.meta.data + Service.meta.data.statics have been changed to the use of CharSequence.
+      At the end, a CharSequence is now expected as value instead of a string, which can also be a string.
+      Template provides a new Markup object based on CharSequence.
+      CharSequence of type markup work like string values, but there is no escape of HTML symbols.
   CR: Service Template: Added support of data type Markup for values
   CR: Service Template Mockup: Added support for markup in properties
 
