@@ -40,12 +40,12 @@ import com.seanox.pdf.Template;
  * The resources (css, images, ...) are in the ClassPath /pdf/... and are used
  * in the template relative.<br>
  * <br>
- * UsageTemplate 1.1.0 20200401<br>
+ * UsageTemplate 1.2.0 20200417<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 1.1.0 20200401
+ * @version 1.2.0 20200417
  */
 public class UsageTemplate {
     
