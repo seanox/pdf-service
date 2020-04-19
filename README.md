@@ -71,18 +71,16 @@ https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
 <dependency>
     <groupId>com.seanox</groupId>
     <artifactId>seanox-pdf-service</artifactId>
-    <version>3.6.0</version>
+    <version>3.7.0</version>
 </dependency>
 ```
 
 
 # Changes (Change Log)
-## 3.6.0 20200405 (summary of the current version)  
-BF: Service Generate: Correction of unclosed document artifacts during merging  
-CR: Service Template Meta: Consolidation of header, data and footer in data only  
-CR: Service: Separation of the terms/functions render and generate  
-CR: Service Template: Separation of the terms/functions render and generate  
-CR: Service Template: Stricter use of header and footer  
+## 3.7.0 20200520 (summary of the current version)  
+CR: Service: Added support of data type Markup for values  
+CR: Service Template: Added support of data type Markup for values  
+CR: Service Template Mockup: Added support for markup in properties  
 
 [Read more](https://raw.githubusercontent.com/seanox/pdf-service/master/CHANGES)
 
