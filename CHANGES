@@ -8,7 +8,7 @@
   CR: Service Template Mockup: Added support for markup in properties
       If the value contains one of the following sequences of characters:
           <.../> >...</ &...; 
-      The value is interpreted as markup and not escaped:
+      The value is interpreted as markup and not escaped.
 
 3.6.0 20200405
   BF: Service Generate: Correction of unclosed document artifacts during merging
