@@ -1,6 +1,6 @@
     Release
     ----
-1. Search and solve all TODO ebtries
+1. Search and solve all TODO entries
 2. Check and if necessary update the version and time stamp of all components
    Comparison with the tag from the last release.
 3. Final test
