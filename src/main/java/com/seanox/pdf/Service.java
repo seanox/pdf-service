@@ -139,12 +139,12 @@ import com.seanox.pdf.Template.Markup;
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer<br>
  * <br>
- * Service 3.7.0 20200417<br>
+ * Service 3.7.1 20200420<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.7.0 20200417
+ * @version 3.7.1 20200420
  */
 public class Service {
     
@@ -162,7 +162,7 @@ public class Service {
             throws ServiceException {
         
         Template instance;
-        try {instance = Template.class.newInstance();
+        try {instance = Template.class.getDeclaredConstructor().newInstance();
         } catch (Exception exception) {
             throw new Template.TemplateException(exception);
         }        

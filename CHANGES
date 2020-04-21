@@ -1,3 +1,7 @@
+3.7.1 2020xxxx
+  BF: Service: Correction of deprecated code
+  BF: Maven: Minimization of dependence
+
 3.7.0 20200520
   CR: Service: Added support of data type Markup for values
       Service.Meta.data + Service.Meta.data.statics have been changed to the use of CharSequence.

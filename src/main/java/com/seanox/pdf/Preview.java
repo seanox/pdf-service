@@ -38,12 +38,12 @@ import com.openhtmltopdf.util.XRLog;
  * Tool for the design process to create a test output of the rendered PDFs.
  * The PDFs are output in the same directory as the template.<br>
  * <br>
- * Preview 3.3.1 20200316<br>
+ * Preview 3.3.2 20200420<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.3.1 20200316
+ * @version 3.3.2 20200420
  */
 public class Preview {
     
@@ -105,7 +105,7 @@ public class Preview {
     static void execute(Class<Service.Template> template)
             throws Exception {
 
-        Template instance = (Template)template.newInstance();
+        Template instance = (Template)template.getDeclaredConstructor().newInstance();
         File output = Preview.locateOutput(new File(instance.getSource()));
         output.delete();
         Files.write(output.toPath(), instance.getPreview(), StandardOpenOption.CREATE);
