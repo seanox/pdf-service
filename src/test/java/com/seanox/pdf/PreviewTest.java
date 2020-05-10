@@ -32,12 +32,12 @@ import com.seanox.pdf.Service.Template;
 /** 
  * Wrapper to run the {@link Preview} with the test classes and resources.<br>
  * <br>
- * PreviewTest 3.3.2 20200405<br>
+ * PreviewTest 3.3.1 20200510<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.3.2 20200405
+ * @version 3.3.1 20200510
  */
 public class PreviewTest {
     
@@ -68,6 +68,9 @@ public class PreviewTest {
         long time = System.currentTimeMillis();
         
         Preview.main(new String[] {"./src/test/resources/pdf/*.html"});
+
+        // test for the correct dependencies in the project / classpath
+        Class<?> dataAccessException = org.springframework.dao.DataAccessException.class;
         
         source = "src/test/resources/pdf/report_preview.pdf";
         Assertions.assertTrue(new File(root, source).exists());

@@ -69,14 +69,26 @@ import org.apache.commons.lang3.StringUtils;
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer<br>
  * <br>
- * Template 3.3.0 20200418<br>
+ * Template 3.3.1 20200510<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.3.0 20200418
+ * @version 3.3.1 20200510
  */
 public abstract class Template extends Service.Template {
+    
+    /** Pattern for the detection of markup */
+    private final static Pattern PATTERN_MARKUP_DETECTION = Pattern.compile("(?s).*(((<|>).*(<\\s*/)|(/\\s*>))|(&#*\\w+;)).*");  
+    
+    /** Pattern for the validation of expressions */
+    private final static Pattern PATTERN_EXPRESSION = Pattern.compile("^(?i)([a-z](?:[\\w\\-]*\\w)*)((?:\\[\\s*\\d+\\s*\\])*)(\\.([a-z](?:[\\w\\-]*\\w)*)((?:\\[\\s*\\d+\\s*\\])*))*$");
+    
+    /** Pattern for the validation of list expressions */
+    private final static Pattern PATTERN_LIST_EXPRESSION = Pattern.compile("^(.*)\\s*\\[\\s*(\\d+)\\s*\\]$");
+    
+    /** Pattern for the detection of line breaks */
+    private final static Pattern PATTERN_LINE_BREAKS = Pattern.compile("(\r\n)|(\n\r)|[\r\n]");
     
     /** 
      * CharSequence for Markup.
@@ -203,18 +215,16 @@ public abstract class Template extends Service.Template {
     @SuppressWarnings({"rawtypes", "unchecked"})
     private static void collectPreviewData(Map<String, Object> map, String key, String value)
             throws PreviewDataParserException {
-
-        final String PATTERN_EXPRESSION = "^(?i)([a-z](?:[\\w\\-]*\\w)*)((?:\\[\\s*\\d+\\s*\\])*)(\\.([a-z](?:[\\w\\-]*\\w)*)((?:\\[\\s*\\d+\\s*\\])*))*$";
-        if (!key.matches(PATTERN_EXPRESSION))  
+        
+        if (!PATTERN_EXPRESSION.matcher(key).find())  
             throw new PreviewDataParserException("Invalid key: " + key);
         
         if (key.contains(".")) {
             String path = key.replaceAll("\\.[^\\.]+$", "");
             for (String entry : path.split("\\.")) {
-                final String PATTERN_LIST_EXPRESSION = "^(.*)\\s*\\[\\s*(\\d+)\\s*\\]$";
-                if (entry.matches(PATTERN_LIST_EXPRESSION)) {
-                    int index = Integer.valueOf(entry.replaceAll(PATTERN_LIST_EXPRESSION, "$2")).intValue();
-                    entry = entry.replaceAll(PATTERN_LIST_EXPRESSION, "$1").trim();
+                if (PATTERN_LIST_EXPRESSION.matcher(entry).find()) {
+                    int index = Integer.valueOf(PATTERN_LIST_EXPRESSION.matcher(entry).replaceAll("$2")).intValue();
+                    entry = PATTERN_LIST_EXPRESSION.matcher(entry).replaceAll("$1").trim();
                     if (!map.containsKey(entry)
                             || !(map.get(entry) instanceof List))
                         map.put(entry, new ArrayList<>());
@@ -238,7 +248,7 @@ public abstract class Template extends Service.Template {
         
         if (value == null)
             value = "";
-        if (value.matches(".*(((<|>).*(<\\s*/)|(/\\s*>))|(&#*\\w+;)).*"))
+        if (PATTERN_MARKUP_DETECTION.matcher(value).find())
             map.put(key, new Markup(value));
         else map.put(key, value);
     }
@@ -291,12 +301,25 @@ public abstract class Template extends Service.Template {
     }
     
     /**
-     * Escapes all characters greater than ASCII 0x7F as HTML code.
+     * Escapes characters greater ASCII 0x7F, markup symbols and line breaks.
      * The value {@code null} is used as a space.
      * @param  text text to escape
      * @return the possibly escaped text
      */
     static String escapeHtml(String text) {
+        return Template.escapeHtml(text, false);
+    }
+
+    /**
+     * Escapes characters greater ASCII 0x7F, markup symbols and line breaks.
+     * The <li>smart</li> option specifies that the content contains markup.
+     * In this case, only the ASCII characters greater 0x7F are escaped.
+     * The value {@code null} is used as a space.
+     * @param  text  text to escape
+     * @param  smart {@code true} specifies that the content contains markup
+     * @return the possibly escaped text
+     */
+    static String escapeHtml(String text, boolean smart) {
         
         if (text == null)
             return "";
@@ -304,16 +327,18 @@ public abstract class Template extends Service.Template {
         for (char digit : text.toCharArray()) {
             if (digit > 0x7F)
                 build.append("&#").append((int)digit).append(";");
-            else if (digit == '&')
+            else if (!smart && digit == '&')
                 build.append("&amp;");
-            else if (digit == '<')
+            else if (!smart && digit == '<')
                 build.append("&lt;");
-            else if (digit == '>')
+            else if (!smart && digit == '>')
                 build.append("&gt;");
             else build.append(digit);
         }
         text = build.toString();
-        text = text.replaceAll("(\r\n)|(\n\r)|[\r\n]", "<br/>");
+        if (smart)
+            return text;
+        text = PATTERN_LINE_BREAKS.matcher(text).replaceAll("<br/>");
         return text;
     }
     
@@ -331,9 +356,7 @@ public abstract class Template extends Service.Template {
             return Template.escapeHtml((Collection)object);
         if (object instanceof Map)
             return Template.escapeHtml((Map)object);
-        if (object instanceof Markup)
-            return ((Markup)object).toString();
-        return Template.escapeHtml(String.valueOf(object));
+        return Template.escapeHtml(String.valueOf(object), object instanceof Markup);
     } 
 
     /**
@@ -432,8 +455,7 @@ public abstract class Template extends Service.Template {
         Matcher matcher = pattern.matcher(markup);
         while (matcher.find()) {
             CharSequence value = statics.get(matcher.group(1));
-            if (!(value instanceof Markup))
-                value = Template.escapeHtml(value.toString());
+            value = Template.escapeHtml(value.toString(), value instanceof Markup);
             markup = markup.replace(matcher.group(0), value);
         }
 

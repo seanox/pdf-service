@@ -63,6 +63,25 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <!--
+      For scanning to find annotated PDF templates in the classpath encloses:
+          org.springframework / spring-beans 
+    -->    
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-jdbc</artifactId>
+      <version>${spring.jdbc.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-beans</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-core</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
     
     <dependency>
       <groupId>org.apache.commons</groupId>

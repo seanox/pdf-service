@@ -77,10 +77,10 @@ https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
 
 
 # Changes (Change Log)
-## 3.7.0 20200520 (summary of the current version)  
-CR: Service: Added support of data type Markup for values  
-CR: Service Template: Added support of data type Markup for values  
-CR: Service Template Mockup: Added support for markup in properties  
+## 3.7.1 2020xxxx (summary of the next version)  
+BF: Service: Correction of deprecated code  
+BF: Maven: Minimization of dependence  
+BF: Template: Correction/optimization for markup detection and escape  
 
 [Read more](https://raw.githubusercontent.com/seanox/pdf-service/master/CHANGES)
 
