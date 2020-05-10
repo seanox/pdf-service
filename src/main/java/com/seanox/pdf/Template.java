@@ -455,6 +455,8 @@ public abstract class Template extends Service.Template {
         Matcher matcher = pattern.matcher(markup);
         while (matcher.find()) {
             CharSequence value = statics.get(matcher.group(1));
+            if (value == null)
+                continue;
             value = Template.escapeHtml(value.toString(), value instanceof Markup);
             markup = markup.replace(matcher.group(0), value);
         }

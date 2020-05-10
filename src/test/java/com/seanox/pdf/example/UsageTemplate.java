@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.seanox.pdf.Service;
@@ -40,12 +41,12 @@ import com.seanox.pdf.Template;
  * The resources (css, images, ...) are in the ClassPath /pdf/... and are used
  * in the template relative.<br>
  * <br>
- * UsageTemplate 1.2.0 20200417<br>
+ * UsageTemplate 1.2.1 20200510<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 1.2.0 20200417
+ * @version 1.2.1 20200510
  */
 public class UsageTemplate {
     
@@ -65,20 +66,25 @@ public class UsageTemplate {
             put("ADDRESS_WEB", "Web");
         }};
         
-        //The data is fetched from the data access layer.
-        //In this case a delegate is simulated.
-        List<ExampleEntity> dataset = ExampleDelegate.list();
-
         //The template is configured via a meta object.
         Meta meta = new Meta();
         meta.setStatics(statics);
+        meta.setData(new HashMap<>());
+        
+        //The delegate returns a entity.
+        //The template generator expects a structured map, that means keys as
+        //string and values as collection + string.
+        //The ObjectMapper creates this map.        
+        meta.getData().put("outlet", new ObjectMapper().convertValue(ExampleOutletDelegate.get(), Map.class));
 
         //The delegate returns a list of entities.
         //The template generator expects a structured map, that means keys as
         //string and values as collection + string.
-        //The ObjectMapper creates this map.
-        ObjectMapper mapper = new ObjectMapper();
-        meta.setData(mapper.convertValue(dataset, Map.class));
+        //The ObjectMapper creates this map.        
+        meta.getData().put("articles", ExampleArticleDelegate.list().stream().map(
+                entity -> new ObjectMapper().convertValue(entity, Map.class)
+            ).collect(Collectors.toList()));
+        
         
         //The render-method of the template creates the final PDF.
         //The PDF is output to the current working directory.
@@ -93,104 +99,94 @@ public class UsageTemplate {
     }
     
     //Simulation of the data access layer as delegate.
-    private static class ExampleDelegate {
+    private static class ExampleOutletDelegate {
         
-        static List<ExampleEntity> list() {
-            return new ArrayList<ExampleEntity>() {{
-                add(new ExampleEntity());
-            }};
+        static Object get() {
+            return new Object() {
+                String name = "Jane Doe Toys Limited";
+                String street = "Western Road";
+                String location = "GB BN1 2NW Brighton";
+                String phone = "+44 1234 05678 0";
+                String fax = "+44 1234 05678 1";
+                String email = "mail@outlet.local";
+                String websiteUrl = "https://outlet.local";
+                
+                public String getName() {
+                    return this.name;
+                }
+                public String getStreet() {
+                    return this.street;
+                }
+                public String getLocation() {
+                    return this.location;
+                }
+                public String getPhone() {
+                    return this.phone;
+                }
+                public String getFax() {
+                    return this.fax;
+                }
+                public String getEmail() {
+                    return this.email;
+                }
+                public String getWebsiteUrl() {
+                    return this.websiteUrl;
+                }
+            };    
         }
     }
     
-    //Simulation of the entity.
-    private static class ExampleEntity {
+    //Simulation of the data access layer as delegate.
+    private static class ExampleArticleDelegate {
         
-        Object outlet = new Object() {
-            String name = "Jane Doe Toys Limited";
-            String street = "Western Road";
-            String location = "GB BN1 2NW Brighton";
-            String phone = "+44 1234 05678 0";
-            String fax = "+44 1234 05678 1";
-            String email = "mail@outlet.local";
-            String websiteUrl = "https://outlet.local";
-            
-            public String getName() {
-                return this.name;
-            }
-            public String getStreet() {
-                return this.street;
-            }
-            public String getLocation() {
-                return this.location;
-            }
-            public String getPhone() {
-                return this.phone;
-            }
-            public String getFax() {
-                return this.fax;
-            }
-            public String getEmail() {
-                return this.email;
-            }
-            public String getWebsiteUrl() {
-                return this.websiteUrl;
-            }
-        };
-        
-        public Object getOutlet() {
-            return this.outlet;
-        }
-        
-        List<Object> articles = new ArrayList<Object>() {{
-            add(new Object() {
-                String title = "Example A-1";
-                String articleNumber = "A-1";
-                String price = "123.00 GBP";
-                
-                public String getTitle() {
-                    return this.title;
-                }
-                public String getArticleNumber() {
-                    return this.articleNumber;
-                }
-                public String getPrice() {
-                    return this.price;
-                }
-            });
-            add(new Object() {
-                String title = "Example B-2";
-                String articleNumber = "B-2";
-                String price = "234.00 GBP";
-                
-                public String getTitle() {
-                    return this.title;
-                }
-                public String getArticleNumber() {
-                    return this.articleNumber;
-                }
-                public String getPrice() {
-                    return this.price;
-                }
-            });
-            add(new Object() {
-                String title = "Example C-3";
-                String articleNumber = "C-3";
-                String price = "345.00 GBP";
-                
-                public String getTitle() {
-                    return this.title;
-                }
-                public String getArticleNumber() {
-                    return this.articleNumber;
-                }
-                public String getPrice() {
-                    return this.price;
-                }
-            });
-        }};
-        
-        public Object getArticles() {
-            return this.articles;
+        static List<Object> list() {
+            return new ArrayList<Object>() {{
+                add(new Object() {
+                    String title = "Example A-1";
+                    String articleNumber = "A-1";
+                    String price = "123.00 GBP";
+                    
+                    public String getTitle() {
+                        return this.title;
+                    }
+                    public String getArticleNumber() {
+                        return this.articleNumber;
+                    }
+                    public String getPrice() {
+                        return this.price;
+                    }
+                });
+                add(new Object() {
+                    String title = "Example B-2";
+                    String articleNumber = "B-2";
+                    String price = "234.00 GBP";
+                    
+                    public String getTitle() {
+                        return this.title;
+                    }
+                    public String getArticleNumber() {
+                        return this.articleNumber;
+                    }
+                    public String getPrice() {
+                        return this.price;
+                    }
+                });
+                add(new Object() {
+                    String title = "Example C-3";
+                    String articleNumber = "C-3";
+                    String price = "345.00 GBP";
+                    
+                    public String getTitle() {
+                        return this.title;
+                    }
+                    public String getArticleNumber() {
+                        return this.articleNumber;
+                    }
+                    public String getPrice() {
+                        return this.price;
+                    }
+                });                
+            }};
         }
     }
     

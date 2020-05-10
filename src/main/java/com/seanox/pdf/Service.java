@@ -139,12 +139,12 @@ import com.seanox.pdf.Template.Markup;
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer<br>
  * <br>
- * Service 3.7.1 20200420<br>
+ * Service 3.7.2 20200510<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.7.1 20200420
+ * @version 3.7.2 20200510
  */
 public class Service {
     
@@ -162,7 +162,7 @@ public class Service {
             throws ServiceException {
         
         Template instance;
-        try {instance = Template.class.getDeclaredConstructor().newInstance();
+        try {instance = template.getDeclaredConstructor().newInstance();
         } catch (Exception exception) {
             throw new Template.TemplateException(exception);
         }        
@@ -763,6 +763,7 @@ public class Service {
                                 overlay.setAllPagesOverlayPDF(PDDocument.load(header.toByteArray()));
                                 ByteArrayOutputStream output = new ByteArrayOutputStream();
                                 overlay.overlay(new HashMap<>()).save(output);
+                                page.close();
                                 page = PDDocument.load(output.toByteArray());
                             }
                         }
@@ -780,18 +781,22 @@ public class Service {
                                 overlay.setAllPagesOverlayPDF(PDDocument.load(footer.toByteArray()));
                                 ByteArrayOutputStream output = new ByteArrayOutputStream();
                                 overlay.overlay(new HashMap<>()).save(output);
+                                page.close();
                                 page = PDDocument.load(output.toByteArray());
                             }
                         }
                         
                         pages.add(offset +1, page);
-                        pages.remove(offset);
+                        pages.remove(offset).close();
                     }
                     
                     try (PDDocument release = Template.merge(pages)) {
                         ByteArrayOutputStream output = new ByteArrayOutputStream();
                         release.save(output);
                         return output.toByteArray();
+                    } finally {
+                        for (PDDocument page : pages)
+                            page.close();
                     }
                 }
 
