@@ -1,4 +1,4 @@
-3.7.1 2020xxxx
+3.7.1 20200510
   BF: Service: Correction of deprecated code
   BF: Maven: Minimization of dependence
   BF: Template: Correction/optimization for markup detection and escape

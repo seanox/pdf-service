@@ -71,13 +71,13 @@ https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
 <dependency>
     <groupId>com.seanox</groupId>
     <artifactId>seanox-pdf-service</artifactId>
-    <version>3.7.0</version>
+    <version>3.7.1</version>
 </dependency>
 ```
 
 
 # Changes (Change Log)
-## 3.7.1 2020xxxx (summary of the next version)  
+## 3.7.1 20200510 (summary of the current version)  
 BF: Service: Correction of deprecated code  
 BF: Maven: Minimization of dependence  
 BF: Template: Correction/optimization for markup detection and escape  
