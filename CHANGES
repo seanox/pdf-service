@@ -1,9 +1,12 @@
+3.7.2 2020xxxx
+  CR: Maven: Update of dependencies
+
 3.7.1.1 20200510
   BF: Service: Correction of deprecated code
   BF: Service: Correction of unclosed documents
   BF: Template: Correction/optimization for markup detection and escape
   BF: UsageTemplate: Correction
-  BF: Maven: Minimization of dependence
+  CR: Maven: Minimization of dependencies
 
 3.7.0 20200420
   CR: Service: Added support of data type Markup for values

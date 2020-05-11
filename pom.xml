@@ -28,11 +28,10 @@
   
   <properties>
     <java.version>1.8</java.version>
-    <spring.boot.version>2.2.5.RELEASE</spring.boot.version>
-    <spring.context.version>5.2.4.RELEASE</spring.context.version>
-    <spring.jdbc.version>5.2.4.RELEASE</spring.jdbc.version>
-    <apache.commons.version>3.9</apache.commons.version>
-    <jackson.databind.version>2.10.3</jackson.databind.version>
+    <spring.version>5.2.6.RELEASE</spring.version>
+    <spring.boot.version>2.2.7.RELEASE</spring.boot.version>
+    <apache.commons.version>3.10</apache.commons.version>
+    <jackson.databind.version>2.11.0</jackson.databind.version>
     <com.openhtmltopdf.version>1.0.2</com.openhtmltopdf.version>
   </properties>
 
@@ -51,7 +50,7 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
-      <version>${spring.context.version}</version>
+      <version>${spring.version}</version>
       <exclusions>
         <exclusion>
           <groupId>org.springframework</groupId>
@@ -70,7 +69,7 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-jdbc</artifactId>
-      <version>${spring.jdbc.version}</version>
+      <version>${spring.version}</version>
       <exclusions>
         <exclusion>
           <groupId>org.springframework</groupId>
