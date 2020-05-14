@@ -1,6 +1,6 @@
 /**
- * LIZENZBEDINGUNGEN - Seanox Software Solutions ist ein Open-Source-Projekt, im
- * Folgenden Seanox Software Solutions oder kurz Seanox genannt.
+ * LIZENZBEDINGUNGEN - Seanox Software Solutions ist ein Open-Source-Projekt,
+ * im Folgenden Seanox Software Solutions oder kurz Seanox genannt.
  * Diese Software unterliegt der Version 2 der Apache License.
  *
  * PDF Service
@@ -454,7 +454,7 @@ public abstract class Template extends Service.Template {
         Pattern pattern = Pattern.compile("\\!\\[\\s*(.*?)\\s*\\]");
         Matcher matcher = pattern.matcher(markup);
         while (matcher.find()) {
-            CharSequence value = statics.get(matcher.group(1));
+            CharSequence value = statics.get(matcher.group(1).toUpperCase());
             if (value == null)
                 continue;
             value = Template.escapeHtml(value.toString(), value instanceof Markup);

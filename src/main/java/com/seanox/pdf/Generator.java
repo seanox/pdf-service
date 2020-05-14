@@ -1,6 +1,6 @@
 /**
- * LIZENZBEDINGUNGEN - Seanox Software Solutions ist ein Open-Source-Projekt, im
- * Folgenden Seanox Software Solutions oder kurz Seanox genannt.
+ * LIZENZBEDINGUNGEN - Seanox Software Solutions ist ein Open-Source-Projekt,
+ * im Folgenden Seanox Software Solutions oder kurz Seanox genannt.
  * Diese Software unterliegt der Version 2 der Apache License.
  *
  * PDF Service
@@ -26,8 +26,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Generator, generates data by filling placeholders (tags) in a template/model.
@@ -119,24 +119,24 @@ import java.util.Map;
  * {@link #set(Map)} in combination with {@link #extract()}, but focus on only
  * one segment.<br>
  * <br>
- * Generator 5.2 20190422<br>
+ * Generator 5.2.1 20200514<br>
  * Copyright (C) 2019 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 5.2 20190422
+ * @version 5.21 20200514
  */
 class Generator {
 
     /** Segments of the template */
-    private HashMap scopes;
+    private HashMap<String, Object> scopes;
 
     /** Model, data buffer of the template */
     private byte[] model;
 
     /** Constructor, create an empty generator. */
     private Generator() {
-        this.scopes = new HashMap();
+        this.scopes = new HashMap<>();
     }
 
     /**
@@ -338,28 +338,24 @@ class Generator {
      * @param  clean  {@code true} for final cleanup
      * @return the filled model (fragment)
      */    
-    private byte[] assemble(String scope, Map values, boolean clean) {
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private byte[] assemble(String scope, Map<String, Object> values, boolean clean) {
         
-        Iterator iterator;
-        String   label;
-        String   fetch;
+        Object object;
+        String fetch;
         
-        byte[]   cache;
-        byte[]   model;
-        byte[]   patch;
+        byte[] cache;
+        byte[] model;
+        byte[] patch;
 
         if (this.model == null)
             return new byte[0];
 
         //Normalization of the values (lower case + smoothing of the keys)
         if (values == null)
-            values = new HashMap();
-        iterator = values.keySet().iterator();
-        values = new HashMap(values);
-        while (iterator.hasNext()) {
-            label = (String)iterator.next();
-            values.put(label.toLowerCase().trim(), values.get(label));
-        }
+            values = new HashMap<>();
+        values = values.entrySet().stream().collect(
+                Collectors.toMap(entry -> entry.getKey().toLowerCase().trim(), entry -> entry.getValue()));
         
         //Optionally the scope is determined.
         if (scope != null) {
@@ -401,7 +397,7 @@ class Generator {
                 }
                 
                 //patch is determined by the key
-                Object object = values.get(fetch);
+                object = values.get(fetch);
 
                 //If the key is a segment and the value is a map with values,
                 //the segment is filled recursively. To protect against infinite
@@ -414,15 +410,13 @@ class Generator {
                         && object instanceof Collection) {
                     //Collections generates complex structures/tables through
                     //deep, repetitive recursive generation.
-                    iterator = ((Collection)object).iterator();
-                    while (iterator.hasNext()) {
-                        object = iterator.next();
-                        if (object instanceof Map) {
-                            model = this.extract(fetch, (Map)object);
-                        } else if (object instanceof byte[]) {
-                            model = (byte[])object;
-                        } else if (object != null) {
-                            model = String.valueOf(object).getBytes();
+                    for (Object entry : ((Collection)object)) {
+                        if (entry instanceof Map) {
+                            model = this.extract(fetch, (Map)entry);
+                        } else if (entry instanceof byte[]) {
+                            model = (byte[])entry;
+                        } else if (entry != null) {
+                            model = String.valueOf(entry).getBytes();
                         } else continue;
                         cache = new byte[patch.length +model.length];
                         System.arraycopy(patch, 0, cache, 0, patch.length);
@@ -494,7 +488,7 @@ class Generator {
      * Free scopes (without segment) are not included.
      * @return all scopes of the segments as enumeration
      */
-    Enumeration scopes() {
+    Enumeration<String> scopes() {
         return Collections.enumeration(this.scopes.keySet());
     }
 
@@ -525,7 +519,8 @@ class Generator {
      * @return the filled segment, if this cannot be determined, an empty byte
      *         array is returned
      */
-    byte[] extract(String scope, Map values) {
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    byte[] extract(String scope, Map<String, Object> values) {
         
         if (scope != null)
             scope = scope.toLowerCase().trim();
@@ -548,7 +543,7 @@ class Generator {
      * Sets the data for a scope or a segment.
      * @param values Values
      */
-    void set(Map values) {
+    void set(Map<String, Object> values) {
         this.set(null, values);
     }
 
@@ -557,7 +552,7 @@ class Generator {
      * @param scope  Scope or segment
      * @param values Values
      */
-    void set(String scope, Map values) {
+    void set(String scope, Map<String, Object> values) {
 
         if (scope != null)
             scope = scope.toLowerCase().trim();
