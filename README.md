@@ -88,8 +88,8 @@ BF: Maven: Minimization of dependence
 
 
 # Contact
-[Issues](https://github.com/seanox/aspect-js-tutorial/issues)  
-[Requests](https://github.com/seanox/aspect-js-tutorial/pulls)  
+[Issues](https://github.com/seanox/pdf-service/issues)  
+[Requests](https://github.com/seanox/pdf-service/pulls)  
 [Mail](http://seanox.de/contact)  
 
 
