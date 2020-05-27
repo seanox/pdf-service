@@ -1,5 +1,7 @@
 3.7.2 2020xxxx
   BF: Template: Optimization of the statics for case insensitivity 
+  BF: Template: Correction/optimization for markup detection and escape
+  BF: Test: Correction of JUnit5  
   CR: Maven: Update of dependencies
   CR: Generator: Optimization of the code
 

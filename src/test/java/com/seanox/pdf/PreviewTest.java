@@ -25,6 +25,8 @@ import java.util.logging.Level;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 import com.openhtmltopdf.util.XRLog;
 import com.seanox.pdf.Service.Template;
@@ -33,13 +35,15 @@ import com.seanox.pdf.example.UsageTemplate;
 /** 
  * Wrapper to run the {@link Preview} with the test classes and resources.<br>
  * <br>
- * PreviewTest 3.3.1 20200510<br>
+ * PreviewTest 3.3.2 20200510<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.3.1 20200510
+ * @version 3.3.2 20200510
  */
+@RunWith(JUnitPlatform.class)
+@SuppressWarnings("javadoc")
 public class PreviewTest {
     
     private final static File ROOT = new File(".");
