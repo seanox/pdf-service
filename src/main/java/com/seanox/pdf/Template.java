@@ -91,7 +91,7 @@ public abstract class Template extends Service.Template {
     private final static Pattern PATTERN_LINE_BREAKS = Pattern.compile("(\r\n)|(\n\r)|[\r\n]");
 
     /** Pattern for the detection of ampersand (non entity) */
-    private final static Pattern PATTERN_AMPERSAND = Pattern.compile("(?i)&(?!#\\d+;)(?![a-z]+;)");
+    private final static Pattern PATTERN_AMPERSAND = Pattern.compile("(?i)&(?!#\\d+;)(?!#x[0-9a-f]+;)(?![a-z]+;)");
     
     /** 
      * CharSequence for Markup.
