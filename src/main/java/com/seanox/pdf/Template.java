@@ -69,12 +69,12 @@ import org.apache.commons.lang3.StringUtils;
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer<br>
  * <br>
- * Template 3.3.1 20200510<br>
+ * Template 3.3.2 20200527<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.3.1 20200510
+ * @version 3.3.2 20200527
  */
 public abstract class Template extends Service.Template {
     
@@ -89,6 +89,9 @@ public abstract class Template extends Service.Template {
     
     /** Pattern for the detection of line breaks */
     private final static Pattern PATTERN_LINE_BREAKS = Pattern.compile("(\r\n)|(\n\r)|[\r\n]");
+
+    /** Pattern for the detection of ampersand (non entity) */
+    private final static Pattern PATTERN_AMPERSAND = Pattern.compile("(?i)&(?!#\\d+;)(?![a-z]+;)");
     
     /** 
      * CharSequence for Markup.
@@ -315,31 +318,31 @@ public abstract class Template extends Service.Template {
      * The <li>smart</li> option specifies that the content contains markup.
      * In this case, only the ASCII characters greater 0x7F are escaped.
      * The value {@code null} is used as a space.
-     * @param  text  text to escape
-     * @param  smart {@code true} specifies that the content contains markup
+     * @param  text   text to escape
+     * @param  markup {@code true} specifies that the content contains markup
      * @return the possibly escaped text
      */
-    static String escapeHtml(String text, boolean smart) {
+    static String escapeHtml(String text, boolean markup) {
         
         if (text == null)
             return "";
+        text = PATTERN_AMPERSAND.matcher(text).replaceAll("&amp;");
         StringBuilder build = new StringBuilder();
         for (char digit : text.toCharArray()) {
             if (digit > 0x7F)
                 build.append("&#").append((int)digit).append(";");
-            else if (!smart && digit == '&')
-                build.append("&amp;");
-            else if (!smart && digit == '<')
-                build.append("&lt;");
-            else if (!smart && digit == '>')
-                build.append("&gt;");
-            else build.append(digit);
+            else if (!markup) {
+                if (digit == '<')
+                    build.append("&lt;");
+                else if (digit == '>')
+                    build.append("&gt;");
+                else build.append(digit);
+            } else build.append(digit);
         }
+        if (markup)
+            return build.toString();
         text = build.toString();
-        if (smart)
-            return text;
-        text = PATTERN_LINE_BREAKS.matcher(text).replaceAll("<br/>");
-        return text;
+        return PATTERN_LINE_BREAKS.matcher(text).replaceAll("<br/>");
     }
     
     /**
