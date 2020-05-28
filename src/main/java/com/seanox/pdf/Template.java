@@ -79,7 +79,7 @@ import org.apache.commons.lang3.StringUtils;
 public abstract class Template extends Service.Template {
     
     /** Pattern for the detection of markup */
-    private final static Pattern PATTERN_MARKUP_DETECTION = Pattern.compile("(?s).*(((<|>).*(<\\s*/)|(/\\s*>))|(&#*\\w+;)).*");  
+    private final static Pattern PATTERN_MARKUP_DETECTION = Pattern.compile("(?si).*(((<|>).*(<\\s*/)|(/\\s*>))|(&#\\d+;)|(&#x[0-9a-f]+;)|(&[a-z]+;)).*");  
     
     /** Pattern for the validation of expressions */
     private final static Pattern PATTERN_EXPRESSION = Pattern.compile("^(?i)([a-z](?:[\\w\\-]*\\w)*)((?:\\[\\s*\\d+\\s*\\])*)(\\.([a-z](?:[\\w\\-]*\\w)*)((?:\\[\\s*\\d+\\s*\\])*))*$");
@@ -315,7 +315,7 @@ public abstract class Template extends Service.Template {
 
     /**
      * Escapes characters greater ASCII 0x7F, markup symbols and line breaks.
-     * The <li>smart</li> option specifies that the content contains markup.
+     * The <li>markup</li> option specifies that the content contains markup.
      * In this case, only the ASCII characters greater 0x7F are escaped.
      * The value {@code null} is used as a space.
      * @param  text   text to escape
@@ -326,22 +326,24 @@ public abstract class Template extends Service.Template {
         
         if (text == null)
             return "";
-        text = PATTERN_AMPERSAND.matcher(text).replaceAll("&amp;");
         StringBuilder build = new StringBuilder();
         for (char digit : text.toCharArray()) {
             if (digit > 0x7F)
                 build.append("&#").append((int)digit).append(";");
             else if (!markup) {
-                if (digit == '<')
+                if (digit == '&')
+                    build.append("&amp;");
+                else if (digit == '<')
                     build.append("&lt;");
                 else if (digit == '>')
                     build.append("&gt;");
                 else build.append(digit);
             } else build.append(digit);
         }
-        if (markup)
-            return build.toString();
         text = build.toString();
+        text = PATTERN_AMPERSAND.matcher(text).replaceAll("&amp;");
+        if (markup)
+            return text;
         return PATTERN_LINE_BREAKS.matcher(text).replaceAll("<br/>");
     }
     
