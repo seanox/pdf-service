@@ -1,3 +1,7 @@
+3.7.3 20200530
+  BF: Template: Correction of case insensitive statics
+  CR: Test: Added a pixel based comparison of the PDFs
+
 3.7.2 20200530
   BF: Template: Optimization of the statics for case insensitivity 
   BF: Template: Correction/optimization for markup detection and escape
