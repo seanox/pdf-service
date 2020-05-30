@@ -71,18 +71,18 @@ https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
 <dependency>
     <groupId>com.seanox</groupId>
     <artifactId>seanox-pdf-service</artifactId>
-    <version>3.7.1.1</version>
+    <version>3.7.2</version>
 </dependency>
 ```
 
 
 # Changes (Change Log)
-## 3.7.1.1 20200510 (summary of the current version)  
-BF: Service: Correction of deprecated code  
-BF: Service: Correction of unclosed documents  
+## 3.7.2 20200530 (summary of the current version)  
+BF: Template: Optimization of the statics for case insensitivity  
 BF: Template: Correction/optimization for markup detection and escape  
-BF: UsageTemplate: Correction  
-BF: Maven: Minimization of dependence  
+BF: Test: Correction of JUnit5  
+CR: Maven: Update of dependencies  
+CR: Generator: Optimization of the code  
 
 [Read more](https://raw.githubusercontent.com/seanox/pdf-service/master/CHANGES)
 

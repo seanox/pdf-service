@@ -1,4 +1,4 @@
-3.7.2 2020xxxx
+3.7.2 20200530
   BF: Template: Optimization of the statics for case insensitivity 
   BF: Template: Correction/optimization for markup detection and escape
   BF: Test: Correction of JUnit5  
