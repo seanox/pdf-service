@@ -78,7 +78,7 @@ https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
 
 # Changes (Change Log)
 ## 3.7.3 20200530 (summary of the current version)  
-BF: Template: Correction of case insensitive statics
+BF: Template: Correction of case insensitive statics  
 BF: Template: Optimization of the statics for case insensitivity  
 BF: Template: Correction/optimization for markup detection and escape  
 BF: Test: Correction of JUnit5  
