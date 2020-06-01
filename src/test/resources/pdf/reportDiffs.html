@@ -1,0 +1,80 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="./styles/fonts.css"/>
+    <link rel="stylesheet" type="text/css" href="./styles/common.css"/>
+    <link rel="stylesheet" type="text/css" href="./styles/report.css"/>
+  </head>
+  <body lang="#[locale]">
+    <header id="header">
+      <span>#[template[[#[name]]]]</span>
+      <img src="![PAGE_LOGO_URL]"/>
+      #[outlet[[
+      <article id="outlet">
+        <h1>#[name]</h1>
+        <p exists="#[street-exists]">#[street]</p>
+        <p exists="#[location-exists]">#[zipCode] #[location]</p>
+        <p exists="#[phone-exists]">![ADDRESS_TEL]: #[phone]</p>
+        <p exists="#[fax-exists]">![ADDRESS_FAX]: #[fax]</p>
+        <p exists="#[email-exists]">![ADDRESS_E_MAIL]: #[email]</p>
+        <p exists="#[websiteUrl-exists]">![ADDRESS_WEB]: #[websiteUrl]</p>
+      </article>
+      ]]]
+    </header> 
+    <section id="sheet">
+      <article id="report">
+        #[report[[
+        <table >
+          <thead>
+            <tr>
+              <th colspan="8">
+                <h1>![PAGE_DATA_SHEET]</h1>
+              </th>
+            </tr>
+            <tr>
+              #[head[[
+              <th>#[title]</th>
+              ]]]
+            </tr>
+            <tr>
+              <th colspan="8">
+                <hr/>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            #[data[[
+            <tr>
+              <td>#[a]</td>
+              <td>#[b]</td>
+              <td>#[c]</td>
+              <td>#[d]</td>
+              <td>#[e]</td>
+              <td>#[f]</td>
+              <td>#[g]</td>
+              <td>#[h]</td>
+            </tr>
+            ]]]
+          </tbody>
+        </table>
+        ]]]
+      </article>
+    </section> 
+    <footer id="footer">
+      <section>
+        <p>
+          ![PAGE_LEGAL]
+        </p>
+        <table>
+          <tr>
+            <td class="date">
+              ![SYSTEM_DATE]
+            </td>
+            <td class="page">
+              #[page] ![PAGE_OF] #[pages]
+            </td>
+          </tr>
+        </table>
+      </section>
+    </footer>
+  </body>
+</html>

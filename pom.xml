@@ -135,12 +135,6 @@
       <artifactId>junit-platform-runner</artifactId>
       <version>${junit.platform.version}</version>
       <scope>test</scope>
-    </dependency>  
-    <dependency>
-      <groupId>org.apache.pdfbox</groupId>
-      <artifactId>pdfbox-tools</artifactId>
-      <version>${pdfbox-tools.version}</version>
-      <scope>test</scope>
     </dependency>
   </dependencies>
   

@@ -20,11 +20,19 @@
  */
 package com.seanox.pdf;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.Comparator;
 import java.util.logging.Level;
 
+import javax.imageio.ImageIO;
+
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
@@ -36,18 +44,20 @@ import com.seanox.pdf.example.UsageTemplate;
 /** 
  * Wrapper to run the {@link Preview} with the test classes and resources.<br>
  * <br>
- * PreviewTest 3.4.0 20200530<br>
+ * PreviewTest 3.5.0 20200601<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.4.0 20200530
+ * @version 3.5.0 20200601
  */
 @RunWith(JUnitPlatform.class)
 @SuppressWarnings("javadoc")
 public class PreviewTest {
     
     private final static File ROOT = new File(".");
+    
+    private final static File TEMP = new File(ROOT, "temp");
     
     static {
         XRLog.setLevel("com.openhtmltopdf.config", Level.WARNING);
@@ -65,6 +75,18 @@ public class PreviewTest {
         
         XRLog.setLoggingEnabled(false);
     }
+    
+    @BeforeAll
+    public static void init()
+            throws IOException {
+        
+        if (TEMP.exists())
+            Files.walk(TEMP.toPath())
+                .sorted(Comparator.reverseOrder())
+                .map(Path::toFile)
+                .forEach(File::delete);
+        TEMP.mkdirs();
+    }
 
     @Test
     public void test01() {
@@ -73,98 +95,99 @@ public class PreviewTest {
         Class<?> dataAccessException = org.springframework.dao.DataAccessException.class;
         Assertions.assertNotNull(dataAccessException);
     }
+    
+    private static void validatePreviewPdf(File master, long time)
+            throws IOException {
+        
+        Assertions.assertTrue(master.exists());
+        Assertions.assertTrue(master.lastModified() < time);
+        File compare = new File(master.getParentFile(), master.getName().replaceAll("_preview\\.pdf$", ".pdf"));
+        Assertions.assertTrue(compare.exists());
+        Assertions.assertTrue(compare.lastModified() > time);
+        Files.copy(master.toPath(), new File(TEMP, master.getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
+        Files.move(compare.toPath(), new File(TEMP, compare.getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
+        Assertions.assertNull(Compare.compare(new File(TEMP, master.getName()), new File(TEMP, compare.getName())));
+        Assertions.assertEquals(new File(TEMP, master.getName()).length(), new File(TEMP, compare.getName()).length());
+    }
+    
+    private static boolean compareImages(File master, File compare)
+            throws IOException {
+        
+        if (master.length()
+                != compare.length())
+            return false;
+        
+        BufferedImage masterImage = ImageIO.read(master);
+        BufferedImage compareImage = ImageIO.read(compare);
+        if (masterImage.getHeight() != compareImage.getHeight()
+                || masterImage.getWidth() != compareImage.getWidth())
+            return false;
+        
+        for (int y = 0; y < masterImage.getHeight(); y++) {
+            for (int x = 0; x < masterImage.getWidth(); x++) {
+                if (masterImage.getRGB(x, y)
+                        != compareImage.getRGB(x, y))
+                    return false;
+            }
+        }
+        
+        return true;
+    }
 
     @Test
     public void test02()
             throws IOException {
         
-        String source;
-        String target;
+        String master;
         
         long time = System.currentTimeMillis();
         
         Preview.main(new String[] {"./src/test/resources/pdf/*.html"});
+        
+        master = "src/test/resources/pdf/report_preview.pdf";
+        PreviewTest.validatePreviewPdf(new File(ROOT, master), time);
 
-        source = "src/test/resources/pdf/report_preview.pdf";
-        Assertions.assertTrue(new File(ROOT, source).exists());
-        Assertions.assertTrue(new File(ROOT, source).lastModified() < time);
-        target = source.replaceAll("_preview\\.pdf$", ".pdf");
-        Assertions.assertTrue(new File(ROOT, target).exists());
-        Assertions.assertTrue(new File(ROOT, target).lastModified() > time);
-        Assertions.assertNull(Compare.compare(new File(ROOT, source), new File(ROOT, target)));
-        Assertions.assertEquals(new File(ROOT, source).length(), new File(ROOT, target).length());
-        
-        source = "src/test/resources/pdf/articleB_preview.pdf";
-        Assertions.assertTrue(new File(ROOT, source).exists());
-        Assertions.assertTrue(new File(ROOT, source).lastModified() < time);
-        target = source.replaceAll("_preview\\.pdf$", ".pdf");
-        Assertions.assertTrue(new File(ROOT, target).exists());
-        Assertions.assertTrue(new File(ROOT, target).lastModified() > time);
-        Assertions.assertNull(Compare.compare(new File(ROOT, source), new File(ROOT, target)));
-        Assertions.assertEquals(new File(ROOT, source).length(), new File(ROOT, target).length());
-        
-        source = "src/test/resources/pdf/articleA_preview.pdf";
-        Assertions.assertTrue(new File(ROOT, source).exists());
-        Assertions.assertTrue(new File(ROOT, source).lastModified() < time);
-        target = source.replaceAll("_preview\\.pdf$", ".pdf");
-        Assertions.assertTrue(new File(ROOT, target).exists());
-        Assertions.assertTrue(new File(ROOT, target).lastModified() > time);
-        Assertions.assertNull(Compare.compare(new File(ROOT, source), new File(ROOT, target)));
-        Assertions.assertEquals(new File(ROOT, source).length(), new File(ROOT, target).length());
-        
-        source = "src/test/resources/pdf/articleIncludeA_preview.pdf";
-        Assertions.assertTrue(new File(ROOT, source).exists());
-        Assertions.assertTrue(new File(ROOT, source).lastModified() < time);
-        target = source.replaceAll("_preview\\.pdf$", ".pdf");
-        Assertions.assertTrue(new File(ROOT, target).exists());
-        Assertions.assertTrue(new File(ROOT, target).lastModified() > time);
-        Assertions.assertNull(Compare.compare(new File(ROOT, source), new File(ROOT, target)));
-        Assertions.assertEquals(new File(ROOT, source).length(), new File(ROOT, target).length());
-        
-        source = "src/test/resources/pdf/articleIncludeC_preview.pdf";
-        Assertions.assertTrue(new File(ROOT, source).exists());
-        Assertions.assertTrue(new File(ROOT, source).lastModified() < time);
-        target = source.replaceAll("_preview\\.pdf$", ".pdf");
-        Assertions.assertTrue(new File(ROOT, target).exists());
-        Assertions.assertTrue(new File(ROOT, target).lastModified() > time);
-        Assertions.assertNull(Compare.compare(new File(ROOT, source), new File(ROOT, target)));
-        Assertions.assertEquals(new File(ROOT, source).length(), new File(ROOT, target).length());
-        
-        source = "src/test/resources/pdf/articleIncludeX_preview.pdf";
-        Assertions.assertTrue(new File(ROOT, source).exists());
-        Assertions.assertTrue(new File(ROOT, source).lastModified() < time);
-        target = source.replaceAll("_preview\\.pdf$", ".pdf");
-        Assertions.assertTrue(new File(ROOT, target).exists());
-        Assertions.assertTrue(new File(ROOT, target).lastModified() > time);
-        Assertions.assertNull(Compare.compare(new File(ROOT, source), new File(ROOT, target)));
-        Assertions.assertEquals(new File(ROOT, source).length(), new File(ROOT, target).length());
+        master = "src/test/resources/pdf/reportDiffs_preview.pdf";
+        PreviewTest.validatePreviewPdf(new File(ROOT, master), time);
+        File[] diffs = Compare.compare(new File(TEMP, new File(master).getName()), new File(TEMP, "report_preview.pdf"));
+        Assertions.assertNotNull(diffs);
+        Assertions.assertEquals(3, diffs.length);
+        master = "src/test/resources/pdf/reportDiffs_diffs_page_1.png";
+        Files.copy(new File(master).toPath(), new File(TEMP, new File(master).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
+        Assertions.assertTrue(PreviewTest.compareImages(new File(TEMP, new File(master).getName()), new File(TEMP, "reportDiffs_diffs_page_1.png")));
+        master = "src/test/resources/pdf/reportDiffs_diffs_page_2.png";
+        Files.copy(new File(master).toPath(), new File(TEMP, new File(master).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
+        Assertions.assertTrue(PreviewTest.compareImages(new File(TEMP, new File(master).getName()), new File(TEMP, "reportDiffs_diffs_page_2.png")));
+        master = "src/test/resources/pdf/reportDiffs_diffs_page_3.png";
+        Files.copy(new File(master).toPath(), new File(TEMP, new File(master).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
+        Assertions.assertTrue(PreviewTest.compareImages(new File(TEMP, new File(master).getName()), new File(TEMP, "reportDiffs_diffs_page_3.png")));
 
-        source = "target/test-classes/com/seanox/pdf/example/ArticleSingleTemplate_preview.pdf";
-        Assertions.assertTrue(new File(ROOT, source).exists());
-        Assertions.assertTrue(new File(ROOT, source).lastModified() < time);
-        target = source.replaceAll("_preview\\.pdf$", ".pdf");
-        Assertions.assertTrue(new File(ROOT, target).exists());
-        Assertions.assertTrue(new File(ROOT, target).lastModified() > time);
-        Assertions.assertNull(Compare.compare(new File(ROOT, source), new File(ROOT, target)));
-        Assertions.assertEquals(new File(ROOT, source).length(), new File(ROOT, target).length());
-        
-        source = "target/test-classes/com/seanox/pdf/example/ArticleSingleIncludeTemplate_preview.pdf";
-        Assertions.assertTrue(new File(ROOT, source).exists());
-        Assertions.assertTrue(new File(ROOT, source).lastModified() < time);
-        target = source.replaceAll("_preview\\.pdf$", ".pdf");
-        Assertions.assertTrue(new File(ROOT, target).exists());
-        Assertions.assertTrue(new File(ROOT, target).lastModified() > time);
-        Assertions.assertNull(Compare.compare(new File(ROOT, source), new File(ROOT, target)));
-        Assertions.assertEquals(new File(ROOT, source).length(), new File(ROOT, target).length());
+        master = "src/test/resources/pdf/articleC_preview.pdf";
+        PreviewTest.validatePreviewPdf(new File(ROOT, master), time);        
 
-        source = "target/test-classes/com/seanox/pdf/example/ArticleMultiTemplate_preview.pdf";
-        Assertions.assertTrue(new File(ROOT, source).exists());
-        Assertions.assertTrue(new File(ROOT, source).lastModified() < time);
-        target = source.replaceAll("_preview\\.pdf$", ".pdf");
-        Assertions.assertTrue(new File(ROOT, target).exists());
-        Assertions.assertTrue(new File(ROOT, target).lastModified() > time);
-        Assertions.assertNull(Compare.compare(new File(ROOT, source), new File(ROOT, target)));
-        Assertions.assertEquals(new File(ROOT, source).length(), new File(ROOT, target).length());
+        master = "src/test/resources/pdf/articleB_preview.pdf";
+        PreviewTest.validatePreviewPdf(new File(ROOT, master), time);
+        
+        master = "src/test/resources/pdf/articleA_preview.pdf";
+        PreviewTest.validatePreviewPdf(new File(ROOT, master), time);
+
+        master = "src/test/resources/pdf/articleIncludeA_preview.pdf";
+        PreviewTest.validatePreviewPdf(new File(ROOT, master), time);
+
+        master = "src/test/resources/pdf/articleIncludeC_preview.pdf";
+        PreviewTest.validatePreviewPdf(new File(ROOT, master), time);
+        
+        master = "src/test/resources/pdf/articleIncludeX_preview.pdf";
+        PreviewTest.validatePreviewPdf(new File(ROOT, master), time);
+        
+        master = "target/test-classes/com/seanox/pdf/example/ArticleSingleTemplate_preview.pdf";
+        PreviewTest.validatePreviewPdf(new File(ROOT, master), time);
+        
+        master = "target/test-classes/com/seanox/pdf/example/ArticleSingleIncludeTemplate_preview.pdf";
+        PreviewTest.validatePreviewPdf(new File(ROOT, master), time);
+        
+        master = "target/test-classes/com/seanox/pdf/example/ArticleMultiTemplate_preview.pdf";
+        PreviewTest.validatePreviewPdf(new File(ROOT, master), time);
     }
     
     @Test
@@ -200,19 +223,21 @@ public class PreviewTest {
     public void test04()
             throws IOException {
         
-        String source;
-        String target;
+        String master;
+        String compare;
 
         long time = System.currentTimeMillis();
         
         UsageTemplate.main(null);
-        source = "target/test-classes/com/seanox/pdf/example/UsageTemplate_preview.pdf";
-        Assertions.assertTrue(new File(ROOT, source).exists());
-        Assertions.assertTrue(new File(ROOT, source).lastModified() < time);
-        target = "UsageTemplate.pdf";
-        Assertions.assertTrue(new File(ROOT, target).exists());
-        Assertions.assertTrue(new File(ROOT, target).lastModified() > time);
-        Assertions.assertNull(Compare.compare(new File(ROOT, source), new File(ROOT, target)));
-        Assertions.assertEquals(new File(ROOT, source).length(), new File(ROOT, target).length());
+        master = "target/test-classes/com/seanox/pdf/example/UsageTemplate_preview.pdf";
+        Assertions.assertTrue(new File(ROOT, master).exists());
+        Assertions.assertTrue(new File(ROOT, master).lastModified() < time);
+        compare = "UsageTemplate.pdf";
+        Files.copy(new File(master).toPath(), new File(TEMP, new File(master).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
+        Files.move(new File(compare).toPath(), new File(TEMP, new File(compare).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
+        Assertions.assertTrue(new File(TEMP, compare).exists());
+        Assertions.assertTrue(new File(TEMP, compare).lastModified() > time);
+        Assertions.assertNull(Compare.compare(new File(ROOT, master), new File(TEMP, compare)));
+        Assertions.assertEquals(new File(ROOT, master).length(), new File(TEMP, compare).length());
     }    
 }
