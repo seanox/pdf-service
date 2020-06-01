@@ -39,7 +39,7 @@ language setting is also transferred to the template and thus fonts matching the
 - Creation of markup as preview e.g. for the frontend
 - API for other markup renderers and generators  
 abstract templates for individual generators and renderers
-- PDF comparison for test automation:
+- PDF comparison for test automation  
 pixel-based and difference image generation
 
 
