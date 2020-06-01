@@ -26,10 +26,7 @@
         match="(?&lt;=\d+)\." byline="true" replace="&#x000D;release.minor="/>
       <replaceregexp file="CHANGES.tmp"
         match="(?&lt;=\d+)\." byline="true" replace="&#x000D;release.patch="/>
-      <loadproperties>
-        <file file="CHANGES.tmp"/>
-      </loadproperties>
-      <delete file="CHANGES.tmp"/>
+      <loadproperties srcfile="CHANGES.tmp"/>
     </sequential>
   </macrodef> 
   
@@ -62,6 +59,45 @@
     </tstamp>    
     <replaceregexp file="${workspace}/README.md"
       match="(?si)(?&lt;=\(C\)\s)\d{4}\b" flags="g" byline="true"
-      replace="${now.year}"/>  
+      replace="${now.year}"/>
+    
+    <copy file="${workspace}/src/main/java/com/seanox/pdf/Compare.java" tofile="${workspace}/src/main/java/com/seanox/pdf/Compare.tmp" overwrite="true"/>
+    <replaceregexp file="${workspace}/src/main/java/com/seanox/pdf/Compare.tmp"
+      match="(?s).*?@version\s+([\d\.]+\s+(\d{4})\d+).*$" flags="g" byline="false"
+      replace="compare.version=\1&#x000D;compare.year=\2"/>
+    <loadproperties srcfile="${workspace}/src/main/java/com/seanox/pdf/Compare.tmp"/>
+    <delete file="${workspace}/src/main/java/com/seanox/pdf/Compare.tmp"/>
+    <replaceregexp file="${workspace}/src/main/java/com/seanox/pdf/Compare.java"
+      match="(\[Version )([\d\.]+\s\d+)(\])" flags="g" byline="false"
+      replace="\1${compare.version}\3"/>
+    <replaceregexp file="${workspace}/src/main/java/com/seanox/pdf/Compare.java"
+      match="(Copyright\s+\(C\)\s+)\d+" flags="g" byline="false"
+      replace="\1${compare.year}"/>
+
+    <copy file="${workspace}/src/main/java/com/seanox/pdf/Designer.java" tofile="${workspace}/src/main/java/com/seanox/pdf/Designer.tmp" overwrite="true"/>
+    <replaceregexp file="${workspace}/src/main/java/com/seanox/pdf/Designer.tmp"
+      match="(?s).*?@version\s+([\d\.]+\s+(\d{4})\d+).*$" flags="g" byline="false"
+      replace="designer.version=\1&#x000D;designer.year=\2"/>
+    <loadproperties srcfile="${workspace}/src/main/java/com/seanox/pdf/Designer.tmp"/>
+    <delete file="${workspace}/src/main/java/com/seanox/pdf/Designer.tmp"/>
+    <replaceregexp file="${workspace}/src/main/java/com/seanox/pdf/Designer.java"
+      match="(\[Version )([\d\.]+\s\d+)(\])" flags="g" byline="false"
+      replace="\1${designer.version}\3"/>
+    <replaceregexp file="${workspace}/src/main/java/com/seanox/pdf/Designer.java"
+      match="(Copyright\s+\(C\)\s+)\d+" flags="g" byline="false"
+      replace="\1${designer.year}"/>
+    
+    <copy file="${workspace}/src/main/java/com/seanox/pdf/Preview.java" tofile="${workspace}/src/main/java/com/seanox/pdf/Preview.tmp" overwrite="true"/>
+    <replaceregexp file="${workspace}/src/main/java/com/seanox/pdf/Preview.tmp"
+      match="(?s).*?@version\s+([\d\.]+\s+(\d{4})\d+).*$" flags="g" byline="false"
+      replace="preview.version=\1&#x000D;preview.year=\2"/>
+    <loadproperties srcfile="${workspace}/src/main/java/com/seanox/pdf/Preview.tmp"/>
+    <delete file="${workspace}/src/main/java/com/seanox/pdf/Preview.tmp"/>
+    <replaceregexp file="${workspace}/src/main/java/com/seanox/pdf/Preview.java"
+      match="(\[Version )([\d\.]+\s\d+)(\])" flags="g" byline="false"
+      replace="\1${preview.version}\3"/>
+    <replaceregexp file="${workspace}/src/main/java/com/seanox/pdf/Preview.java"
+      match="(Copyright\s+\(C\)\s+)\d+" flags="g" byline="false"
+      replace="\1${preview.year}"/>
   </target>  
 </project>
