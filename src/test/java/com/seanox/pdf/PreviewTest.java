@@ -136,7 +136,7 @@ public class PreviewTest {
 
     @Test
     public void test02()
-            throws IOException {
+            throws Exception {
         
         String master;
         

@@ -37,28 +37,53 @@ import org.apache.pdfbox.rendering.PDFRenderer;
 /** 
  * Pixel-based comparison of PDF files.<br>
  * <br>
- * Compare 1.0.0 20200530<br>
+ * Compare 1.1.0 20200530<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 1.0.0 20200530
+ * @version 1.1.0 20200530
  */
 public class Compare {
-
+    
+    /**
+     * Main entry for the console application.
+     * @param options optional list with paths and filters/globs of templates
+     * @throws Exception
+     *     In case of unexpected errors.
+     */    
+    public static void main(String[] options)
+            throws Exception {
+        
+        System.out.println("Seanox PDF Comparator [Version 1.1.0 20200530]");
+        System.out.println("Copyright (C) 2020 Seanox Software Solutions");
+        System.out.println();
+        
+        if (options == null
+                || options.length < 2) {
+            System.out.println();
+            System.out.println("usage: java -jar pdf-tools.jar <master.pdf> <compare.pdf>");
+        }
+        
+        Compare.compare(new File(options[0]), new File(options[1]));
+    }
+    
     /**
      * Pixel-based comparison of two PDF files.
      * Returned is a file list with delta images, if differences were found.
-     * @param  base
+     * The path of the delta images is derived from the path of the file to be
+     * compared. The comparison is performed page by page. The delta images are
+     * therefore created for each page with differences.
+     * @param  master
      * @param  compare
      * @return file list with delta images, otherwise {@code null}
      * @throws IOException
      */
-    public static File[] compare(File base, File compare)
+    public static File[] compare(File master, File compare)
             throws IOException {
         
         List<BufferedImage> baseImages = new ArrayList<>();
-        try (PDDocument document = PDDocument.load(base)) {
+        try (PDDocument document = PDDocument.load(master)) {
             PDFRenderer pdfRenderer = new PDFRenderer(document);
             for (int page = 0; page < document.getNumberOfPages(); ++page)
                 baseImages.add(pdfRenderer.renderImageWithDPI(page, 300, ImageType.RGB));
@@ -79,7 +104,7 @@ public class Compare {
         String deltaTimestamp = String.format("%tY%<tm%<td%<tH%<tM%<tS", new Date()); 
         List<File> deltas = new ArrayList<>();
         for (int page = 0; page < baseImages.size(); ++page) {
-            String deltaName = "_delta_" + (page +1) + "_page_" + deltaTimestamp;
+            String deltaName = "_diffs_page_" + (page +1) + "_" + deltaTimestamp;
             File deltaFile = new File(compare.getParentFile(), compare.getName().replaceAll("\\.\\w+$", deltaName + ".png"));
             BufferedImage delta = Compare.compareImage(baseImages.get(page), compareImages.get(page));
             if (delta == null)
@@ -96,37 +121,53 @@ public class Compare {
     /**
      * Pixel-based comparison of two BufferedImage.
      * Returned is a delta image, if differences were found.
-     * @param  base
+     * @param  master
      * @param  compare
      * @return delta as image, otherwise {@code null}
      */
-    private static BufferedImage compareImage(BufferedImage base, BufferedImage compare) {
+    private static BufferedImage compareImage(BufferedImage master, BufferedImage compare) {
         
-        // Based on: Neeraj Vishwakarma
-        //     http://mundrisoft.com/tech-bytes/compare-images-using-java 
-
         Dimension dimension = new Dimension(
-                Math.max(base.getWidth(), compare.getWidth()),
-                Math.max(base.getHeight(), compare.getHeight()));
+                Math.max(master.getWidth(), compare.getWidth()),
+                Math.max(master.getHeight(), compare.getHeight()));
         BufferedImage delta = new BufferedImage((int)dimension.getWidth(), (int)dimension.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
         boolean control = true;
         for (int y = 0; y < dimension.getHeight(); y++) {
             for (int x = 0; x < dimension.getWidth(); x++) {
-                try {
-                    int pixelC = compare.getRGB(x, y);
-                    int pixelB = base.getRGB(x, y);
-                    if (pixelB != pixelC) {
-                        control = false;
-                        int a = 0xFF | base.getRGB(x, y) >> 24;
-                        int r = 0xFF & base.getRGB(x, y) >> 16;
-                        int g = 0x00 & base.getRGB(x, y) >> 8, b = 0x00 & base.getRGB(x, y);
-                        int modifiedRGB = a << 24 | r << 16 | g << 8 | b;
-                        delta.setRGB(x, y, modifiedRGB);
-                    } else delta.setRGB(x, y, base.getRGB(x, y));
-                } catch (Exception exception) {
-                    // handled height or width mismatch
+                
+                Integer pixelM = null;
+                if (x < master.getWidth()
+                        && y < master.getHeight())
+                    pixelM = Integer.valueOf(master.getRGB(x, y));
+                Integer pixelC = null;
+                if (x < compare.getWidth()
+                        && y < compare.getHeight())
+                    pixelC = Integer.valueOf(compare.getRGB(x, y));
+                
+                if (pixelM == null
+                        && pixelC == null) {
+                    // case height or width mismatch without pixel
+                    // use a gray color value
                     control = false;
-                    delta.setRGB(x, y, 0x80FF0000);
+                    delta.setRGB(x, y, 0xFFC0C0C0);
+                } else if (pixelM == null
+                        || pixelC == null) {
+                    // case pixel differences with height or width mismatch
+                    // use the inverted color value
+                    control = false;
+                    delta.setRGB(x, y, (0xFFFFFF -(pixelM != null ? pixelM.intValue() : pixelC.intValue())) | 0xFF000000);                    
+                } else if (pixelM.equals(pixelC)) {
+                    // case pixel matches without height or width mismatch 
+                    delta.setRGB(x, y, master.getRGB(x, y));
+                } else {
+                    // case pixel differences without height or width mismatch 
+                    control = false;
+                    int a = 0xFF | pixelM.intValue() >> 24;
+                    int r = 0xFF & pixelM.intValue() >> 16;
+                    int g = 0x00 & pixelM.intValue() >> 8;
+                    int b = 0x00 & pixelM.intValue();
+                    int modifiedRGB = a << 24 | r << 16 | g << 8 | b;
+                    delta.setRGB(x, y, modifiedRGB);
                 }
             }
         }

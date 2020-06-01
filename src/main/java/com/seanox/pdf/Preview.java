@@ -38,12 +38,12 @@ import com.openhtmltopdf.util.XRLog;
  * Tool for the design process to create a test output of the rendered PDFs.
  * The PDFs are output in the same directory as the template.<br>
  * <br>
- * Preview 3.3.2 20200420<br>
+ * Preview 3.3.2 20200601<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.3.2 20200420
+ * @version 3.3.1 20200601
  */
 public class Preview {
     
@@ -200,42 +200,43 @@ public class Preview {
     
     /**
      * Main entry for the console application.
-     * @param  options optional list with paths and filters/globs of templates
+     * @param options optional list with paths and filters/globs of templates
      * @throws Exception
      *     In case of unexpected errors.
      */    
-    public static void main(String[] options) {
-
+    public static void main(String[] options)
+            throws Exception {
+        
+        System.out.println("Seanox PDF Preview [Version 3.3.1 20200601]");
+        System.out.println("Copyright (C) 2020 Seanox Software Solutions");
+        System.out.println();
+        
         //First the simple templates, which only use static preview data from
         //the properties. However, these may also be used later by template
         //implementation with dynamic preview data, in which case they are
         //simply overwritten in the next step.
 
-        try {
-            if (options != null) {
-                for (String option : options) {
-                    String path = option.replaceAll("^(?:(.*)[/\\\\])*(.*)$", "$1");
-                    String glob = option.replaceAll("^(?:(.*)[/\\\\])*(.*)$", "$2");
-                    try (DirectoryStream<Path> stream = Files.newDirectoryStream(
-                            Paths.get(path), glob)) {
-                        stream.forEach(file -> {
-                            try {
-                                file = file.toFile().getCanonicalFile().toPath();
-                                System.out.println("INFORMATION: " + file.toFile().getName() + " started");
-                                Preview.execute(file.toFile());
-                                System.out.println("INFORMATION: " + file.toFile().getName() + " done");
-                            } catch (Exception exception) {
-                                System.out.println("ERROR: " + file.toFile().getName() + " failed");
-                                exception.printStackTrace(System.err);
-                            }
-                        });
-                    }                    
-                }
+        if (options != null) {
+            for (String option : options) {
+                String path = option.replaceAll("^(?:(.*)[/\\\\])*(.*)$", "$1");
+                String glob = option.replaceAll("^(?:(.*)[/\\\\])*(.*)$", "$2");
+                try (DirectoryStream<Path> stream = Files.newDirectoryStream(
+                        Paths.get(path), glob)) {
+                    stream.forEach(file -> {
+                        try {
+                            file = file.toFile().getCanonicalFile().toPath();
+                            System.out.println("INFORMATION: " + file.toFile().getName() + " started");
+                            Preview.execute(file.toFile());
+                            System.out.println("INFORMATION: " + file.toFile().getName() + " done");
+                        } catch (Exception exception) {
+                            System.out.println("ERROR: " + file.toFile().getName() + " failed");
+                            exception.printStackTrace(System.err);
+                        }
+                    });
+                }                    
             }
-
-            Preview.execute();
-        } catch (Exception exception) {
-            exception.printStackTrace(System.err);
         }
+
+        Preview.execute();
     }
 }

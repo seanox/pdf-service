@@ -37,12 +37,12 @@ import com.openhtmltopdf.util.XRLog;
  * started directly in the IDE. The templates are edited in the source
  * directory. The PDFs are output in the same directory as the template.<br>
  * <br>
- * Designer 3.2.1 20200420<br>
+ * Designer 3.2.2 20200601<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.2.1 20200420
+ * @version 3.2.2 20200601
  */
 public class Designer {
     
@@ -69,6 +69,10 @@ public class Designer {
      */
     public static void main(String[] options)
             throws Exception {
+        
+        System.out.println("Seanox PDF Design Deamon [Version 3.2.1 20200601]");
+        System.out.println("Copyright (C) 2020 Seanox Software Solutions");
+        System.out.println();
         
         Service.Template.scan();
         
