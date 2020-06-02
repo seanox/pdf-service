@@ -26,7 +26,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 
 import javax.imageio.ImageIO;
@@ -38,18 +41,20 @@ import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
 import com.openhtmltopdf.util.XRLog;
+import com.seanox.pdf.Service.Meta;
 import com.seanox.pdf.Service.Template;
+import com.seanox.pdf.Service.Template.Resources;
 import com.seanox.pdf.example.UsageTemplate;
 
 /** 
  * Wrapper to run the {@link Preview} with the test classes and resources.<br>
  * <br>
- * PreviewTest 3.5.0 20200601<br>
+ * PreviewTest 3.6.0 20200602<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.5.0 20200601
+ * @version 3.6.0 20200602
  */
 @RunWith(JUnitPlatform.class)
 @SuppressWarnings("javadoc")
@@ -91,7 +96,7 @@ public class PreviewTest {
     @Test
     public void test01() {
 
-        // test for the correct dependencies in the project / classpath
+        //test for the correct dependencies in the project / classpath
         Class<?> dataAccessException = org.springframework.dao.DataAccessException.class;
         Assertions.assertNotNull(dataAccessException);
     }
@@ -194,7 +199,7 @@ public class PreviewTest {
     public void test03() {
         
         try {
-            Preview.execute(new File("src/test/resources/pdf/articleIncludeB.html"));
+            Preview.execute(new File(ROOT, "src/test/resources/pdf/articleIncludeB.html"));
             Assertions.fail();
         } catch (Exception exception) {
             Assertions.assertTrue(exception instanceof Template.TemplateResourceNotFoundException);
@@ -202,7 +207,7 @@ public class PreviewTest {
         }
         
         try {
-            Preview.execute(new File("src/test/resources/pdf/articleIncludeE.html"));
+            Preview.execute(new File(ROOT, "src/test/resources/pdf/articleIncludeE.html"));
             Assertions.fail();
         } catch (Exception exception) {
             Assertions.assertTrue(exception instanceof Template.TemplateResourceNotFoundException);
@@ -210,7 +215,7 @@ public class PreviewTest {
         }
         
         try {
-            Preview.execute(new File("src/test/resources/pdf/articleIncludeF.html"));
+            Preview.execute(new File(ROOT, "src/test/resources/pdf/articleIncludeF.html"));
             Assertions.fail();
         } catch (Exception exception) {
             Assertions.assertTrue(exception instanceof Service.Template.TemplateException);
@@ -229,15 +234,50 @@ public class PreviewTest {
         long time = System.currentTimeMillis();
         
         UsageTemplate.main(null);
-        master = "target/test-classes/com/seanox/pdf/example/UsageTemplate_preview.pdf";
+        master = "src/test/resources/com/seanox/pdf/example/UsageTemplate_preview.pdf";
         Assertions.assertTrue(new File(ROOT, master).exists());
         Assertions.assertTrue(new File(ROOT, master).lastModified() < time);
         compare = "UsageTemplate.pdf";
-        Files.copy(new File(master).toPath(), new File(TEMP, new File(master).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
-        Files.move(new File(compare).toPath(), new File(TEMP, new File(compare).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(new File(ROOT, master).toPath(), new File(TEMP, new File(master).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
+        Files.move(new File(ROOT, compare).toPath(), new File(TEMP, new File(compare).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
         Assertions.assertTrue(new File(TEMP, compare).exists());
         Assertions.assertTrue(new File(TEMP, compare).lastModified() > time);
-        Assertions.assertNull(Compare.compare(new File(ROOT, master), new File(TEMP, compare)));
+        Assertions.assertNull(Compare.compare(new File(TEMP, new File(master).getName()), new File(TEMP, compare)));
         Assertions.assertEquals(new File(ROOT, master).length(), new File(TEMP, compare).length());
-    }    
+    }
+    
+    @Test
+    public void test05()
+            throws Exception {
+        
+        long time = System.currentTimeMillis();
+        
+        Meta meta = new Meta();
+        Map<String, Object> data = new HashMap<>();
+        data.put("x", "1");
+        data.put("X", "2");
+        meta.setData(data);
+        Map<String, CharSequence> statics = new HashMap<>();
+        statics.put("x", "1");
+        statics.put("X", "2");
+        meta.setStatics(statics);
+        
+        File output = new File(TEMP, "DuplicateTemplate.pdf");
+        byte[] pdf = Service.render(DuplicateTemplate.class, meta);
+        Files.write(output.toPath(), pdf, StandardOpenOption.CREATE);
+        
+        String master = "src/test/resources/com/seanox/pdf/DuplicateTemplate_preview.pdf";
+        Assertions.assertTrue(new File(ROOT, master).exists());
+        Assertions.assertTrue(new File(ROOT, master).lastModified() < time);
+        Files.copy(new File(ROOT, master).toPath(), new File(TEMP, new File(master).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
+        String compare = "DuplicateTemplate.pdf";
+        Assertions.assertTrue(new File(TEMP, compare).exists());
+        Assertions.assertTrue(new File(TEMP, compare).lastModified() > time);
+        Assertions.assertNull(Compare.compare(new File(TEMP, new File(master).getName()), new File(TEMP, compare)));
+        Assertions.assertEquals(new File(ROOT, master).length(), new File(TEMP, compare).length());
+    }  
+
+    @Resources(base="/pdf")
+    public static class DuplicateTemplate extends com.seanox.pdf.Template {
+    }
 }
