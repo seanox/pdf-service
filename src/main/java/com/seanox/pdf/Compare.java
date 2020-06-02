@@ -146,21 +146,21 @@ public class Compare {
                 
                 if (pixelM == null
                         && pixelC == null) {
-                    // case height or width mismatch without pixel
-                    // use a gray color value
+                    //case height or width mismatch without pixel
+                    //use a gray color value
                     control = false;
                     delta.setRGB(x, y, 0xFFC0C0C0);
                 } else if (pixelM == null
                         || pixelC == null) {
-                    // case pixel differences with height or width mismatch
-                    // use the inverted color value
+                    //case pixel differences with height or width mismatch
+                    //use the inverted color value
                     control = false;
                     delta.setRGB(x, y, (0xFFFFFF -(pixelM != null ? pixelM.intValue() : pixelC.intValue())) | 0xFF000000);                    
                 } else if (pixelM.equals(pixelC)) {
-                    // case pixel matches without height or width mismatch 
+                    //case pixel matches without height or width mismatch 
                     delta.setRGB(x, y, master.getRGB(x, y));
                 } else {
-                    // case pixel differences without height or width mismatch 
+                    //case pixel differences without height or width mismatch 
                     control = false;
                     int a = 0xFF | pixelM.intValue() >> 24;
                     int r = 0xFF & pixelM.intValue() >> 16;

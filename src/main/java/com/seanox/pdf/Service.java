@@ -139,12 +139,12 @@ import com.seanox.pdf.Template.Markup;
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer<br>
  * <br>
- * Service 3.7.2 20200510<br>
+ * Service 3.7.3 20200602<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.7.2 20200510
+ * @version 3.7.3 20200602
  */
 public class Service {
     
@@ -737,7 +737,15 @@ public class Service {
                 builder.toStream(content);
                 builder.run();
                 artifacts.add(PDDocument.load(content.toByteArray()));
-
+                
+                //without header and footer no overlay and merging is necessary
+                //the byte array from the document can be returned
+                if ((multiplex.header == null
+                                || multiplex.header.trim().isEmpty())
+                        && (multiplex.footer == null
+                                || multiplex.footer.trim().isEmpty()))
+                    return content.toByteArray();
+                    
                 try (PDDocument document = Template.merge(artifacts)) {
 
                     Splitter splitter = new Splitter();

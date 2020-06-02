@@ -1,4 +1,9 @@
 3.7.4 2020xxxx
+  BF: Generator Assemble: Correction of errors due to duplicate map entries
+      Occurs when the map entries are made case-insensitive.
+  BF: Service Render: Correction of errors if the template contains no header and no footer
+  BF: Template Generate:Correction of errors due to duplicate map entries
+      Occurs when the map entries are made case-insensitive.
   CR: Compare: Integral part of the API and PDF Tools
       PDF Tools: Compare, Designer, Preview
 

@@ -355,7 +355,7 @@ class Generator {
         if (values == null)
             values = new HashMap<>();
         values = values.entrySet().stream().collect(
-                Collectors.toMap(entry -> entry.getKey().toLowerCase().trim(), entry -> entry.getValue()));
+                Collectors.toMap(entry -> entry.getKey().toLowerCase().trim(), entry -> entry.getValue(), (existing, value) -> value));
         
         //Optionally the scope is determined.
         if (scope != null) {
