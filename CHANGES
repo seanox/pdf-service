@@ -1,4 +1,4 @@
-3.7.4 2020xxxx
+3.8.0 2020xxxx
   BF: Generator Assemble: Correction of errors due to duplicate map entries
       Occurs when the map entries are made case-insensitive.
   BF: Service Render: Correction of errors if the template contains no header and no footer
