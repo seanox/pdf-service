@@ -48,7 +48,8 @@ public class Compare {
     
     /**
      * Main entry for the console application.
-     * @param options optional list with paths and filters/globs of templates
+     * @param  options optional list with paths and filters/globs of templates
+     *     Without, the current working directory is used.
      * @throws Exception
      *     In case of unexpected errors.
      */    

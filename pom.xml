@@ -228,7 +228,23 @@
            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
            <autoReleaseAfterClose>true</autoReleaseAfterClose>
         </configuration>
-      </plugin>      
+      </plugin> 
+      
+      <!-- for building the seanox-pdf-tools.jar with all dependencies as a standalone java application:
+               mvn clean compile assembly:single -->
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>com.seanox.pdf.Usage</mainClass>
+            </manifest>
+          </archive>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+        </configuration>
+      </plugin>
     </plugins>
   </build>  
   
