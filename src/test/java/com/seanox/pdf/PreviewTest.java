@@ -30,6 +30,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.Level;
 
 import javax.imageio.ImageIO;
@@ -109,6 +110,20 @@ public class PreviewTest {
         File compare = new File(master.getParentFile(), master.getName().replaceAll("_preview\\.pdf$", ".pdf"));
         Assertions.assertTrue(compare.exists());
         Assertions.assertTrue(compare.lastModified() > time);
+        Files.copy(master.toPath(), new File(TEMP, master.getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
+        Files.move(compare.toPath(), new File(TEMP, compare.getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
+        Assertions.assertNull(Compare.compare(new File(TEMP, master.getName()), new File(TEMP, compare.getName())));
+        Assertions.assertEquals(new File(TEMP, master.getName()).length(), new File(TEMP, compare.getName()).length());
+    }
+
+    private static void validatePreviewPdf(File master)
+            throws IOException {
+        
+        Assertions.assertTrue(master.exists());
+        File compare = new File(master.getParentFile(), master.getName().replaceAll("_preview\\.pdf$", ".pdf"));
+        Assertions.assertTrue(compare.exists());
+        Assertions.assertTrue(master.lastModified() < compare.lastModified());
+        Assertions.assertTrue(compare.lastModified() > master.lastModified());
         Files.copy(master.toPath(), new File(TEMP, master.getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
         Files.move(compare.toPath(), new File(TEMP, compare.getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
         Assertions.assertNull(Compare.compare(new File(TEMP, master.getName()), new File(TEMP, compare.getName())));
@@ -248,16 +263,55 @@ public class PreviewTest {
     
     @Test
     public void test05()
+            throws IOException {
+        
+        for (String master : new String[] {
+                "structure_body_content_empty_preview.pdf",
+                "structure_body_content_footer_empty_preview.pdf",
+                "structure_body_empty_preview.pdf",
+                "structure_body_footer_empty_preview.pdf",
+                "structure_body_header_content_empty_preview.pdf",
+                "structure_body_header_content_footer_empty_preview.pdf",
+                "structure_body_header_empty_preview.pdf",
+                "structure_body_header_footer_empty_preview.pdf",
+                "structure_empty_preview.pdf"}) {
+            master = "src/test/resources/pdf/" + master;
+            PreviewTest.validatePreviewPdf(new File(ROOT, master));
+        }
+    }
+    
+    @Test
+    public void test06()
+            throws IOException {
+        
+        long time = System.currentTimeMillis();
+        
+        for (String master : new String[] {
+                "structure_body_content_footer_preview.pdf",
+                "structure_body_content_preview.pdf",
+                "structure_body_footer_preview.pdf",
+                "structure_body_header_content_footer_preview.pdf",
+                "structure_body_header_content_preview.pdf",
+                "structure_body_header_footer_preview.pdf",
+                "structure_body_header_preview.pdf",
+                "structure_body_preview.pdf"}) {
+            master = "src/test/resources/pdf/" + master;
+            PreviewTest.validatePreviewPdf(new File(ROOT, master));        
+        }
+    }
+    
+    @Test
+    public void test07()
             throws Exception {
         
         long time = System.currentTimeMillis();
         
         Meta meta = new Meta();
-        Map<String, Object> data = new HashMap<>();
+        Map<String, Object> data = new TreeMap<>();
         data.put("x", "1");
         data.put("X", "2");
         meta.setData(data);
-        Map<String, CharSequence> statics = new HashMap<>();
+        Map<String, CharSequence> statics = new TreeMap<>();
         statics.put("x", "1");
         statics.put("X", "2");
         meta.setStatics(statics);
