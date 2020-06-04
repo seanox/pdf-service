@@ -69,12 +69,12 @@ import org.apache.commons.lang3.StringUtils;
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer<br>
  * <br>
- * Template 3.3.4 20200602<br>
+ * Template 3.3.4 20200604<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.3.4 20200602
+ * @version 3.3.4 20200604
  */
 public abstract class Template extends Service.Template {
     
@@ -457,11 +457,11 @@ public abstract class Template extends Service.Template {
         if (statics == null)
             statics = new HashMap<>();
         statics = statics.entrySet().stream()
-                .collect(Collectors.toMap(entry -> entry.getKey().toUpperCase(), entry -> entry.getValue(), (existing, value) -> value));
+                .collect(Collectors.toMap(entry -> entry.getKey().toLowerCase(), entry -> entry.getValue(), (existing, value) -> value));
         Pattern pattern = Pattern.compile("\\!\\[\\s*(.*?)\\s*\\]");
         Matcher matcher = pattern.matcher(markup);
         while (matcher.find()) {
-            CharSequence value = statics.get(matcher.group(1).toUpperCase());
+            CharSequence value = statics.get(matcher.group(1).toLowerCase());
             if (value == null)
                 continue;
             value = Template.escapeHtml(value.toString(), value instanceof Markup);
