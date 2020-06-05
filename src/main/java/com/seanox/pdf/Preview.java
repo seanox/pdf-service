@@ -212,6 +212,12 @@ public class Preview {
         System.out.println("Copyright (C) 2020 Seanox Software Solutions");
         System.out.println();
         
+        if (options == null
+                || options.length <= 0) {
+            System.out.println("usage: java -cp seanox-pdf-tools.jar com.seanox.pdf.Preview <paths/filters/globs> ...");
+            return;
+        }
+        
         //First the simple templates, which only use static preview data from
         //the properties. However, these may also be used later by template
         //implementation with dynamic preview data, in which case they are

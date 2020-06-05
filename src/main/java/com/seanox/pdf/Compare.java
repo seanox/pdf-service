@@ -62,8 +62,8 @@ public class Compare {
         
         if (options == null
                 || options.length < 2) {
-            System.out.println();
-            System.out.println("usage: java -jar pdf-tools.jar <master.pdf> <compare.pdf>");
+            System.out.println("usage: java -cp seanox-pdf-tools.jar com.seanox.pdf.Compare <master> <compare>");
+            return;
         }
         
         Compare.compare(new File(options[0]), new File(options[1]));

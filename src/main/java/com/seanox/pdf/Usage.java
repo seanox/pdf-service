@@ -20,21 +20,39 @@
  */
 package com.seanox.pdf;
 
-import java.io.InputStream;
-
-import org.apache.pdfbox.io.IOUtils;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 
 /** 
  * Output of information on how to use the command line tools.<br>
  * <br>
- * Usage 1.0.0 20200604<br>
+ * Usage 3.8.0 20200605<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 1.0.0 20200604
+ * @version 3.8.0 20200605
  */
 public class Usage {
+
+    private static String catchToolInfos(Class<?> tool) {
+        
+        PrintStream output = System.out;
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        try (PrintStream cache = new PrintStream(buffer)) {
+            System.setOut(cache);
+            try {tool.getMethod("main", String[].class).invoke(null, new Object[] {null});
+            } catch (Exception exception) {
+                return String.valueOf(exception);
+            }
+        }
+        System.setOut(output);
+        String summary = buffer.toString();
+        String version = summary.replaceAll("(?s)\\R.*$", "");
+        String usage = summary.replaceAll("(?s)^.*(?<=\\Rusage:)\\s*([^\r\n]+)\\s*.*$", "$1");
+        
+        return version + System.lineSeparator() + usage;
+    }
     
     /**
      * Main entry for the console application.
@@ -44,15 +62,17 @@ public class Usage {
      */     
     public static void main(String[] options) throws Exception {
         
-        System.out.println("Seanox PDF Tools Usage [Version 1.0.0 20200604]");
+        System.out.println("Seanox PDF Tools Usage [Version 3.8.0 20200605]");
         System.out.println("Copyright (C) 2020 Seanox Software Solutions");
         System.out.println();
-
-        String resource = "/" + Usage.class.getName().replace(".", "/") + ".txt";
-        try (InputStream input = Usage.class.getResourceAsStream(resource)) {
-            String output = new String(IOUtils.toByteArray(input));
-            for (String line : output.split("\\R"))
-                System.out.println(line);
-        }
+        System.out.println("This java archive contains several command line tools.");
+        System.out.println();
+        
+        System.out.println(Usage.catchToolInfos(Compare.class));
+        System.out.println();
+        System.out.println(Usage.catchToolInfos(Designer.class));
+        System.out.println();
+        System.out.println(Usage.catchToolInfos(Preview.class));
+        System.out.println();
     }
 }

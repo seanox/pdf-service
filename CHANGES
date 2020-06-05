@@ -6,7 +6,12 @@
       Occurs when the map entries are made case-insensitive.
   CR: Compare: Integral part of the API and PDF Tools
       PDF Tools: Compare, Designer, Preview
-
+  CR: PDF Tools: Integrated as standalone Java application  
+        usage:
+      java -cp seanox-pdf-tools.jar com.seanox.pdf.Compare <master> <compare>
+      java -cp seanox-pdf-tools.jar com.seanox.pdf.Designer <paths/filters/globs> ...
+      java -cp seanox-pdf-tools.jar com.seanox.pdf.Preview <paths/filters/globs> ...
+            
 3.7.3 20200530
   BF: Template: Correction of case insensitive statics
   CR: Test: Added a pixel based comparison of the PDFs

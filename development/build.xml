@@ -9,24 +9,44 @@
   
   <property name="workspace" value="${basedir}"/>
   <property name="workspace.sources" value="${workspace}/src"/>
-    
+  <property name="workspace.development" value="${workspace}/development"/>
+
   <macrodef name="release-locate">
     <sequential>
       <copy file="CHANGES" tofile="CHANGES.tmp" overwrite="true"/>
       <replaceregexp file="CHANGES.tmp"
-        match="(?s)^\s*([\d\.x]+) (\d{4})([\dx]+).*$" flags="g" byline="false"
-        replace="release.version=\1&#x000D;release.year=\2&#x000D;release.date=\2\3&#x000D;"/>
+          match="(?s)^\s*([\d\.x]+) (\d{4})([\dx]+).*$" flags="g" byline="false"
+          replace="release.version=\1&#x000D;release.year=\2&#x000D;release.date=\2\3&#x000D;"/>
       <replaceregexp file="CHANGES.tmp" match="x+" replace="0000" flags="g" byline="false"/>
-      <loadproperties>
-        <file file="CHANGES.tmp"/>
-      </loadproperties>
+      <loadproperties srcfile="CHANGES.tmp"/>
       <delete file="CHANGES.tmp"/>
       <echo file="CHANGES.tmp" message="release.major=${release.version}"/>
       <replaceregexp file="CHANGES.tmp"
-        match="(?&lt;=\d+)\." byline="true" replace="&#x000D;release.minor="/>
+          match="(?&lt;=\d+)\." byline="true" replace="&#x000D;release.minor="/>
       <replaceregexp file="CHANGES.tmp"
-        match="(?&lt;=\d+)\." byline="true" replace="&#x000D;release.patch="/>
+          match="(?&lt;=\d+)\." byline="true" replace="&#x000D;release.patch="/>
       <loadproperties srcfile="CHANGES.tmp"/>
+    </sequential>
+  </macrodef>
+  
+  <macrodef name="sync-source-version">
+    <attribute name="file"/>
+    <sequential>
+      <echo>Updating version in: @{file}</echo> 
+      <copy file="@{file}" tofile="@{file}_temp" overwrite="true"/>
+      <replaceregexp file="@{file}_temp"
+          match="(?s).*?@version\s+([\d\.]+\s+(\d{4})\d+).*$" flags="g" byline="false"
+          replace="source.version=\1&#x000D;source.year=\2"/>
+      <local name="source.version"/>
+      <local name="source.year"/>
+      <loadproperties srcfile="@{file}_temp"/>
+      <delete file="@{file}_temp"/>
+      <replaceregexp file="@{file}"
+          match="(\[Version )([\d\.]+\s\d+)(\])" flags="g" byline="false"
+          replace="\1${source.version}\3"/>
+      <replaceregexp file="@{file}"
+          match="(Copyright\s+\(C\)\s+)\d+" flags="g" byline="false"
+          replace="\1${source.year}"/>
     </sequential>
   </macrodef> 
   
@@ -52,52 +72,18 @@
     </loadresource>
     <delete file="${workspace}/CHANGES.tmp"/>
     <replaceregexp file="${workspace}/README.md"
-      match="(?si)(# Changes \(Change Log\)\s+).*?(\[Read more\])" flags="g" byline="false"
-      replace="\1${changes}${line.separator}${line.separator}\2"/>
+        match="(?si)(# Changes \(Change Log\)\s+).*?(\[Read more\])" flags="g" byline="false"
+        replace="\1${changes}${line.separator}${line.separator}\2"/>
     <tstamp>
       <format property="now.year" pattern="yyyy"/>
     </tstamp>    
     <replaceregexp file="${workspace}/README.md"
-      match="(?si)(?&lt;=\(C\)\s)\d{4}\b" flags="g" byline="true"
-      replace="${now.year}"/>
+        match="(?si)(?&lt;=\(C\)\s)\d{4}\b" flags="g" byline="true"
+        replace="${now.year}"/>
     
-    <copy file="${workspace}/src/main/java/com/seanox/pdf/Compare.java" tofile="${workspace}/src/main/java/com/seanox/pdf/Compare.tmp" overwrite="true"/>
-    <replaceregexp file="${workspace}/src/main/java/com/seanox/pdf/Compare.tmp"
-      match="(?s).*?@version\s+([\d\.]+\s+(\d{4})\d+).*$" flags="g" byline="false"
-      replace="compare.version=\1&#x000D;compare.year=\2"/>
-    <loadproperties srcfile="${workspace}/src/main/java/com/seanox/pdf/Compare.tmp"/>
-    <delete file="${workspace}/src/main/java/com/seanox/pdf/Compare.tmp"/>
-    <replaceregexp file="${workspace}/src/main/java/com/seanox/pdf/Compare.java"
-      match="(\[Version )([\d\.]+\s\d+)(\])" flags="g" byline="false"
-      replace="\1${compare.version}\3"/>
-    <replaceregexp file="${workspace}/src/main/java/com/seanox/pdf/Compare.java"
-      match="(Copyright\s+\(C\)\s+)\d+" flags="g" byline="false"
-      replace="\1${compare.year}"/>
-
-    <copy file="${workspace}/src/main/java/com/seanox/pdf/Designer.java" tofile="${workspace}/src/main/java/com/seanox/pdf/Designer.tmp" overwrite="true"/>
-    <replaceregexp file="${workspace}/src/main/java/com/seanox/pdf/Designer.tmp"
-      match="(?s).*?@version\s+([\d\.]+\s+(\d{4})\d+).*$" flags="g" byline="false"
-      replace="designer.version=\1&#x000D;designer.year=\2"/>
-    <loadproperties srcfile="${workspace}/src/main/java/com/seanox/pdf/Designer.tmp"/>
-    <delete file="${workspace}/src/main/java/com/seanox/pdf/Designer.tmp"/>
-    <replaceregexp file="${workspace}/src/main/java/com/seanox/pdf/Designer.java"
-      match="(\[Version )([\d\.]+\s\d+)(\])" flags="g" byline="false"
-      replace="\1${designer.version}\3"/>
-    <replaceregexp file="${workspace}/src/main/java/com/seanox/pdf/Designer.java"
-      match="(Copyright\s+\(C\)\s+)\d+" flags="g" byline="false"
-      replace="\1${designer.year}"/>
-    
-    <copy file="${workspace}/src/main/java/com/seanox/pdf/Preview.java" tofile="${workspace}/src/main/java/com/seanox/pdf/Preview.tmp" overwrite="true"/>
-    <replaceregexp file="${workspace}/src/main/java/com/seanox/pdf/Preview.tmp"
-      match="(?s).*?@version\s+([\d\.]+\s+(\d{4})\d+).*$" flags="g" byline="false"
-      replace="preview.version=\1&#x000D;preview.year=\2"/>
-    <loadproperties srcfile="${workspace}/src/main/java/com/seanox/pdf/Preview.tmp"/>
-    <delete file="${workspace}/src/main/java/com/seanox/pdf/Preview.tmp"/>
-    <replaceregexp file="${workspace}/src/main/java/com/seanox/pdf/Preview.java"
-      match="(\[Version )([\d\.]+\s\d+)(\])" flags="g" byline="false"
-      replace="\1${preview.version}\3"/>
-    <replaceregexp file="${workspace}/src/main/java/com/seanox/pdf/Preview.java"
-      match="(Copyright\s+\(C\)\s+)\d+" flags="g" byline="false"
-      replace="\1${preview.year}"/>
+    <sync-source-version file="${workspace}/src/main/java/com/seanox/pdf/Usage.java"/>
+    <sync-source-version file="${workspace}/src/main/java/com/seanox/pdf/Compare.java"/>
+    <sync-source-version file="${workspace}/src/main/java/com/seanox/pdf/Designer.java"/>
+    <sync-source-version file="${workspace}/src/main/java/com/seanox/pdf/Preview.java"/>
   </target>  
 </project>

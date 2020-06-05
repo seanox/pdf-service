@@ -74,6 +74,15 @@ public class Designer {
         System.out.println("Copyright (C) 2020 Seanox Software Solutions");
         System.out.println();
         
+        if (options == null
+                || options.length <= 0) {
+            System.out.println("usage: java -cp seanox-pdf-tools.jar com.seanox.pdf.Designer <paths/filters/globs> ...");
+            return;
+        }
+        
+        System.out.println("Press Crtl+C to stop");
+        System.out.println();
+        
         Service.Template.scan();
         
         HashMap<File, Date> fileMap = new HashMap<>(); 
