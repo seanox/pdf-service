@@ -69,12 +69,12 @@ import org.apache.commons.lang3.StringUtils;
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer<br>
  * <br>
- * Template 3.3.4 20200604<br>
+ * Template 4.0.0 20200606<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.3.4 20200604
+ * @version 4.0.0 20200606
  */
 public abstract class Template extends Service.Template {
     
@@ -207,7 +207,11 @@ public abstract class Template extends Service.Template {
      * Rules:
      * <ul>
      *   <li>
-     *     each dot in the key creates/uses a sub-map
+     *     the properties are used for data and statics<br>
+     *     data use a structured map and statics use a flat map 
+     *   </li>
+     *   <li>
+     *     each dot in the key creates/uses a sub-map for the structured data map
      *   </li>
      *   <li>
      *     if a (partial)key ends with [n], a list with a map is created/used<br>
@@ -277,7 +281,7 @@ public abstract class Template extends Service.Template {
     }
 
     /**
-     * Creates preview data based on a properties file corresponding to impl.
+     * Loads preview data based on a properties file corresponding to template.
      * The properties file are in the same package and use the same name.<br>
      * <dir>e.g. ArticleTemplateImpl -&gt; ArticleTemplateImpl.properties</dir>
      * @return the data for one data record as preview
@@ -302,6 +306,21 @@ public abstract class Template extends Service.Template {
         
         return map;
     }
+    
+    /**
+     * Loads preview statics based on a properties file corresponding to template.
+     * The properties file are in the same package and use the same name.<br>
+     * <dir>e.g. ArticleTemplateImpl -&gt; ArticleTemplateImpl.properties</dir>
+     * @return the data for one data record as preview
+     * @throws Exception
+     *     In case of unexpected errors.
+     */
+    @Override
+    protected Map<String, String> getPreviewStatics()
+            throws Exception {
+        return this.getPreviewProperties().entrySet().stream()
+                .collect(Collectors.toMap(entry -> String.valueOf(entry.getKey()), entry -> String.valueOf(entry.getValue())));
+    }    
     
     /**
      * Escapes characters greater ASCII 0x7F, markup symbols and line breaks.
@@ -453,7 +472,7 @@ public abstract class Template extends Service.Template {
     @Override
     protected String generate(String markup, Service.Meta.Type type, Service.Meta meta) {
 
-        Map<String, CharSequence> statics = meta.getStatics();
+        Map<String, String> statics = meta.getStatics();
         if (statics == null)
             statics = new HashMap<>();
         statics = statics.entrySet().stream()

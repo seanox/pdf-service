@@ -311,7 +311,7 @@ public class PreviewTest {
         data.put("x", "1");
         data.put("X", "2");
         meta.setData(data);
-        Map<String, CharSequence> statics = new TreeMap<>();
+        Map<String, String> statics = new TreeMap<>();
         statics.put("x", "1");
         statics.put("X", "2");
         meta.setStatics(statics);

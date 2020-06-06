@@ -29,7 +29,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.Properties;
 import java.util.logging.Level;
 
 import com.openhtmltopdf.util.XRLog;
@@ -38,12 +37,12 @@ import com.openhtmltopdf.util.XRLog;
  * Tool for the design process to create a test output of the rendered PDFs.
  * The PDFs are output in the same directory as the template.<br>
  * <br>
- * Preview 3.3.2 20200601<br>
+ * Preview 3.4.0 20200606<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.3.1 20200601
+ * @version 3.4.0 20200606
  */
 public class Preview {
     
@@ -149,12 +148,6 @@ public class Preview {
             }
             
             @Override
-            protected InputStream getSourceStream()
-                    throws Exception {
-                return this.getResourceStream(this.getSourcePath());
-            }
-            
-            @Override
             protected URI getResource(String resource)
                     throws Exception {
                 
@@ -176,19 +169,6 @@ public class Preview {
                 return new FileInputStream(target);
             }
             
-            @Override
-            protected Properties getPreviewProperties()
-                    throws Exception {
-                
-                String resource = this.getSourcePath();
-                resource = resource.replaceAll("[^\\\\/\\.]+$", "") + "properties";
-                
-                Properties properties = new Properties();
-                properties.load(this.getResourceStream(resource));        
-                
-                return properties;
-            }
-
             @Override
             public String toString() {
                 return canonical.toString();

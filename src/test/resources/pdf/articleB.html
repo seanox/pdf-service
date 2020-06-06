@@ -7,7 +7,7 @@
   <body lang="#[locale]">
     <header id="header">
       <span>#[template[[#[name]]]]</span>
-      <img src="![PAGE_LOGO_URL]"/>
+      <img src="![PAGE.LOGO.URL]"/>
     </header> 
     <section id="sheet">
       #[outlet[[
@@ -23,7 +23,7 @@
       ]]]
       #[article[[
       <article id="article">
-        <h3>![PAGE_PRODUCT_DATA_SHEET]</h3>
+        <h3>![PAGE.PRODUCT.DATA.SHEET]</h3>
         <h1>#[headline]</h1>
         <table>
           <tr>
@@ -76,7 +76,7 @@
     <footer id="footer">
       <section>
         <p>
-          ![PAGE_LEGAL]
+          ![PAGE.LEGAL]
         </p>
         <table>
           <tr>
@@ -84,7 +84,7 @@
               ![SYSTEM_DATE]
             </td>
             <td class="page">
-              #[page] ![PAGE_OF] #[pages]
+              #[page] ![PAGE.OF] #[pages]
             </td>
           </tr>
         </table>

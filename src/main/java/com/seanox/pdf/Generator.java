@@ -32,8 +32,8 @@ import java.util.stream.Collectors;
 /**
  * Generator, generates data by filling placeholders (tags) in a template/model.
  * A value list with keys is passed to the template. If the keys correspond to
- * the placeholders (upper/lower case is ignored), the placeholders are replaced
- * by the values.<br>
+ * the placeholders (case insensitive), the placeholders are replaced by the
+ * values.<br>
  * <br>
  * The generator worked at byte level.<br>
  * Values are therefore expected to be prim&auml;r as byte arrays. All other
@@ -54,8 +54,8 @@ import java.util.stream.Collectors;
  * repetitive and recursive structures.
  *
  * <h3>Description of the syntax</h3>
- * The syntax of the placeholders ignores upper and lower case and is limited to
- * the following characters:
+ * The syntax of the placeholders is case insensitive and is limited to the
+ * following characters:
  *     <dir>{@code a-z A-Z 0-9 _-}</dir>
  *      
  * <h3>Structure and description of the placeholders</h3>
@@ -120,11 +120,11 @@ import java.util.stream.Collectors;
  * one segment.<br>
  * <br>
  * Generator 5.2.1 20200514<br>
- * Copyright (C) 2019 Seanox Software Solutions<br>
+ * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 5.21 20200514
+ * @version 5.2.1 20200514
  */
 class Generator {
 

@@ -139,12 +139,12 @@ import com.seanox.pdf.Template.Markup;
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer<br>
  * <br>
- * Service 3.7.3 20200602<br>
+ * Service 4.0.0 20200606<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.7.3 20200602
+ * @version 4.0.0 20200606
  */
 public class Service {
     
@@ -216,10 +216,59 @@ public class Service {
         private Map<String, Object> data;
         
         /** key-value map for the static texts */
-        private Map<String, CharSequence> statics;
+        private Map<String, String> statics;
 
         /** Constructor, creates a new Meta object. */
         public Meta() {
+        }
+
+        /** 
+         * Constructor, creates a new Meta object.
+         * @param locale
+         */
+        public Meta(Locale locale) {
+            this.locale = locale;
+        }
+        
+        /** 
+         * Constructor, creates a new Meta object.
+         * @param locale
+         * @param data
+         */
+        public Meta(Map<String, Object> data) {
+            this.data = data;
+        }
+
+        /** 
+         * Constructor, creates a new Meta object.
+         * @param data
+         * @param statics
+         */
+        public Meta(Map<String, Object> data, Map<String, String> statics) {
+            this.data = data;
+            this.statics = statics;
+        }
+        
+        /** 
+         * Constructor, creates a new Meta object.
+         * @param locale
+         * @param data
+         */
+        public Meta(Locale locale, Map<String, Object> data) {
+            this.locale = locale;
+            this.data = data;
+        }
+
+        /** 
+         * Constructor, creates a new Meta object.
+         * @param locale
+         * @param data
+         * @param statics
+         */
+        public Meta(Locale locale, Map<String, Object> data, Map<String, String> statics) {
+            this.locale = locale;
+            this.data = data;
+            this.statics = statics;
         }
 
         /**
@@ -258,7 +307,7 @@ public class Service {
          * Return value of statics.
          * @return value of statics
          */
-        public Map<String, CharSequence> getStatics() {
+        public Map<String, String> getStatics() {
             return this.statics;
         }
 
@@ -266,7 +315,7 @@ public class Service {
          * Set value of statics.
          * @param statics value of statics
          */
-        public void setStatics(Map<String, CharSequence> statics) {
+        public void setStatics(Map<String, String> statics) {
             this.statics = statics;
         }
 
@@ -496,25 +545,27 @@ public class Service {
                 throws Exception;
 
         /**
+         * Returns the static data for the preview.
+         * @return the static data for the preview
+         * @throws Exception
+         *     In case of unexpected errors.
+         */
+        protected abstract Map<String, String> getPreviewStatics()
+                throws Exception;        
+        
+        /**
          * Creates the PDF as preview.
          * @return the PDF as preview
          * @throws Exception
          *     In case of unexpected errors.
          */
-        @SuppressWarnings("unchecked")
         protected byte[] getPreview()
                 throws Exception {
             return this.render(new Meta() {{
                 this.setLocale(Locale.getDefault());
-                this.setData(Template.this.getPreviewData().entrySet().stream()
-                        .filter(e -> !e.getKey().equalsIgnoreCase("static"))
-                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
-                this.setStatics(new HashMap<String, CharSequence>() {
-                    private static final long serialVersionUID = 1L; {
-                        if (Template.this.getPreviewData().containsKey("static"))
-                            this.putAll((HashMap<String, String>)Template.this.getPreviewData().get("static"));
-                }});
-             }});
+                this.setData(Template.this.getPreviewData());
+                this.setStatics(Template.this.getPreviewStatics());
+            }});
         }
 
         /**

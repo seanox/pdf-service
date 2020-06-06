@@ -1,5 +1,5 @@
-3.8.0 2020xxxx
-  BF: Generator Assemble: Correction of errors due to duplicate map entries
+4.0.0 2020xxxx
+  BF: Generator: Correction of errors due to duplicate map entries
       Occurs when the map entries are made case-insensitive.
   BF: Service Render: Correction of errors if the template contains no header and no footer
   BF: Template Generate:Correction of errors due to duplicate map entries
@@ -11,7 +11,15 @@
       java -cp seanox-pdf-tools.jar com.seanox.pdf.Compare <master> <compare>
       java -cp seanox-pdf-tools.jar com.seanox.pdf.Designer <paths/filters/globs> ...
       java -cp seanox-pdf-tools.jar com.seanox.pdf.Preview <paths/filters/globs> ...
-            
+  CR: Service Meta: Added more variants of the constructor
+  CR: Service Meta Static: Update to use Map<String, String> instead of Map<String, CharSequence>
+  CR: Template API: Separation when loading data and statics for the preview
+      There is still one properties file used for both.
+      But now there are two separate methods to get the data and statics.
+  CR: Template Preview Properties: Omission of the prefix 'static'
+      Data and static use the same data/properties.
+      Data uses this as a structured map, statics as a flat map.  
+
 3.7.3 20200530
   BF: Template: Correction of case insensitive statics
   CR: Test: Added a pixel based comparison of the PDFs
