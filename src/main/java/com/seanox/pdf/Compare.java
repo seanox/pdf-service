@@ -37,12 +37,12 @@ import org.apache.pdfbox.rendering.PDFRenderer;
 /** 
  * Pixel-based comparison of PDF files.<br>
  * <br>
- * Compare 1.1.0 20200530<br>
+ * Compare 1.1.0 20200606<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 1.1.0 20200530
+ * @version 1.1.0 20200606
  */
 public class Compare {
     
@@ -56,7 +56,7 @@ public class Compare {
     public static void main(String[] options)
             throws Exception {
         
-        System.out.println("Seanox PDF Comparator [Version 1.1.0 20200530]");
+        System.out.println("Seanox PDF Comparator [Version 1.1.0 20200606]");
         System.out.println("Copyright (C) 2020 Seanox Software Solutions");
         System.out.println();
         
@@ -66,7 +66,21 @@ public class Compare {
             return;
         }
         
-        Compare.compare(new File(options[0]), new File(options[1]));
+        for (int loop = 0; loop <= 1; loop++)
+            if (!new File(options[loop]).exists()
+                    || !new File(options[loop]).isFile()) {
+                System.out.println("Invalid file: " + options[loop]);
+                return;
+            }
+        
+        File[] files = Compare.compare(new File(options[0]), new File(options[1]));
+        if (files != null
+                && files.length > 0) {
+            System.out.println("Following differences were found:");
+            System.out.println("----");
+            for (File file : files)
+                System.out.println(file.getName());
+        } else System.out.println("No differences were found.");
     }
     
     /**
