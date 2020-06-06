@@ -41,6 +41,9 @@ language setting is also transferred to the template and thus fonts matching the
 abstract templates for individual generators and renderers
 - PDF comparison for test automation  
 pixel-based and difference image generation
+- PDF Tools as standalone Java applications  
+includes Compare, Designer, Preview as command line applications  
+designing and testing outside and independent of projects
 
 
 # Licence Agreement
@@ -79,14 +82,12 @@ https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
 
 
 # Changes (Change Log)
-## 3.7.3 20200530 (summary of the current version)  
-BF: Template: Correction of case insensitive statics  
-BF: Template: Optimization of the statics for case insensitivity  
-BF: Template: Correction/optimization for markup detection and escape  
-BF: Test: Correction of JUnit5  
-CR: Test: Added a pixel based comparison of the PDFs
-CR: Maven: Update of dependencies  
-CR: Generator: Optimization of the code  
+## 3.8.0 2020xxxx (summary of the next version)  
+BF: Generator Assemble: Correction of errors due to duplicate map entries  
+BF: Service Render: Correction of errors if the template contains no header and no footer  
+BF: Template Generate:Correction of errors due to duplicate map entries  
+CR: Compare: Integral part of the API and PDF Tools  
+CR: PDF Tools: Integrated as standalone Java application  
 
 [Read more](https://raw.githubusercontent.com/seanox/pdf-service/master/CHANGES)
 
