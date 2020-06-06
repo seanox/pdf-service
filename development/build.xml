@@ -1,15 +1,23 @@
 <?xml version="1.0" ?>
 <project name="pdf-service" default="usage" basedir="..">
   <target name="usage">
-    <echo>                                                     </echo>
-    <echo> the following targets are available ...             </echo>
-    <echo>                                                     </echo>
-    <echo>   changes    synchronizes the README.md with CHANGES</echo>
+    <echo>                                                           </echo>
+    <echo> the following targets are available ...                   </echo>
+    <echo>                                                           </echo>
+    <echo>   changes    synchronizes the README.md with CHANGES      </echo>
+    <echo>                                                           </echo>
+    <echo>   tools      Builds the release of the PDF tools          </echo>
+    <echo>              Ssynchronizes the version output of the tools</echo>
+    <echo>                                                           </echo>
+    <echo>   release    Builds the complete release                  </echo>
+    <echo>              Combined changes and tools                   </echo>
   </target>
   
   <property name="workspace" value="${basedir}"/>
   <property name="workspace.sources" value="${workspace}/src"/>
   <property name="workspace.development" value="${workspace}/development"/>
+  <property name="workspace.target" value="${workspace}/target"/>
+  <property name="workspace.releases" value="${workspace}/releases"/>
 
   <macrodef name="release-locate">
     <sequential>
@@ -26,13 +34,14 @@
       <replaceregexp file="CHANGES.tmp"
           match="(?&lt;=\d+)\." byline="true" replace="&#x000D;release.patch="/>
       <loadproperties srcfile="CHANGES.tmp"/>
+      <delete file="${workspace}/CHANGES.tmp"/>
     </sequential>
   </macrodef>
   
   <macrodef name="sync-source-version">
     <attribute name="file"/>
     <sequential>
-      <echo>Updating version in: @{file}</echo> 
+      <echo>Synchronizing version in:: @{file}</echo> 
       <copy file="@{file}" tofile="@{file}_temp" overwrite="true"/>
       <replaceregexp file="@{file}_temp"
           match="(?s).*?@version\s+([\d\.]+\s+(\d{4})\d+).*$" flags="g" byline="false"
@@ -80,10 +89,27 @@
     <replaceregexp file="${workspace}/README.md"
         match="(?si)(?&lt;=\(C\)\s)\d{4}\b" flags="g" byline="true"
         replace="${now.year}"/>
-    
+  </target>  
+  
+  <target name="tools">
     <sync-source-version file="${workspace}/src/main/java/com/seanox/pdf/Usage.java"/>
     <sync-source-version file="${workspace}/src/main/java/com/seanox/pdf/Compare.java"/>
     <sync-source-version file="${workspace}/src/main/java/com/seanox/pdf/Designer.java"/>
     <sync-source-version file="${workspace}/src/main/java/com/seanox/pdf/Preview.java"/>
-  </target>  
+
+    <delete dir="${workspace.target}" includes="*jar-with-dependencies.jar"/>
+    <exec executable="cmd">
+      <arg value="/c"/>
+      <arg value="mvn clean compile assembly:single"/>
+    </exec>
+    <release-locate/>
+    <move todir="${workspace.releases}">
+      <fileset dir="${workspace.target}">
+        <include name="seanox-pdf-service-*-jar-with-dependencies.jar"/>
+      </fileset>
+      <mapper type="glob" from="seanox-pdf-service-*-jar-with-dependencies.jar" to="seanox-pdf-tools-${release.version}.jar"/>
+    </move>
+  </target>
+  
+  <target name="release" depends="changes,tools"/>
 </project>

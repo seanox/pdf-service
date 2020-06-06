@@ -230,8 +230,10 @@
         </configuration>
       </plugin> 
       
-      <!-- for building the seanox-pdf-tools.jar with all dependencies as a standalone java application:
-               mvn clean compile assembly:single -->
+      <!-- 
+        For building the seanox-pdf-tools.jar with all dependencies as a standalone java application:
+            mvn clean compile assembly:single
+      -->
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
