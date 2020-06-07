@@ -39,7 +39,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -139,12 +138,12 @@ import com.seanox.pdf.Template.Markup;
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer<br>
  * <br>
- * Service 4.0.0 20200606<br>
+ * Service 4.0.0 20200607<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 4.0.0 20200606
+ * @version 4.0.0 20200607
  */
 public class Service {
     
@@ -742,14 +741,28 @@ public class Service {
         }
         
         /**
+         * Preparation/customization of the meta object before rendering.<br>
+         * The rendering is done in three steps (content, header, footer) and so
+         * this can be done once for all steps.
+         * @param  meta
+         * @return the customized meta-object
+         */
+        protected Meta customizeMeta(Meta meta) {
+            return meta;
+        }
+        
+        /**
          * Creates the PDF based on the data records as meta object.
          * @param  meta data records as map array
          * @return the created PDF as byte array
          * @throws Exception
          *     In case of unexpected errors.
          */
-         final protected byte[] render(Meta meta)
+        final protected byte[] render(Meta meta)
                 throws Exception {
+
+            //optional preparation/customization of the meta object
+            meta = this.customizeMeta(meta);
 
             if (meta == null)
                 meta = new Meta();

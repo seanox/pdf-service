@@ -36,6 +36,8 @@ import java.util.stream.IntStream;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.seanox.pdf.Service.Meta;
+
 /** 
  * Abstract class for implementing of template implementations.
  * 
@@ -468,30 +470,44 @@ public abstract class Template extends Service.Template {
         });
         return result;
     }    
-
+    
     @Override
-    protected String generate(String markup, Service.Meta.Type type, Service.Meta meta) {
+    protected Meta customizeMeta(Meta meta) {
+
+        Map<String, Object> data = meta.getData();
+        data = Template.escapeHtml(data);
+        data = Template.indicateEmpty(data);
 
         Map<String, String> statics = meta.getStatics();
         if (statics == null)
             statics = new HashMap<>();
         statics = statics.entrySet().stream()
-                .collect(Collectors.toMap(entry -> entry.getKey().toLowerCase(), entry -> entry.getValue(), (existing, value) -> value));
+                .filter(entry -> entry.getValue() != null)
+                .collect(Collectors.toMap(
+                        (entry) -> entry.getKey().toLowerCase(),
+                        (entry) -> Template.escapeHtml(entry.getValue(),
+                                PATTERN_MARKUP_DETECTION.matcher(entry.getValue()).find()),  
+                        (existing, value) -> value));
+        
+        return new Meta(meta.getLocale(), data, statics);
+    }
+    
+    @Override
+    protected String generate(String markup, Meta.Type type, Meta meta) {
+        
+        Map<String, String> statics = meta.getStatics();
         Pattern pattern = Pattern.compile("\\!\\[\\s*(.*?)\\s*\\]");
         Matcher matcher = pattern.matcher(markup);
         while (matcher.find()) {
-            CharSequence value = statics.get(matcher.group(1).toLowerCase());
+            String value = statics.get(matcher.group(1).toLowerCase());
             if (value == null)
                 continue;
-            value = Template.escapeHtml(value.toString(), value instanceof Markup);
+            value = value.replaceAll("#(?=\\[)", "#[0x35]");
             markup = markup.replace(matcher.group(0), value);
         }
 
         Generator generator = Generator.parse(markup.getBytes());
-        Map<String, Object> data = Template.escapeHtml(meta.getData());
-        data = Template.indicateEmpty(data);
-        generator.set(data);
-        
+        generator.set(meta.getData());
         generator.set(new HashMap<String, Object>() {
             private static final long serialVersionUID = 1L; {
             if (meta.getLocale() != null)
