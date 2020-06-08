@@ -25,7 +25,6 @@
       - Placeholders must begin with a letter
       - Placeholders cannot be inserted subsequently
       - Placeholders without value are removed at the end
-
   CR: Template Preview Properties: Omission of the prefix 'static'
       Data and static use the same data/properties.
       Data uses this as a structured map, statics as a flat map.  
