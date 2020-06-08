@@ -87,6 +87,7 @@ BF: Generator: Correction of errors due to duplicate map entries
 BF: Service Render: Correction of errors if the template contains no header and no footer  
 BF: Template Generate:Correction of errors due to duplicate map entries  
 CR: Compare: Integral part of the API and PDF Tools  
+CR: Compare: Optimization of the output of differences  
 CR: PDF Tools: Integrated as standalone Java application  
 CR: Service Meta: Added more variants of the constructor  
 CR: Service Meta Static: Update to use Map<String, String> instead of Map<String, CharSequence>  

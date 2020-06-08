@@ -20,7 +20,9 @@
  */
 package com.seanox.pdf;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -37,12 +39,12 @@ import org.apache.pdfbox.rendering.PDFRenderer;
 /** 
  * Pixel-based comparison of PDF files.<br>
  * <br>
- * Compare 1.1.0 20200606<br>
+ * Compare 1.1.0 20200608<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 1.1.0 20200606
+ * @version 1.1.0 20200608
  */
 public class Compare {
     
@@ -81,6 +83,30 @@ public class Compare {
             for (File file : files)
                 System.out.println(file.getName());
         } else System.out.println("No differences were found.");
+    }
+    
+    /**
+     * Calculates the increase of a color tone.
+     * The increase can be positive or negative.
+     * @param  rgba
+     * @param  tone
+     * @param  factor
+     * @return the dalculated RGBA value
+     */
+    private static int increaseColorTone(int rgba, Color tone, int factor) {
+        
+        Color color = new Color(rgba, true);
+        int r = color.getRed();
+        int g = color.getGreen();
+        int b = color.getBlue();
+        int a = color.getAlpha();
+        if (Color.RED.equals(tone))
+            color = new Color(r, Math.min(Math.max(g -factor, 0), 255), Math.min(Math.max(b -factor, 0), 255), a);
+        if (Color.GREEN.equals(tone))
+            color = new Color(Math.min(Math.max(r -factor, 0), 255), g, Math.min(Math.max(b -factor, 0), 255), a);
+        if (Color.BLUE.equals(tone))
+            color = new Color(Math.min(Math.max(r -factor, 0), 255), Math.min(Math.max(g -factor, 0), 255), b, a);
+        return color.getRGB();
     }
     
     /**
@@ -141,11 +167,30 @@ public class Compare {
      * @return delta as image, otherwise {@code null}
      */
     private static BufferedImage compareImage(BufferedImage master, BufferedImage compare) {
+
+        Graphics graphics;
         
         Dimension dimension = new Dimension(
                 Math.max(master.getWidth(), compare.getWidth()),
                 Math.max(master.getHeight(), compare.getHeight()));
         BufferedImage delta = new BufferedImage((int)dimension.getWidth(), (int)dimension.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
+
+        BufferedImage masterGray = new BufferedImage(master.getWidth(), master.getHeight(), BufferedImage.TYPE_BYTE_GRAY);  
+        graphics = masterGray.getGraphics();  
+        graphics.drawImage(master, 0, 0, null);  
+        graphics.dispose(); 
+        
+        BufferedImage compareGray = new BufferedImage(compare.getWidth(), compare.getHeight(), BufferedImage.TYPE_BYTE_GRAY);  
+        graphics = compareGray.getGraphics();  
+        graphics.drawImage(compare, 0, 0, null);  
+        graphics.dispose(); 
+        
+        graphics = delta.getGraphics();
+        graphics.drawImage(masterGray, 0, 0, null);
+        graphics.dispose();
+
+        final int COLOR_TONE_FACTOR = 127;
+        
         boolean control = true;
         for (int y = 0; y < dimension.getHeight(); y++) {
             for (int x = 0; x < dimension.getWidth(); x++) {
@@ -164,25 +209,33 @@ public class Compare {
                     //case height or width mismatch without pixel
                     //use a gray color value
                     control = false;
-                    delta.setRGB(x, y, 0xFFC0C0C0);
-                } else if (pixelM == null
-                        || pixelC == null) {
+                    delta.setRGB(x, y, new Color(255, 255, COLOR_TONE_FACTOR).getRGB());
+                } else if (pixelC == null) {
                     //case pixel differences with height or width mismatch
-                    //use the inverted color value
+                    //draw the grayscaled pixel
                     control = false;
-                    delta.setRGB(x, y, (0xFFFFFF -(pixelM != null ? pixelM.intValue() : pixelC.intValue())) | 0xFF000000);                    
+                    Color color = new Color(masterGray.getRGB(x, y));
+                    delta.setRGB(x, y, Compare.increaseColorTone(color.getRGB(), Color.GREEN, COLOR_TONE_FACTOR));                    
+                } else if (pixelM == null) {
+                    //case pixel differences with height or width mismatch
+                    //draw the grayscaled pixel
+                    Color color = new Color(compareGray.getRGB(x, y));
+                    delta.setRGB(x, y, Compare.increaseColorTone(color.getRGB(), Color.BLUE, COLOR_TONE_FACTOR));                    
                 } else if (pixelM.equals(pixelC)) {
                     //case pixel matches without height or width mismatch 
-                    delta.setRGB(x, y, master.getRGB(x, y));
+                    //the pixels already exist grayscale
                 } else {
                     //case pixel differences without height or width mismatch 
+                    //draw the grayscaled pixel
                     control = false;
-                    int a = 0xFF | pixelM.intValue() >> 24;
-                    int r = 0xFF & pixelM.intValue() >> 16;
-                    int g = 0x00 & pixelM.intValue() >> 8;
-                    int b = 0x00 & pixelM.intValue();
-                    int modifiedRGB = a << 24 | r << 16 | g << 8 | b;
-                    delta.setRGB(x, y, modifiedRGB);
+                    Color colorM = new Color(masterGray.getRGB(x, y));
+                    Color colorC = new Color(compareGray.getRGB(x, y));
+                    Color color = new Color(
+                            (colorM.getRed() +colorC.getRed()) /2,
+                            (colorM.getGreen() +colorC.getGreen()) /2,
+                            (colorM.getBlue() +colorC.getBlue()) /2,
+                            (colorM.getAlpha() +colorC.getAlpha()) /2);
+                    delta.setRGB(x, y, Compare.increaseColorTone(color.getRGB(), Color.RED, COLOR_TONE_FACTOR));                    
                 }
             }
         }

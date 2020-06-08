@@ -6,6 +6,12 @@
       Occurs when the map entries are made case-insensitive.
   CR: Compare: Integral part of the API and PDF Tools
       PDF Tools: Compare, Designer, Preview
+  CR: Compare: Optimization of the output of differences
+      - Gray: the original / no difference
+      - Blue: only in the compare
+      - Green: only in the master
+      - Yellow: nowhere (overlapping)
+      - Red: difference between master and compare      
   CR: PDF Tools: Integrated as standalone Java application  
           usage:
       java -cp seanox-pdf-tools.jar com.seanox.pdf.Compare <master> <compare>
@@ -27,7 +33,7 @@
       - Placeholders without value are removed at the end
   CR: Template Preview Properties: Omission of the prefix 'static'
       Data and static use the same data/properties.
-      Data uses this as a structured map, statics as a flat map.  
+      Data uses this as a structured map, statics as a flat map.
 
 3.7.3 20200530
   BF: Template: Correction of case insensitive statics
