@@ -188,7 +188,7 @@ public class Preview {
     public static void main(String[] options)
             throws Exception {
         
-        System.out.println("Seanox PDF Preview [Version 3.3.1 20200601]");
+        System.out.println("Seanox PDF Preview [Version 3.4.0 20200606]");
         System.out.println("Copyright (C) 2020 Seanox Software Solutions");
         System.out.println();
         
