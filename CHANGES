@@ -7,7 +7,7 @@
   CR: Compare: Integral part of the API and PDF Tools
       PDF Tools: Compare, Designer, Preview
   CR: PDF Tools: Integrated as standalone Java application  
-        usage:
+          usage:
       java -cp seanox-pdf-tools.jar com.seanox.pdf.Compare <master> <compare>
       java -cp seanox-pdf-tools.jar com.seanox.pdf.Designer <paths/filters/globs> ...
       java -cp seanox-pdf-tools.jar com.seanox.pdf.Preview <paths/filters/globs> ...
@@ -19,6 +19,13 @@
   CR: Template API: Added method Meta customizeMeta(Meta meta)  
       Preparation/customization of the meta object before rendering.  
       The rendering is done in three steps (content, header, footer) and so this can be done once for all steps.
+  CR: Template Generate: Unified behavior of data placeholders and static placeholders
+      - Placeholders are case insensitive
+      - Placeholders are limited to the following characters: a-z A-Z 0-9 _-
+      - Placeholders must begin with a letter
+      - Placeholders cannot be inserted subsequently
+      - Placeholders without value are removed at the end
+
   CR: Template Preview Properties: Omission of the prefix 'static'
       Data and static use the same data/properties.
       Data uses this as a structured map, statics as a flat map.  

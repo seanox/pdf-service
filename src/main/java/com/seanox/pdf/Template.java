@@ -71,12 +71,12 @@ import com.seanox.pdf.Service.Meta;
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer<br>
  * <br>
- * Template 4.0.0 20200606<br>
+ * Template 4.0.0 20200608<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 4.0.0 20200606
+ * @version 4.0.0 20200608
  */
 public abstract class Template extends Service.Template {
     
@@ -495,14 +495,23 @@ public abstract class Template extends Service.Template {
     @Override
     protected String generate(String markup, Meta.Type type, Meta meta) {
         
+        //Comparable behaviour to the generator:
+        //  - Placeholders are case insensitive
+        //  - Placeholders are limited to the following characters: a-z A-Z 0-9 _-
+        //  - Placeholders must begin with a letter
+        //  - Placeholders cannot be inserted subsequently
+        //  - Placeholders without value are removed at the end
+
         Map<String, String> statics = meta.getStatics();
         Pattern pattern = Pattern.compile("\\!\\[\\s*(.*?)\\s*\\]");
         Matcher matcher = pattern.matcher(markup);
         while (matcher.find()) {
-            String value = statics.get(matcher.group(1).toLowerCase());
+            String value = null;
+            if (matcher.group(0).matches("^(?i)!\\[[a-z]([\\w-]*\\w)*\\]$"))
+                value = statics.get(matcher.group(1).toLowerCase());
             if (value == null)
-                continue;
-            value = value.replaceAll("#(?=\\[)", "#[0x35]");
+                value = "";
+            value = value.replaceAll("#(?=\\[)", "#[0x23]");
             markup = markup.replace(matcher.group(0), value);
         }
 

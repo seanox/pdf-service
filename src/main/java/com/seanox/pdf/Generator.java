@@ -54,8 +54,8 @@ import java.util.stream.Collectors;
  * repetitive and recursive structures.
  *
  * <h3>Description of the syntax</h3>
- * The syntax of the placeholders is case insensitive and is limited to the
- * following characters:
+ * The syntax of the placeholders is case-insensitive, must begin with a letter
+ * and is limited to the following characters:
  *     <dir>{@code a-z A-Z 0-9 _-}</dir>
  *      
  * <h3>Structure and description of the placeholders</h3>

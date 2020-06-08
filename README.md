@@ -82,12 +82,18 @@ https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
 
 
 # Changes (Change Log)
-## 3.8.0 2020xxxx (summary of the next version)  
-BF: Generator Assemble: Correction of errors due to duplicate map entries  
+## 4.0.0 2020xxxx (summary of the next version)  
+BF: Generator: Correction of errors due to duplicate map entries  
 BF: Service Render: Correction of errors if the template contains no header and no footer  
 BF: Template Generate:Correction of errors due to duplicate map entries  
 CR: Compare: Integral part of the API and PDF Tools  
 CR: PDF Tools: Integrated as standalone Java application  
+CR: Service Meta: Added more variants of the constructor  
+CR: Service Meta Static: Update to use Map<String, String> instead of Map<String, CharSequence>  
+CR: Template API: Separation when loading data and statics for the preview  
+CR: Template API: Added method Meta customizeMeta(Meta meta)  
+CR: Template Generate: Unified behavior of data placeholders and static placeholders  
+CR: Template Preview Properties: Omission of the prefix 'static'  
 
 [Read more](https://raw.githubusercontent.com/seanox/pdf-service/master/CHANGES)
 
