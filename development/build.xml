@@ -110,6 +110,7 @@
       </fileset>
       <mapper type="glob" from="seanox-pdf-service-*-jar-with-dependencies.jar" to="seanox-pdf-tools-${release.version}.jar"/>
     </move>
+    <touch datetime="${release.date}" pattern="yyyyMMdd" file="${workspace.releases}/seanox-pdf-tools-${release.version}.jar"/>
   </target>
   
   <target name="release" depends="changes,tools">
