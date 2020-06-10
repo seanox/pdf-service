@@ -200,6 +200,12 @@ public class PreviewTest {
         
         master = "target/test-classes/com/seanox/pdf/example/ArticleMultiTemplate_preview.pdf";
         PreviewTest.validatePreviewPdf(new File(ROOT, master), time);
+        
+        master = "src/test/resources/pdf/compareA_preview.pdf";
+        PreviewTest.validatePreviewPdf(new File(ROOT, master), time);
+        
+        master = "src/test/resources/pdf/compareB_preview.pdf";
+        PreviewTest.validatePreviewPdf(new File(ROOT, master), time);
     }
     
     @Test
@@ -321,7 +327,20 @@ public class PreviewTest {
         Assertions.assertTrue(new File(TEMP, compare).lastModified() > time);
         Assertions.assertNull(Compare.compare(new File(TEMP, new File(master).getName()), new File(TEMP, compare)));
         Assertions.assertEquals(new File(ROOT, master).length(), new File(TEMP, compare).length());
-    }  
+    }
+
+    @Test
+    public void test08()
+            throws Exception {
+        
+        File[] diffs = Compare.compare(new File(TEMP, "compareA.pdf"), new File(TEMP, "compareB.pdf"));
+        Assertions.assertNotNull(diffs);
+        Assertions.assertEquals(1, diffs.length);
+        
+        String master = "src/test/resources/pdf/compareB_diffs_page_1.png";
+        Files.copy(new File(master).toPath(), new File(TEMP, new File(master).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
+        Assertions.assertTrue(PreviewTest.compareImages(new File(TEMP, new File(master).getName()), diffs[0]));
+    }
 
     @Resources(base="/pdf")
     public static class DuplicateTemplate extends com.seanox.pdf.Template {
