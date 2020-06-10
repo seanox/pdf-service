@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
  * Values are therefore expected to be prim&auml;r as byte arrays. All other
  * data types are converted using {@code String.valueOf(value).getBytes()}.<br>
  * <br>
- * Placeholders can also be used as segments.<br>
+ * Placeholders can be used for values and segments.<br>
  * Segments are partial structures that can be nested up to a depth of 65535
  * levels. These substructures can be used and filled globally or by segment
  * name dedicted/partially.<br>

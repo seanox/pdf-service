@@ -82,7 +82,7 @@ https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
 
 
 # Changes (Change Log)
-## 4.0.0 2020xxxx (summary of the next version)  
+## 4.0.0 202007xx (summary of the next version)  
 BF: Generator: Correction of errors due to duplicate map entries  
 BF: Service Render: Correction of errors if the template contains no header and no footer  
 BF: Template Generate:Correction of errors due to duplicate map entries  

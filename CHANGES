@@ -1,4 +1,4 @@
-4.0.0 2020xxxx
+4.0.0 202007xx
   BF: Generator: Correction of errors due to duplicate map entries
       Occurs when the map entries are made case-insensitive.
   BF: Service Render: Correction of errors if the template contains no header and no footer
