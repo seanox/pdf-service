@@ -28,7 +28,6 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -50,12 +49,12 @@ import com.seanox.pdf.example.UsageTemplate;
 /** 
  * Wrapper to run the {@link Preview} with the test classes and resources.<br>
  * <br>
- * PreviewTest 3.6.0 20200602<br>
+ * PreviewTest 3.6.0 20200610<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.6.0 20200602
+ * @version 3.6.0 20200610
  */
 @RunWith(JUnitPlatform.class)
 @SuppressWarnings("javadoc")
@@ -106,10 +105,12 @@ public class PreviewTest {
             throws IOException {
         
         Assertions.assertTrue(master.exists());
-        Assertions.assertTrue(master.lastModified() < time);
+        if (time >= 0)
+            Assertions.assertTrue(master.lastModified() < time);
         File compare = new File(master.getParentFile(), master.getName().replaceAll("_preview\\.pdf$", ".pdf"));
         Assertions.assertTrue(compare.exists());
-        Assertions.assertTrue(compare.lastModified() > time);
+        if (time >= 0)
+            Assertions.assertTrue(compare.lastModified() > time);
         Files.copy(master.toPath(), new File(TEMP, master.getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
         Files.move(compare.toPath(), new File(TEMP, compare.getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
         Assertions.assertNull(Compare.compare(new File(TEMP, master.getName()), new File(TEMP, compare.getName())));
@@ -118,16 +119,7 @@ public class PreviewTest {
 
     private static void validatePreviewPdf(File master)
             throws IOException {
-        
-        Assertions.assertTrue(master.exists());
-        File compare = new File(master.getParentFile(), master.getName().replaceAll("_preview\\.pdf$", ".pdf"));
-        Assertions.assertTrue(compare.exists());
-        Assertions.assertTrue(master.lastModified() < compare.lastModified());
-        Assertions.assertTrue(compare.lastModified() > master.lastModified());
-        Files.copy(master.toPath(), new File(TEMP, master.getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
-        Files.move(compare.toPath(), new File(TEMP, compare.getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
-        Assertions.assertNull(Compare.compare(new File(TEMP, master.getName()), new File(TEMP, compare.getName())));
-        Assertions.assertEquals(new File(TEMP, master.getName()).length(), new File(TEMP, compare.getName()).length());
+        PreviewTest.validatePreviewPdf(master, -1);
     }
     
     private static boolean compareImages(File master, File compare)
@@ -174,13 +166,13 @@ public class PreviewTest {
         Assertions.assertEquals(3, diffs.length);
         master = "src/test/resources/pdf/reportDiffs_diffs_page_1.png";
         Files.copy(new File(master).toPath(), new File(TEMP, new File(master).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
-        Assertions.assertTrue(PreviewTest.compareImages(new File(TEMP, new File(master).getName()), new File(TEMP, "reportDiffs_diffs_page_1.png")));
+        Assertions.assertTrue(PreviewTest.compareImages(new File(TEMP, new File(master).getName()), diffs[0]));
         master = "src/test/resources/pdf/reportDiffs_diffs_page_2.png";
         Files.copy(new File(master).toPath(), new File(TEMP, new File(master).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
-        Assertions.assertTrue(PreviewTest.compareImages(new File(TEMP, new File(master).getName()), new File(TEMP, "reportDiffs_diffs_page_2.png")));
+        Assertions.assertTrue(PreviewTest.compareImages(new File(TEMP, new File(master).getName()), diffs[1]));
         master = "src/test/resources/pdf/reportDiffs_diffs_page_3.png";
         Files.copy(new File(master).toPath(), new File(TEMP, new File(master).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
-        Assertions.assertTrue(PreviewTest.compareImages(new File(TEMP, new File(master).getName()), new File(TEMP, "reportDiffs_diffs_page_3.png")));
+        Assertions.assertTrue(PreviewTest.compareImages(new File(TEMP, new File(master).getName()), diffs[2]));
 
         master = "src/test/resources/pdf/articleC_preview.pdf";
         PreviewTest.validatePreviewPdf(new File(ROOT, master), time);        

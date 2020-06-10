@@ -41,13 +41,14 @@ import com.seanox.pdf.Template;
  * The resources (css, images, ...) are in the ClassPath /pdf/... and are used
  * in the template relative.<br>
  * <br>
- * UsageTemplate 1.2.1 20200510<br>
+ * UsageTemplate 1.2.1 20200610<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 1.2.1 20200510
+ * @version 1.2.1 20200610
  */
+@SuppressWarnings("javadoc")
 public class UsageTemplate {
     
     public static void main(String[] options) {
@@ -57,7 +58,8 @@ public class UsageTemplate {
         //and can be easily converted.
         //Static texts are available in the template in the header, dataset and
         //footer sections.
-        Map<String, String> statics = new HashMap<String, String>() {{
+        Map<String, String> statics = new HashMap<String, String>() {
+            private static final long serialVersionUID = 1L; {
             put("ARTICLE_NUMBER", "Article number");
             put("ARTICLE_PRICE", "Price");
             put("ADDRESS_TEL", "Tel");
