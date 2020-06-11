@@ -61,12 +61,15 @@
   </macrodef> 
   
   <target name="changes">
+    <release-locate/>
+    
     <replaceregexp file="${workspace}/CHANGES" match="&#x00E4;" replace="ae" flags="g"/>
     <replaceregexp file="${workspace}/CHANGES" match="&#x00C4;" replace="Ae" flags="g"/>
     <replaceregexp file="${workspace}/CHANGES" match="&#x00F6;" replace="oe" flags="g"/>
     <replaceregexp file="${workspace}/CHANGES" match="&#x00D6;" replace="Oe" flags="g"/>
     <replaceregexp file="${workspace}/CHANGES" match="&#x00FC;" replace="ue" flags="g"/>
     <replaceregexp file="${workspace}/CHANGES" match="&#x00DC;" replace="Ue" flags="g"/>
+    <replaceregexp file="${workspace}/CHANGES" match="\s+$" replace="" flags="g" byline="true"/>
       
     <copy file="${workspace}/CHANGES" tofile="${workspace}/CHANGES.tmp" overwrite="true"/>
     <replaceregexp file="${workspace}/CHANGES.tmp" match="^\s+" replace="" byline="false"/>
@@ -90,20 +93,29 @@
     <replaceregexp file="${workspace}/README.md"
         match="(?si)(?&lt;=\(C\)\s)\d{4}\b" flags="g" byline="true"
         replace="${now.year}"/>
+    
+    <replaceregexp file="${workspace}/pom.xml" flags="g" byline="false"
+        match="(?si)(&lt;artifactId&gt;seanox-pdf-service&lt;/artifactId&gt;\s*&lt;version&gt;)[\d\.]+(&lt;/version&gt;)" 
+        replace="\1${release.version}\2"/>  
   </target>  
   
   <target name="tools">
+    <release-locate/>
+    
     <sync-source-version file="${workspace}/src/main/java/com/seanox/pdf/Usage.java"/>
     <sync-source-version file="${workspace}/src/main/java/com/seanox/pdf/Compare.java"/>
     <sync-source-version file="${workspace}/src/main/java/com/seanox/pdf/Designer.java"/>
     <sync-source-version file="${workspace}/src/main/java/com/seanox/pdf/Preview.java"/>
 
+    <replaceregexp file="${workspace}/pom.xml" flags="g" byline="false"
+        match="(?si)(&lt;artifactId&gt;seanox-pdf-service&lt;/artifactId&gt;\s*&lt;version&gt;)[\d\.]+(&lt;/version&gt;)" 
+        replace="\1${release.version}\2"/>   
+    
     <delete dir="${workspace.target}" includes="*jar-with-dependencies.jar"/>
     <exec executable="cmd">
       <arg value="/c"/>
       <arg value="mvn clean compile assembly:single"/>
     </exec>
-    <release-locate/>
     <move todir="${workspace.releases}">
       <fileset dir="${workspace.target}">
         <include name="seanox-pdf-service-*-jar-with-dependencies.jar"/>
