@@ -95,6 +95,7 @@ CR: Template API: Separation when loading data and statics for the preview
 CR: Template API: Added method Meta customizeMeta(Meta meta)  
 CR: Template Generate: Unified behavior of data placeholders and static placeholders  
 CR: Template Preview Properties: Omission of the prefix 'static'  
+CR: Maven: Update of dependencies  
 
 [Read more](https://raw.githubusercontent.com/seanox/pdf-service/master/CHANGES)
 

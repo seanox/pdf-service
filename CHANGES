@@ -11,8 +11,8 @@
       - Blue: only in the compare
       - Green: only in the master
       - Yellow: nowhere (overlapping)
-      - Red: difference between master and compare      
-  CR: PDF Tools: Integrated as standalone Java application  
+      - Red: difference between master and compare
+  CR: PDF Tools: Integrated as standalone Java application
           usage:
       java -cp seanox-pdf-tools.jar com.seanox.pdf.Compare <master> <compare>
       java -cp seanox-pdf-tools.jar com.seanox.pdf.Designer <paths/filters/globs> ...
@@ -22,8 +22,8 @@
   CR: Template API: Separation when loading data and statics for the preview
       There is still one properties file used for both.
       But now there are two separate methods to get the data and statics.
-  CR: Template API: Added method Meta customizeMeta(Meta meta)  
-      Preparation/customization of the meta object before rendering.  
+  CR: Template API: Added method Meta customizeMeta(Meta meta)
+      Preparation/customization of the meta object before rendering.
       The rendering is done in three steps (content, header, footer) and so this can be done once for all steps.
   CR: Template Generate: Unified behavior of data placeholders and static placeholders
       - Placeholders are case insensitive
@@ -34,15 +34,16 @@
   CR: Template Preview Properties: Omission of the prefix 'static'
       Data and static use the same data/properties.
       Data uses this as a structured map, statics as a flat map.
+  CR: Maven: Update of dependencies
 
 3.7.3 20200530
   BF: Template: Correction of case insensitive statics
   CR: Test: Added a pixel based comparison of the PDFs
 
 3.7.2 20200530
-  BF: Template: Optimization of the statics for case insensitivity 
+  BF: Template: Optimization of the statics for case insensitivity
   BF: Template: Correction/optimization for markup detection and escape
-  BF: Test: Correction of JUnit5  
+  BF: Test: Correction of JUnit5
   CR: Maven: Update of dependencies
   CR: Generator: Optimization of the code
 
@@ -62,7 +63,7 @@
       CharSequence of type markup work like string values, but there is no escape of HTML symbols.
   CR: Service Template Mockup: Added support for markup in properties
       If the value contains one of the following sequences of characters:
-          <.../> >...</ &...; 
+          <.../> >...</ &...;
       The value is interpreted as markup and not escaped.
 
 3.6.0 20200405
@@ -78,11 +79,11 @@
   CR: Service Template: Stricter use of header and footer
       The markup of header and footer is now based exclusively on BODY + HEADER /
       BODY + FOOTER, possibly additional elements in the body for header and footer
-      are removed. Overlays for headers and footers are only created if they exist. 
+      are removed. Overlays for headers and footers are only created if they exist.
 
 3.5.1 20200316
   BF: Service Template Includes: Correction when following includes with absolute path
-  BF: Service Template Includes: Optimization for recursion detection 
+  BF: Service Template Includes: Optimization for recursion detection
   BF: Service Template Generate: Correction for using the resource base as the basis of the includes
   BF: Documentation: Corrections der Versions in the sources
   CR: Service Template: Use TemplateResourceNotFoundException for FileNotFoundException
@@ -121,19 +122,19 @@
   CR: Preview: Added support for pure markup files
       Renders HTML templates without template implementation
   CR: Preview: Preview data of properties are now also available in header and footer
-      Previously, only the static values were available there.         
+      Previously, only the static values were available there.
   CR: Preview: Properties of the preview data are now always searched at the template location
   CR: Preview: General optimization of the preview creation.
   CR: Designer: Added support for pure markup files
   CR: Designer: General optimization of the preview creation.
   CR: Designer: Harmonisation of data storage / PDF output
-      The output is now consistently at the place of the template 
+      The output is now consistently at the place of the template
   CR: Examples: Added various examples
       single, multiple, with and without template implementation
 
 3.3.0
   NT: Lost
-  
+
 3.2.0
   NT: Lost
 
