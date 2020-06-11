@@ -44,6 +44,7 @@ designing and testing outside and independent of projects
   * [Integration](#integration)
   * [Implementation](#implementation)
   * [Markup](#markup)
+  * [Placeholder](#placeholder)
 * [Mock-Up](#mock-up)
 * [Test](#test)
 * [Generator / Render API](#generator-render-api)
@@ -252,9 +253,108 @@ public static class ExampleTemplate extends Template {
 }
 ```
 
-TODO:
+The complete example can be found here:  
+https://github.com/seanox/pdf-service/blob/master/src/test/java/com/seanox/pdf/example/UsageTemplate.java#L1
 
 ### Markup
+
+The template is a pure (X)HTML document with CSS support and meta commands and
+placeholder for the generator.  
+
+```html
+<html>
+  <head>
+    <style type="text/css">
+      @page {
+        margin:36mm 18mm 40mm 18mm;
+        size:A4 portrait;
+      }
+      ...
+    </style>
+  </head>
+  <body>
+  </body>
+</html>
+```
+
+The renderer recognizes three parts in the template: header, content and footer.  
+Content is what is not BODY > HEADER and not BODY > FOOTER.  
+Headers and footers are extracted as independent and borderless templates.  
+The CSS is completely taken over and the borderless layout is extended.  
+All documents are rendered separately and merged into one PDF file via page
+overlay. 
+
+```html
+<html>
+  <head>
+    <style type="text/css">
+      @page {
+        margin:36mm 18mm 40mm 18mm;
+        size:A4 portrait;
+      }
+      ...
+    </style>
+  </head>
+  <body>
+    <header>
+      ...
+    </header>
+    ... 
+    <footer>
+      ...
+    </footer>
+  </body>
+</html>
+```
+
+Open HTML to PDF and the used frameworks come with some custom CSS extensions,
+which are described on the homepage.  
+https://github.com/danfickle/openhtmltopdf/wiki/Page-features  
+The specials for headers, footers and page numbers can be used or ignored
+because they have been implemented alternatively in the PDF service.
+
+```html
+<html>
+  <head>
+    <style type="text/css">
+      @page {
+        margin:36mm 18mm 40mm 18mm;
+        size:A4 portrait;
+      }
+      body {
+        ...
+      }      
+      header {
+        ...
+      }
+      footer {
+        ...
+      }       
+      ...
+    </style>
+  </head>
+  <body>
+    <header>
+      ...
+    </header>
+    ... 
+    <footer>
+      ...
+    </footer>
+  </body>
+</html>
+```
+
+The complete example and more can be found here:
+https://github.com/seanox/pdf-service/blob/master/src/test/resources/com/seanox/pdf/example/UsageTemplate%24ExampleTemplate.html#L1  
+https://github.com/seanox/pdf-service/tree/master/src/test/resources/pdf
+
+### Placeholder
+
+This section depends on the template generator used.  
+The description refers to the template generator which is integrated in Seanox
+PDF-Service.  
+
 TODO:
 
 
