@@ -39,12 +39,12 @@ import org.apache.pdfbox.rendering.PDFRenderer;
 /** 
  * Pixel-based comparison of PDF files.<br>
  * <br>
- * Compare 1.1.0 20200608<br>
+ * Compare 1.1.0 20200610<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 1.1.0 20200608
+ * @version 1.1.0 20200610
  */
 public class Compare {
     
@@ -58,7 +58,7 @@ public class Compare {
     public static void main(String[] options)
             throws Exception {
         
-        System.out.println("Seanox PDF Comparator [Version 1.1.0 20200608]");
+        System.out.println("Seanox PDF Comparator [Version 1.1.0 20200610]");
         System.out.println("Copyright (C) 2020 Seanox Software Solutions");
         System.out.println();
         
@@ -88,6 +88,27 @@ public class Compare {
     /**
      * Calculates the increase of a color tone.
      * The increase can be positive or negative.
+     * @param  color
+     * @param  factor
+     * @return the increased color tone
+     */
+    private static int increaseColor(int color, int factor) {
+        return Math.min(Math.max(color -factor, 0), 255);
+    }
+
+    /**
+     * Calculates the increase of a delta color tone.
+     * Color tones less than 127 are increased as negation.
+     * @param  color
+     * @return the increased delta color tone
+     */    
+    private static int increaseColorDelta(int color) {
+        return color < 127 ? 255 -color : color;
+    }
+    
+    /**
+     * Calculates the increase of a color tone.
+     * The increase can be positive or negative.
      * @param  rgba
      * @param  tone
      * @param  factor
@@ -101,11 +122,23 @@ public class Compare {
         int b = color.getBlue();
         int a = color.getAlpha();
         if (Color.RED.equals(tone))
-            color = new Color(r, Math.min(Math.max(g -factor, 0), 255), Math.min(Math.max(b -factor, 0), 255), a);
+            color = new Color(
+                    Compare.increaseColorDelta(r),
+                    Compare.increaseColor(g, factor),
+                    Compare.increaseColor(b, factor),
+                    a);
         if (Color.GREEN.equals(tone))
-            color = new Color(Math.min(Math.max(r -factor, 0), 255), g, Math.min(Math.max(b -factor, 0), 255), a);
+            color = new Color(
+                    Compare.increaseColor(r, factor),
+                    Compare.increaseColorDelta(g),
+                    Compare.increaseColor(b, factor),
+                    a);
         if (Color.BLUE.equals(tone))
-            color = new Color(Math.min(Math.max(r -factor, 0), 255), Math.min(Math.max(g -factor, 0), 255), b, a);
+            color = new Color(
+                    Compare.increaseColor(r, factor),
+                    Compare.increaseColor(g, factor),
+                    Compare.increaseColorDelta(b),
+                    a);
         return color.getRGB();
     }
     
@@ -123,11 +156,11 @@ public class Compare {
     public static File[] compare(File master, File compare)
             throws IOException {
         
-        List<BufferedImage> baseImages = new ArrayList<>();
+        List<BufferedImage> masterImages = new ArrayList<>();
         try (PDDocument document = PDDocument.load(master)) {
             PDFRenderer pdfRenderer = new PDFRenderer(document);
             for (int page = 0; page < document.getNumberOfPages(); ++page)
-                baseImages.add(pdfRenderer.renderImageWithDPI(page, 300, ImageType.RGB));
+                masterImages.add(pdfRenderer.renderImageWithDPI(page, 300, ImageType.RGB));
         }
 
         List<BufferedImage> compareImages = new ArrayList<>();
@@ -137,17 +170,17 @@ public class Compare {
                 compareImages.add(pdfRenderer.renderImageWithDPI(page, 300, ImageType.RGB));
         }
         
-        while (baseImages.size() < compareImages.size())
-            baseImages.add(new BufferedImage(1, 1, BufferedImage.TYPE_4BYTE_ABGR));
-        while (baseImages.size() > compareImages.size())
+        while (masterImages.size() < compareImages.size())
+            masterImages.add(new BufferedImage(1, 1, BufferedImage.TYPE_4BYTE_ABGR));
+        while (masterImages.size() > compareImages.size())
             compareImages.add(new BufferedImage(1, 1, BufferedImage.TYPE_4BYTE_ABGR));
         
         String deltaTimestamp = String.format("%tY%<tm%<td%<tH%<tM%<tS", new Date()); 
         List<File> deltas = new ArrayList<>();
-        for (int page = 0; page < baseImages.size(); ++page) {
+        for (int page = 0; page < masterImages.size(); ++page) {
             String deltaName = "_diffs_page_" + (page +1) + "_" + deltaTimestamp;
             File deltaFile = new File(compare.getParentFile(), compare.getName().replaceAll("\\.\\w+$", deltaName + ".png"));
-            BufferedImage delta = Compare.compareImage(baseImages.get(page), compareImages.get(page));
+            BufferedImage delta = Compare.compareImage(masterImages.get(page), compareImages.get(page));
             if (delta == null)
                 continue;
             deltas.add(deltaFile);
