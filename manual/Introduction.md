@@ -364,7 +364,8 @@ PDF-Service.
 
 Placeholders can be used for static texts, values and data structures.  
 The syntax of the placeholders is case-insensitive, must begin with a letter and
-is limited to the following characters: `a-z A-Z 0-9 _-`
+is limited to the following characters:  
+`a-z A-Z 0-9 _-`
 
 #### Static Placeholder
 
@@ -451,7 +452,30 @@ These placeholders are only resolved when the generation is completed.
 
 
 ## Test
-TODO:
+
+PDF Service is primarily optimized for the design process.  
+Therefore the test of PDFs is pixel-based.
+For automated tests the Compare with the static method of the same name is
+available.
+
+```java
+import com.seanox.pdf.Compare;
+
+Compare.compare(new File("master.pdf"), new File("compare.pdf"));
+```
+
+During the comparison, differences are searched for page by page, pixel by pixel
+and color by color.  
+If a difference is found between master and compare on the same page, a
+difference image is created.  
+The image is based on the grayscale image of the master.  
+The differences, which compare causes, are marked in red.  
+If there are discrepancies in resolution or image mass, overlaps occur, which
+are displayed in blue (only in compare) and green (only in master).
+
+The return value of the compare method is an array with paths to any created
+difference images.  
+If no differences were found, the return value is `null`.
 
 
 ## Generator / Render API
