@@ -46,7 +46,7 @@ designing and testing outside and independent of projects
   * [Markup](#markup)
 * [Mock-Up](#mock-up)
 * [Test](#test)
-* [Generator / Render API](#generator-render-api
+* [Generator / Render API](#generator-render-api)
 * [PDF-Tools](#pdf-tools)
   * [Compare](#compare)
   * [Preview](#preview)
