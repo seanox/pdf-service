@@ -12,7 +12,7 @@
 </p>
 
 # Description
-PDF service for generating/rendering PDFs based on
+Seanox PDF-Service for generating/rendering PDFs based on
 [Open HTML to PDF](https://github.com/danfickle/openhtmltopdf).
 
 The static service contains an abstraction of templates, an API for markup
@@ -82,7 +82,7 @@ https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
 
 
 # Manuals
-- [Introduction](https://github.com/seanox/pdf-service/blob/master/manual/introduction.md)
+- [Introduction](https://github.com/seanox/pdf-service/blob/master/manual/Introduction.md)
 
 
 # Changes (Change Log)
