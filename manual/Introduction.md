@@ -1,8 +1,9 @@
 # Introduction
 
 
-## What is Seanox pdf-service?
-PDF service for generating/rendering PDFs based on
+## What is Seanox PDF-Service?
+
+Seanox PDF-Service for generating/rendering PDFs based on
 [Open HTML to PDF](https://github.com/danfickle/openhtmltopdf).
 
 The static service contains an abstraction of templates, an API for markup
@@ -16,7 +17,8 @@ supported.
 
 
 # Features
-- Built-in markup generator   
+
+- Built-in markup generator  
 very simple syntax, supports placeholders, structures and includes
 - Built-in preview and designer with mock-up support  
 simplifies the design process by allowing previewing without the target
@@ -30,7 +32,7 @@ e.g. margins of the document can be used by the header and footer
 language setting is also transferred to the template and thus fonts matching the
 language can be used
 - Creation of markup as preview e.g. for the frontend
-- API for other markup generators and renderers   
+- API for other markup generators and renderers  
 abstract templates for individual generators and renderers
 - PDF comparison for test automation  
 pixel-based and difference image generation
@@ -40,11 +42,16 @@ designing and testing outside and independent of projects
 
 
 ## Contents Overview
+
 * [Getting Started](#getting-started)
   * [Integration](#integration)
   * [Implementation](#implementation)
   * [Markup](#markup)
   * [Placeholder](#placeholder)
+    * [Static Placeholder](#static-placeholder)
+    * [Data Value Placeholder](#data-structure-placeholder)
+    * [Data Structure Placeholder](#data-structure-placeholder)
+    * [Escaped Placeholders](#escaped-placeholders)
 * [Mock-Up](#mock-up)
 * [Test](#test)
 * [Generator / Render API](#generator-render-api)
@@ -59,8 +66,8 @@ designing and testing outside and independent of projects
 ### Integration
 
 Use the current version dependency  
-https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service    
-or use the Java archive of the Seanox PDF-Tools, which contains all libraries    
+https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service  
+or use the Java archive of the Seanox PDF-Tools, which contains all libraries  
 https://github.com/seanox/pdf-service/raw/master/releases
 
 ### Implementation
@@ -163,7 +170,7 @@ File output = new File("example.pdf");
 Files.write(output.toPath(), data, StandardOpenOption.CREATE);
 ```
 
-The render method needs one more template.    
+The render method needs one more template.  
 Why as a template implementation?  
 The implementation makes the template usage traceable for the compiler and
 protects against errors.  
@@ -323,13 +330,13 @@ because they have been implemented alternatively in the PDF service.
       }
       body {
         ...
-      }      
+      }  
       header {
         ...
       }
       footer {
         ...
-      }       
+      }  
       ...
     </style>
   </head>
@@ -345,7 +352,7 @@ because they have been implemented alternatively in the PDF service.
 </html>
 ```
 
-The complete example and more can be found here:
+The complete example and more can be found here:  
 https://github.com/seanox/pdf-service/blob/master/src/test/resources/com/seanox/pdf/example/UsageTemplate%24ExampleTemplate.html#L1  
 https://github.com/seanox/pdf-service/tree/master/src/test/resources/pdf
 
@@ -353,9 +360,94 @@ https://github.com/seanox/pdf-service/tree/master/src/test/resources/pdf
 
 This section depends on the template generator used.  
 The description refers to the template generator which is integrated in Seanox
-PDF-Service.  
+PDF-Service.
 
-TODO:
+Placeholders can be used for static texts, values and data structures.  
+The syntax of the placeholders is case-insensitive, must begin with a letter and
+is limited to the following characters: `a-z A-Z 0-9 _-`
+
+#### Static Placeholder
+
+For the output of static texts from Meta-Statics.  
+Meta-Statics is a strict string based key value map.  
+The placeholder is replaced by the value.  
+If no value exists, the placeholder is removed without replacement.
+
+```
+![NAME]
+```
+ 
+#### Data Value Placeholder
+
+For output of single values from Meta-Data.
+Meta-Data is a structured map like a tree.  
+The keys are always strings.  
+The values can be of the data type Collection, Map, and Object.
+Collections are used iteratively and maps recursively.
+For other objects, the string value is then used.  
+
+```
+#[NAME]
+```
+
+The name of the placeholder always refers to the current branch in the tree.  
+The placeholder syntax has no syntax for navigating the tree.  
+This is made using the nesting of the data structure placeholders.  
+
+#### Data Structure Placeholder
+
+For output of data structures from meta data.  
+Meta-Data is a structured map like a tree.  
+The keys are always strings.  
+The values can be of the data type Collection, Map, and Object.
+Collections are used iteratively and maps recursively.
+For other objects, the string value is then used.  
+The name of the placeholder always refers to the current branch in the tree.
+
+```
+#[NAME[[...]]]
+```
+ 
+The placeholder syntax has no syntax for navigating the tree.  
+This is made using the nesting of the data structure placeholders.  
+
+```
+#[A[[
+  #[B[[
+    #[C]
+  ]]]
+]]]
+```
+
+The example uses in the map the value of: `A -> B -> C'
+
+```java
+Map<String, Object> data = new HashMap<>() {{
+    put("A", new HashMap<>() {{
+        put("B", new HashMap<>() {{
+            put("C", "Value");
+        }});
+    }});
+}};
+```
+
+Data structure placeholders are retained for iterative use.  
+The value is inserted before the placeholder.
+They are only removed when the generation is complete.
+
+Data structure placeholders work like independent segments and can contain
+markup and other placeholders. 
+
+
+#### Escaped Placeholders
+
+For output of special and control characters.  
+These placeholders are only resolved when the generation is completed.
+
+```
+#[0x0A]
+#[0x4578616D706C6521]
+```
 
 
 ## Test
