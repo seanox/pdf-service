@@ -138,12 +138,12 @@ import com.seanox.pdf.Template.Markup;
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer<br>
  * <br>
- * Service 4.0.0 20200607<br>
+ * Service 4.0.0 20200610<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 4.0.0 20200607
+ * @version 4.0.0 20200610
  */
 public class Service {
     
@@ -1030,7 +1030,7 @@ public class Service {
                 Transformer transformer = factory.newTransformer();
                 transformer.setOutputProperty(OutputKeys.METHOD, "xml");
                 transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-                transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+                transformer.setOutputProperty(OutputKeys.INDENT, "no");
                 ByteArrayOutputStream buffer = new ByteArrayOutputStream();
                 transformer.transform(new DOMSource(document), new StreamResult(buffer));
 

@@ -2,6 +2,7 @@
   BF: Generator: Correction of errors due to duplicate map entries
       Occurs when the map entries are made case-insensitive.
   BF: Service Render: Correction of errors if the template contains no header and no footer
+  BF: Service Multiplex: Correction of the error-causing indentation of XML documents
   BF: Template Generate:Correction of errors due to duplicate map entries
       Occurs when the map entries are made case-insensitive.
   CR: Compare: Integral part of the API and PDF Tools
