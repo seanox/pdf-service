@@ -47,6 +47,7 @@ designing and testing outside and independent of projects
   * [Integration](#integration)
   * [Implementation](#implementation)
   * [Markup](#markup)
+  * [Meta Tags](#meta-tags)
   * [Placeholder](#placeholder)
     * [Static Placeholder](#static-placeholder)
     * [Data Value Placeholder](#data-structure-placeholder)
@@ -219,9 +220,9 @@ public static class ExampleTemplate extends Template {
 ```
 
 Template need the annotation `@Resources`.  
-This annotation determines where in the ClassPath the resources for the template
-are located and, if necessary, determines the file name of the template if this
-cannot be derived from the Java class.
+This annotation determines where in the ClassPath the resources (e.g. styles,
+images, fonts, ...) for the template are located and, if necessary, determines
+the file name of the template if this cannot be derived from the Java class.
 
 ```java
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -267,7 +268,7 @@ https://github.com/seanox/pdf-service/blob/master/src/test/java/com/seanox/pdf/e
 
 ### Markup
 
-The template is a pure (X)HTML document with CSS support and meta commands and
+The template is a pure (X)HTML document with CSS support and meta tags and
 placeholder for the generator.  
 
 ```html
@@ -356,6 +357,41 @@ because they have been implemented alternatively in the PDF service.
 
 The complete example and more can be found here:  
 https://github.com/seanox/pdf-service/blob/master/src/test/resources/com/seanox/pdf/example/UsageTemplate%24ExampleTemplate.html#L1  
+https://github.com/seanox/pdf-service/tree/master/src/test/resources/pdf
+
+### Meta Tags
+
+Meta tags are not an HTML standard.
+They are additional instructions for the generator.
+Meta tags works exclusive, line-based and start with a hash.
+
+#### #include
+
+Inserts markup fragments from other resources.  
+The path of the resources is always relative to the ClassPath of the using
+resource.
+
+```html
+<html>
+  <head>
+    ...
+  </head>
+  <body>
+    <header>
+      #include shares/header.html
+    </header>
+    #include shares/outlet.html
+    #include shares/article.html
+    ... 
+    <footer>
+      #include shares/footer.html
+    </footer>
+  </body>
+</html>
+```
+
+The complete example and more can be found here:  
+https://github.com/seanox/pdf-service/blob/master/src/test/resources/pdf/articleIncludeX.html#L1
 https://github.com/seanox/pdf-service/tree/master/src/test/resources/pdf
 
 ### Placeholder
