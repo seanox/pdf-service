@@ -89,6 +89,7 @@ https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
 ## 4.0.0 202007xx (summary of the next version)  
 BF: Generator: Correction of errors due to duplicate map entries  
 BF: Service Render: Correction of errors if the template contains no header and no footer  
+BF: Service Multiplex: Correction of the error-causing indentation of XML documents  
 BF: Template Generate:Correction of errors due to duplicate map entries  
 CR: Compare: Integral part of the API and PDF Tools  
 CR: Compare: Optimization of the output of differences  
@@ -100,6 +101,7 @@ CR: Template API: Added method Meta customizeMeta(Meta meta)
 CR: Template Generate: Unified behavior of data placeholders and static placeholders  
 CR: Template Preview Properties: Omission of the prefix 'static'  
 CR: Maven: Update of dependencies  
+CR: Maven: Update to use Java 11  
 
 [Read more](https://raw.githubusercontent.com/seanox/pdf-service/master/CHANGES)
 

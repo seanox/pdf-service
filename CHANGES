@@ -36,6 +36,7 @@
       Data and static use the same data/properties.
       Data uses this as a structured map, statics as a flat map.
   CR: Maven: Update of dependencies
+  CR: Maven: Update to use Java 11
 
 3.7.3 20200530
   BF: Template: Correction of case insensitive statics
