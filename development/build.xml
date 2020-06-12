@@ -13,7 +13,7 @@
     <echo>              Combined changes and tools                  </echo>
     <echo>              Synchronizes the version in README.md       </echo>
   </target>
-  
+
   <property name="workspace" value="${basedir}"/>
   <property name="workspace.sources" value="${workspace}/src"/>
   <property name="workspace.development" value="${workspace}/development"/>
@@ -38,11 +38,11 @@
       <delete file="${workspace}/CHANGES.tmp"/>
     </sequential>
   </macrodef>
-  
+
   <macrodef name="sync-source-version">
     <attribute name="file"/>
     <sequential>
-      <echo>Synchronizing version in:: @{file}</echo> 
+      <echo>Synchronizing version in:: @{file}</echo>
       <copy file="@{file}" tofile="@{file}_temp" overwrite="true"/>
       <replaceregexp file="@{file}_temp"
           match="(?s).*?@version\s+([\d\.]+\s+(\d{4})\d+).*$" flags="g" byline="false"
@@ -58,11 +58,11 @@
           match="(Copyright\s+\(C\)\s+)\d+" flags="g" byline="false"
           replace="\1${source.year}"/>
     </sequential>
-  </macrodef> 
-  
+  </macrodef>
+
   <target name="changes">
     <release-locate/>
-    
+
     <replaceregexp file="${workspace}/CHANGES" match="&#x00E4;" replace="ae" flags="g"/>
     <replaceregexp file="${workspace}/CHANGES" match="&#x00C4;" replace="Ae" flags="g"/>
     <replaceregexp file="${workspace}/CHANGES" match="&#x00F6;" replace="oe" flags="g"/>
@@ -70,14 +70,14 @@
     <replaceregexp file="${workspace}/CHANGES" match="&#x00FC;" replace="ue" flags="g"/>
     <replaceregexp file="${workspace}/CHANGES" match="&#x00DC;" replace="Ue" flags="g"/>
     <replaceregexp file="${workspace}/CHANGES" match="\s+$" replace="" flags="g" byline="true"/>
-      
+
     <copy file="${workspace}/CHANGES" tofile="${workspace}/CHANGES.tmp" overwrite="true"/>
     <replaceregexp file="${workspace}/CHANGES.tmp" match="^\s+" replace="" byline="false"/>
     <replaceregexp file="${workspace}/CHANGES.tmp" match="(?s)^(.*?)[\r\n]+\d[\d\. x]+.*$" replace="\1" byline="false"/>
     <replaceregexp file="${workspace}/CHANGES.tmp" match="^(.*?)\s*$" replace="\1  " flags="g" byline="true"/>
     <replaceregexp file="${workspace}/CHANGES.tmp" match="^(\d[\.\d x]+)[^\r\n]*" replace="## \1" byline="false"/>
     <replaceregexp file="${workspace}/CHANGES.tmp" match="^ {0,4}([A-Z]+:.*)\s*$" replace="\1" byline="true"/>
-    <replaceregexp file="${workspace}/CHANGES.tmp" match="(?s)[\r\n]+ [^\r\n]+" replace="" flags="g" byline="false"/>  
+    <replaceregexp file="${workspace}/CHANGES.tmp" match="(?s)[\r\n]+ [^\r\n]+" replace="" flags="g" byline="false"/>
     <replaceregexp file="${workspace}/CHANGES.tmp" match="^(## \d[\.\d]+ \d+)(  )" replace="\1 (summary of the current version)\2" flags="g" byline="true"/>
     <replaceregexp file="${workspace}/CHANGES.tmp" match="^(## \d[\.\d]+ [\dx]+)(  )" replace="\1 (summary of the next version)\2" flags="g" byline="true"/>
     <loadresource property="changes">
@@ -89,28 +89,28 @@
         replace="\1${changes}${line.separator}${line.separator}\2"/>
     <tstamp>
       <format property="now.year" pattern="yyyy"/>
-    </tstamp>    
+    </tstamp>
     <replaceregexp file="${workspace}/README.md"
         match="(?si)(?&lt;=\(C\)\s)\d{4}\b" flags="g" byline="true"
         replace="${now.year}"/>
-    
+
     <replaceregexp file="${workspace}/pom.xml" flags="g" byline="false"
-        match="(?si)(&lt;artifactId&gt;seanox-pdf-service&lt;/artifactId&gt;\s*&lt;version&gt;)[\d\.]+(&lt;/version&gt;)" 
-        replace="\1${release.version}\2"/>  
-  </target>  
-  
+        match="(?si)(&lt;artifactId&gt;seanox-pdf-service&lt;/artifactId&gt;\s*&lt;version&gt;)[\d\.]+(&lt;/version&gt;)"
+        replace="\1${release.version}\2"/>
+  </target>
+
   <target name="tools">
     <release-locate/>
-    
+
     <sync-source-version file="${workspace}/src/main/java/com/seanox/pdf/Usage.java"/>
     <sync-source-version file="${workspace}/src/main/java/com/seanox/pdf/Compare.java"/>
     <sync-source-version file="${workspace}/src/main/java/com/seanox/pdf/Designer.java"/>
     <sync-source-version file="${workspace}/src/main/java/com/seanox/pdf/Preview.java"/>
 
     <replaceregexp file="${workspace}/pom.xml" flags="g" byline="false"
-        match="(?si)(&lt;artifactId&gt;seanox-pdf-service&lt;/artifactId&gt;\s*&lt;version&gt;)[\d\.]+(&lt;/version&gt;)" 
-        replace="\1${release.version}\2"/>   
-    
+        match="(?si)(&lt;artifactId&gt;seanox-pdf-service&lt;/artifactId&gt;\s*&lt;version&gt;)[\d\.]+(&lt;/version&gt;)"
+        replace="\1${release.version}\2"/>
+
     <delete dir="${workspace.target}" includes="*jar-with-dependencies.jar"/>
     <exec executable="cmd">
       <arg value="/c"/>
@@ -124,12 +124,12 @@
     </move>
     <touch datetime="${release.date}" pattern="yyyyMMdd" file="${workspace.releases}/seanox-pdf-tools-${release.version}.jar"/>
   </target>
-  
+
   <target name="release" depends="changes,tools">
     <release-locate/>
     <replaceregexp file="${workspace}/README.md"
         match="(?si)(&lt;version&gt;)[\.\d\s]+(&lt;/version&gt;)" flags="g" byline="true"
-        replace="\1${release.version}\2"/>    
+        replace="\1${release.version}\2"/>
     <replaceregexp file="${workspace}/README.md"
         match="(?si)(\[Seanox PDF-Tools )[\.\d\s]+(\])" flags="g" byline="true"
         replace="\1${release.version}\2"/>
