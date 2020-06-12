@@ -60,7 +60,7 @@ public class UsageTemplate {
         //footer sections.
         Map<String, String> statics = new HashMap<String, String>() {
             private static final long serialVersionUID = 1L; {
-            put("ARTICLE_NUMBER", "Article number");
+            put("ARTICLE_NUMBER", "Article Number");
             put("ARTICLE_PRICE", "Price");
             put("ADDRESS_TEL", "Tel");
             put("ADDRESS_FAX", "Fax");
