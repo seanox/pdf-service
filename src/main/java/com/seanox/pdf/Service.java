@@ -37,8 +37,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -138,12 +136,12 @@ import com.seanox.pdf.Template.Markup;
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer<br>
  * <br>
- * Service 4.0.0 20200610<br>
+ * Service 4.0.0 20200612<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 4.0.0 20200610
+ * @version 4.0.0 20200612
  */
 public class Service {
     
@@ -389,7 +387,7 @@ public class Service {
          *     In case of unexpected errors.
          */
         @SuppressWarnings("unchecked")
-        public static Class<Template>[] scan()
+        public final static Class<Template>[] scan()
                 throws Exception {
 
             if (Template.templates != null)
@@ -606,7 +604,7 @@ public class Service {
          * @param  path
          * @return the normalizes a path
          */
-        private static String normalizePath(String path) {
+        protected static String normalizePath(String path) {
             
             String string;
             String stream;
@@ -649,93 +647,51 @@ public class Service {
             return string;
         }
         
-        /**
-         * Resolves meta directives #include in markup recursively.
-         * @param  path
-         * @param  markup
-         * @param  stack
-         * @return the markup with resolved includes
-         * @throws Exception
-         *     In case of unexpected errors.
-         */
-        private String resolveInlcudes(String path, String markup, List<String> stack)
-                throws Exception {
-            
-            Pattern pattern = Pattern.compile("(?i)(?:^|(?<=[\r\n]))\\s*#include(?:(?:\\s+([^\r\n]*)\\s*((?=[\r\n])|$))|(?=\\s*$))");
-            Matcher matcher = pattern.matcher(markup);
-            while (matcher.find()) {
-                if (matcher.groupCount() < 1)
-                    throw new TemplateException("Invalid include found");
-                String patch = matcher.group(1);
-                patch = this.followInlcudes(path, patch, stack);
-                markup = markup.replace(matcher.group(0), patch);
-            }
-            return markup;
-        }
-
-        /**
-         * Follows includes in markup recursively.
-         * @param  path
-         * @param  include
-         * @param  stack
-         * @return the markup with resolved includes
-         * @throws Exception
-         *     In case of unexpected errors.
-         */
-        private String followInlcudes(String path, String include, List<String> stack)
-                throws Exception {
-
-            if (include.startsWith("/")
-                    || include.startsWith("\\"))
-                include = Template.normalizePath(include);
-            else include = Template.normalizePath("/" + path + "/" + include);
-            if (stack.contains(include))
-                throw new TemplateRecursionException();
-            List<String> recursions = new ArrayList<>(stack);
-            recursions.add(include);
-            if (this.getResource(include) == null)
-                throw new TemplateResourceNotFoundException(include);
-            String markup = new String(IOUtils.toByteArray(this.getResourceStream(include)));
-            try {return this.resolveInlcudes(Template.normalizePath(include + "/.."), markup, recursions);
-            } catch (TemplateRecursionException exception) {
-                throw new TemplateException("Recursion found in: " + this.getResource(include));
-            }
-        }
-        
         /** Exception for endless recursions. */
-        private static class TemplateRecursionException extends TemplateException {
+        public static class TemplateRecursionException extends TemplateException {
 
             private static final long serialVersionUID = 6981096067851899978L;
             
-            private TemplateRecursionException() {
+            /** Constructor, creates a new TemplateRecursionException. */
+            public TemplateRecursionException() {
                 super();
             }
         }
         
         /** Exception when accessing and using template resources. */
-        static class TemplateResourceException extends TemplateException {
+        public static class TemplateResourceException extends TemplateException {
             
             private static final long serialVersionUID = -6452881833015318785L;
             
-            TemplateResourceException() {
+            /** Constructor, creates a new TemplateResourceException. */
+            public TemplateResourceException() {
                 super();
             }
 
-            TemplateResourceException(String message) {
+            /** 
+             * Constructor, creates a new TemplateResourceException.
+             * @param message
+             */
+            public TemplateResourceException(String message) {
                 super(message);
             }
         }
 
         /** Exception if template resources are not found. */
-        static class TemplateResourceNotFoundException extends TemplateResourceException {
+        public static class TemplateResourceNotFoundException extends TemplateResourceException {
 
             private static final long serialVersionUID = -4532058335049427299L;
 
-            TemplateResourceNotFoundException() {
+            /** Constructor, creates a new TemplateResourceNotFoundException. */
+            public TemplateResourceNotFoundException() {
                 super();
             }
 
-            TemplateResourceNotFoundException(String message) {
+            /** 
+             * Constructor, creates a new TemplateResourceNotFoundException.
+             * @param message
+             */
+            public TemplateResourceNotFoundException(String message) {
                 super(message);
             }
         }
@@ -786,7 +742,6 @@ public class Service {
                 base = new URI(base.toString() + "/");
 
             String markup = this.getMarkup();
-            markup = this.resolveInlcudes(this.getBasePath(), markup, new ArrayList<>());
             Multiplex multiplex = Multiplex.demux(markup);
 
             List<PDDocument> artifacts = new ArrayList<>();
@@ -1090,33 +1045,33 @@ public class Service {
 
             private static final long serialVersionUID = 2701029837610928746L;
 
-            /** TemplateException */
-            TemplateException() {
+            /** Constructor, creates a new TemplateException */
+            public TemplateException() {
                 super();
             }
 
             /**
-             * TemplateException
+             * Constructor, creates a new TemplateException
              * @param cause
              */
-            TemplateException(Throwable cause) {
+            public TemplateException(Throwable cause) {
                 super(cause);
             }
 
             /**
-             * TemplateException
+             * Constructor, creates a new TemplateException
              * @param message
              */
-            TemplateException(String message) {
+            public TemplateException(String message) {
                 super(message);
             }
             
             /**
-             * TemplateException
+             * Constructor, creates a new TemplateException
              * @param message
              * @param cause
              */
-            TemplateException(String message, Throwable cause) {
+            public TemplateException(String message, Throwable cause) {
                 super(message, cause);
             }               
         }

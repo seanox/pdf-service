@@ -35,6 +35,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.pdfbox.io.IOUtils;
 
 import com.seanox.pdf.Service.Meta;
 
@@ -71,12 +72,12 @@ import com.seanox.pdf.Service.Meta;
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer<br>
  * <br>
- * Template 4.0.0 20200608<br>
+ * Template 4.0.0 20200612<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 4.0.0 20200608
+ * @version 4.0.0 20200612
  */
 public abstract class Template extends Service.Template {
     
@@ -322,7 +323,23 @@ public abstract class Template extends Service.Template {
             throws Exception {
         return this.getPreviewProperties().entrySet().stream()
                 .collect(Collectors.toMap(entry -> String.valueOf(entry.getKey()), entry -> String.valueOf(entry.getValue())));
-    }    
+    }
+
+    /**
+     * Returns the markup of the template.
+     * Existing meta tags (#include) are resolved.
+     * @return the markup of the template
+     * @throws Exception
+     *     In case of unexpected errors.
+     */
+    @Override
+    protected String getMarkup()
+            throws Exception {
+        
+        String markup = super.getMarkup();
+        markup = this.resolveInlcudes(this.getBasePath(), markup, new ArrayList<>());
+        return markup;
+    }
     
     /**
      * Escapes characters greater ASCII 0x7F, markup symbols and line breaks.
@@ -491,6 +508,59 @@ public abstract class Template extends Service.Template {
         
         return new Meta(meta.getLocale(), data, statics);
     }
+    
+    /**
+     * Resolves meta directives #include in markup recursively.
+     * @param  path
+     * @param  markup
+     * @param  stack
+     * @return the markup with resolved includes
+     * @throws Exception
+     *     In case of unexpected errors.
+     */
+    private String resolveInlcudes(String path, String markup, List<String> stack)
+            throws Exception {
+        
+        Pattern pattern = Pattern.compile("(?i)(?:^|(?<=[\r\n]))\\s*#include(?:(?:\\s+([^\r\n]*)\\s*((?=[\r\n])|$))|(?=\\s*$))");
+        Matcher matcher = pattern.matcher(markup);
+        while (matcher.find()) {
+            if (matcher.groupCount() < 1)
+                throw new TemplateException("Invalid include found");
+            String patch = matcher.group(1);
+            patch = this.followInlcudes(path, patch, stack);
+            markup = markup.replace(matcher.group(0), patch);
+        }
+        return markup;
+    }
+
+    /**
+     * Follows includes in markup recursively.
+     * @param  path
+     * @param  include
+     * @param  stack
+     * @return the markup with resolved includes
+     * @throws Exception
+     *     In case of unexpected errors.
+     */
+    private String followInlcudes(String path, String include, List<String> stack)
+            throws Exception {
+
+        if (include.startsWith("/")
+                || include.startsWith("\\"))
+            include = Service.Template.normalizePath(include);
+        else include = Service.Template.normalizePath("/" + path + "/" + include);
+        if (stack.contains(include))
+            throw new TemplateRecursionException();
+        List<String> recursions = new ArrayList<>(stack);
+        recursions.add(include);
+        if (this.getResource(include) == null)
+            throw new TemplateResourceNotFoundException(include);
+        String markup = new String(IOUtils.toByteArray(this.getResourceStream(include)));
+        try {return this.resolveInlcudes(Service.Template.normalizePath(include + "/.."), markup, recursions);
+        } catch (TemplateRecursionException exception) {
+            throw new TemplateException("Recursion found in: " + this.getResource(include));
+        }
+    }    
     
     @Override
     protected String generate(String markup, Meta.Type type, Meta meta) {
