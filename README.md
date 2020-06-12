@@ -40,7 +40,7 @@ language setting is also transferred to the template and thus fonts matching the
 - API for templates and other markup generators
 abstract templates for individual generators
 - PDF comparison for test automation  
-pixel-based and difference image generation
+pixel- and color-based with difference image generation
 - PDF Tools as standalone Java applications  
 includes Compare, Designer, Preview as command line applications  
 designing and testing outside and independent of projects

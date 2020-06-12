@@ -35,7 +35,7 @@ language can be used
 - API for templates and other markup generators
 abstract templates for individual generators
 - PDF comparison for test automation  
-pixel-based and difference image generation
+pixel- and color-based with difference image generation
 - PDF Tools as standalone Java applications  
 includes Compare, Designer, Preview as command line applications  
 designing and testing outside and independent of projects
@@ -54,8 +54,8 @@ designing and testing outside and independent of projects
     * [Data Structure Placeholder](#data-structure-placeholder)
     * [Escaped Placeholders](#escaped-placeholders)
     * [Standard Value Placeholder](#standard-value-placeholder)
-* [Mock-Up](#mock-up)
 * [Test](#test)
+* [Mock-Up](#mock-up)
 * [Template API](#template-api)
 * [Generator API](#generator-api)
 * [PDF-Tools](#pdf-tools)
@@ -563,14 +563,14 @@ markup depending on the existence of values in meta-data.
 ```
 
 The complete example and more can be found here:  
-https://github.com/seanox/pdf-service/blob/master/src/test/resources/pdf/articleA.html#L1 
+https://github.com/seanox/pdf-service/blob/master/src/test/resources/pdf/articleA.html#L1  
 https://github.com/seanox/pdf-service/tree/master/src/test/resources/pdf
 
 
 ## Test
 
 PDF Service is primarily optimized for the design process.  
-Therefore the test of PDFs is pixel-based.
+Therefore the test of PDFs is pixel- and color-based.
 For automated tests the Compare with the static method of the same name is
 available.
 
@@ -583,7 +583,7 @@ Compare.compare(new File("master.pdf"), new File("compare.pdf"));
 During the comparison, differences are searched for page by page, pixel by pixel
 and color by color.  
 If a difference is found between master and compare on the same page, a
-difference image is created.  
+difference image in the path of compare is created.  
 The image is based on the grayscale image of the master.  
 The differences, which compare causes, are marked in red.  
 If there are discrepancies in resolution or image mass, overlaps occur, which
@@ -594,6 +594,10 @@ difference images.
 If no differences were found, the return value is `null`.
 
 
+## Mock-Up
+TODO:
+
+
 ## Template API
 TODO:
 
@@ -602,18 +606,57 @@ TODO:
 TODO:
 
 
-## Mock-Up
-TODO:
-
-
 ## PDF-Tools
-TODO:
+
+The standalone command line tools include some helpers focused on the design
+process and testing outside and independent of projects.  
+Includes: Compare, Designer, Preview as command line applications  
+
+### Download
+
+The download includes a Java archive that contains all required libraries.  
+The current version can be found here:  
+https://github.com/seanox/pdf-service/raw/master/releases
 
 ### Compare
-TODO:
+
+Compares two PDFs pixel- and color-based with difference image generation.
+
+```
+java -cp seanox-pdf-tools.jar com.seanox.pdf.Compare <master> <compare>
+```
+
+During the comparison, differences are searched for page by page, pixel by pixel
+and color by color.  
+If a difference is found between master and compare on the same page, a
+difference image in the path of compare is created.  
+The image is based on the grayscale image of the master.  
+The differences, which compare causes, are marked in red.  
+If there are discrepancies in resolution or image mass, overlaps occur, which
+are displayed in blue (only in compare) and green (only in master).
 
 ### Preview
-TODO:
+
+Creates a PDF preview of all templates with the annotation `@Resources` in the
+ClassPath and of all files found for the specified paths, filters and globs.
+
+```
+java -cp seanox-pdf-tools.jar com.seanox.pdf.Preview <paths/filters/globs> ...
+```
+
+The preview is based on the mock-up datas in the properties files for the
+templates.
 
 ### Designer
-TODO:
+
+Command line Deamon, which permanently searches for templates in the ClassPath
+for the annotation `@Resources` and in the file system for templates for paths,
+filters and globs and creates PDF previews like the preview tool.  
+The previews are updated if there are changes to the templates. 
+
+```
+java -cp seanox-pdf-tools.jar com.seanox.pdf.Designer <paths/filters/globs> ...
+```
+
+The preview is based on the mock-up datas in the properties files for the
+templates.
