@@ -361,8 +361,8 @@ https://github.com/seanox/pdf-service/tree/master/src/test/resources/pdf
 
 ### Meta Tags
 
-Meta tags are not an HTML standard.
-They are additional instructions for the generator.
+Meta tags are not an HTML standard.  
+They are additional instructions for the generator.  
 Meta tags works exclusive, line-based and start with a hash.
 
 #### #include
@@ -391,7 +391,7 @@ resource.
 ```
 
 The complete example and more can be found here:  
-https://github.com/seanox/pdf-service/blob/master/src/test/resources/pdf/articleIncludeX.html#L1
+https://github.com/seanox/pdf-service/blob/master/src/test/resources/pdf/articleIncludeX.html#L1  
 https://github.com/seanox/pdf-service/tree/master/src/test/resources/pdf
 
 ### Placeholder
