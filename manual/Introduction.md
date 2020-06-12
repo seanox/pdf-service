@@ -6,8 +6,8 @@
 Seanox PDF-Service for generating/rendering PDFs based on
 [Open HTML to PDF](https://github.com/danfickle/openhtmltopdf).
 
-The static service contains an abstraction of templates, an API for markup
-generators/renderers, a markup generator with preview function and mockup data
+The static service contains an abstraction of templates, an API for templates
+and markup generators, a markup generator with preview function and mockup data
 support.  
 The templates supports includes and independent areas for header, content and
 footer, which are assembled by overlay for each page. Header and footer are
@@ -32,8 +32,8 @@ e.g. margins of the document can be used by the header and footer
 language setting is also transferred to the template and thus fonts matching the
 language can be used
 - Creation of markup as preview e.g. for the frontend
-- API for other markup generators and renderers  
-abstract templates for individual generators and renderers
+- API for templates and other markup generators
+abstract templates for individual generators
 - PDF comparison for test automation  
 pixel-based and difference image generation
 - PDF Tools as standalone Java applications  
@@ -52,9 +52,11 @@ designing and testing outside and independent of projects
     * [Data Value Placeholder](#data-structure-placeholder)
     * [Data Structure Placeholder](#data-structure-placeholder)
     * [Escaped Placeholders](#escaped-placeholders)
+    * [Standard Value Placeholder](#standard-value-placeholder)
 * [Mock-Up](#mock-up)
 * [Test](#test)
-* [Generator / Render API](#generator-render-api)
+* [Template API](#template-api)
+* [Generator API](#generator-api)
 * [PDF-Tools](#pdf-tools)
   * [Compare](#compare)
   * [Preview](#preview)
@@ -174,9 +176,9 @@ The render method needs one more template.
 Why as a template implementation?  
 The implementation makes the template usage traceable for the compiler and
 protects against errors.  
-Another point is the Generator/Render API, whose implementation is defined by  
-the templates. The service only uses the API and does not have its own
-generator/render.
+Another point is the Template and Generator API, whose implementation is defined
+by the templates. The service only uses the API and has no own template and
+generator.
 
 ```java
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -439,7 +441,6 @@ They are only removed when the generation is complete.
 Data structure placeholders work like independent segments and can contain
 markup and other placeholders. 
 
-
 #### Escaped Placeholders
 
 For output of special and control characters.  
@@ -449,6 +450,85 @@ These placeholders are only resolved when the generation is completed.
 #[0x0A]
 #[0x4578616D706C6521]
 ```
+
+#### Standard Value Placeholder
+
+The generator provides a few additional value placeholders.
+
+The placeholder `#[locale]` is provided from the Meta-Locale and can be used
+for internationalization (i18n). 
+
+```html
+<html>
+  <head>
+    ...
+  </head>
+  <body lang="#[locale]">
+    <header>
+      ...
+    </header>
+    ... 
+    <footer>
+      ...
+    </footer>
+  </body>
+</html>
+```
+
+The placeholders `#[page]` and `#[pages]` are available in the header and
+footer and contain the current page and total number of pages.
+
+```html
+<html>
+  <head>
+    ...
+  </head>
+  <body lang="#[locale]">
+    <header>
+      ...
+    </header>
+    ... 
+    <footer>
+      #[page] of #[pages]
+    </footer>
+  </body>
+</html>
+```
+
+For each key and placeholder from Meta-Data an exists-placeholder is provided.  
+This can be used in the markup and in combination with CSS to output/display
+markup depending on the existence of values in meta-data.
+    
+```html
+<html>
+  <head>
+    ...
+  </head>
+  <body lang="#[locale]">
+    <header>
+      ...
+    </header>
+    #[outlet[[
+    <article id="outlet">
+      <h1>#[name]</h1>
+      <p exists="#[street-exists]">#[street]</p>
+      <p exists="#[location-exists]">#[zipCode] #[location]</p>
+      <p exists="#[phone-exists]">![ADDRESS_TEL]: #[phone]</p>
+      <p exists="#[fax-exists]">![ADDRESS_FAX]: #[fax]</p>
+      <p exists="#[email-exists]">![ADDRESS_E_MAIL]: #[email]</p>
+      <p exists="#[websiteUrl-exists]">![ADDRESS_WEB]: #[websiteUrl]</p>
+    </article>
+    ]]]
+    <footer>
+      #[page] of #[pages]
+    </footer>
+  </body>
+</html>
+```
+
+The complete example and more can be found here:  
+https://github.com/seanox/pdf-service/blob/master/src/test/resources/pdf/articleA.html#L1 
+https://github.com/seanox/pdf-service/tree/master/src/test/resources/pdf
 
 
 ## Test
@@ -478,7 +558,11 @@ difference images.
 If no differences were found, the return value is `null`.
 
 
-## Generator / Render API
+## Template API
+TODO:
+
+
+## Generator API
 TODO:
 
 
