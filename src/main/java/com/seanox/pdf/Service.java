@@ -72,7 +72,6 @@ import org.w3c.dom.NodeList;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import com.seanox.pdf.Service.Template.Resources;
 import com.seanox.pdf.Service.Template.TemplateException;
-import com.seanox.pdf.Template.Markup;
 
 /**
  * Static service for creating PDF based on templates and meta-objects.
@@ -198,11 +197,18 @@ public class Service {
      * Meta object for creating PDFs.
      * The PDF creation is based on templates and is decoupled from the business
      * logic. The templates only know placeholders and structures.
-     * Templates consist of the parts: header, data and footer.
-     * These are three map objects that contain keys and values. The values can
-     * be text ({@link String} / {@link Markup}) or {@link Map} and
-     * {@link Collection} with deeper structures, comparable to JSON as a nested
-     * data structure.
+     * Templates consist of the parts: header, data and footer, which all use
+     * the data from the meta object.
+     * The following data are supported: locale for internationalization (i18n),
+     * structured data and static texts.<br>
+     * <br>
+     * The structured data is a map structure for a data object, comparable to
+     * JSON. The data structure supports the data types: {@link Collection},
+     * {@link Map}, Text. {@link Collection} and {@link Map} are only used for
+     * nesting. At the end a key with a text value is always expected.<br>
+     * <br>
+     * Statics text are a flat map with text-based key-value pairs and is used
+     * for flat, non-structured placeholders.
      */
     public static class Meta {
 
@@ -566,11 +572,11 @@ public class Service {
         }
 
         /**
-         * Creates HTML markup for the PDF based of data in a meta object.
+         * Creates (X)HTML markup for the PDF based of data in a meta object.
          * @param  markup
          * @param  type
          * @param  meta
-         * @return the created HTML markup for the PDF creation
+         * @return the created (X)HTML markup for the PDF creation
          */
         protected abstract String generate(String markup, Meta.Type type, Meta meta);
         
@@ -645,55 +651,6 @@ public class Service {
                 string = string.substring(0, cursor).concat(string.substring(cursor +1));
             
             return string;
-        }
-        
-        /** Exception for endless recursions. */
-        public static class TemplateRecursionException extends TemplateException {
-
-            private static final long serialVersionUID = 6981096067851899978L;
-            
-            /** Constructor, creates a new TemplateRecursionException. */
-            public TemplateRecursionException() {
-                super();
-            }
-        }
-        
-        /** Exception when accessing and using template resources. */
-        public static class TemplateResourceException extends TemplateException {
-            
-            private static final long serialVersionUID = -6452881833015318785L;
-            
-            /** Constructor, creates a new TemplateResourceException. */
-            public TemplateResourceException() {
-                super();
-            }
-
-            /** 
-             * Constructor, creates a new TemplateResourceException.
-             * @param message
-             */
-            public TemplateResourceException(String message) {
-                super(message);
-            }
-        }
-
-        /** Exception if template resources are not found. */
-        public static class TemplateResourceNotFoundException extends TemplateResourceException {
-
-            private static final long serialVersionUID = -4532058335049427299L;
-
-            /** Constructor, creates a new TemplateResourceNotFoundException. */
-            public TemplateResourceNotFoundException() {
-                super();
-            }
-
-            /** 
-             * Constructor, creates a new TemplateResourceNotFoundException.
-             * @param message
-             */
-            public TemplateResourceNotFoundException(String message) {
-                super(message);
-            }
         }
         
         /**
@@ -1060,6 +1017,55 @@ public class Service {
             public TemplateException(String message, Throwable cause) {
                 super(message, cause);
             }               
+        }
+        
+        /** Exception when accessing and using template resources. */
+        public static class TemplateResourceException extends TemplateException {
+            
+            private static final long serialVersionUID = -6452881833015318785L;
+            
+            /** Constructor, creates a new TemplateResourceException. */
+            public TemplateResourceException() {
+                super();
+            }
+
+            /** 
+             * Constructor, creates a new TemplateResourceException.
+             * @param message
+             */
+            public TemplateResourceException(String message) {
+                super(message);
+            }
+        }
+
+        /** Exception if template resources are not found. */
+        public static class TemplateResourceNotFoundException extends TemplateResourceException {
+
+            private static final long serialVersionUID = -4532058335049427299L;
+
+            /** Constructor, creates a new TemplateResourceNotFoundException. */
+            public TemplateResourceNotFoundException() {
+                super();
+            }
+
+            /** 
+             * Constructor, creates a new TemplateResourceNotFoundException.
+             * @param message
+             */
+            public TemplateResourceNotFoundException(String message) {
+                super(message);
+            }
+        }
+        
+        /** Exception for endless recursions. */
+        public static class TemplateRecursionException extends TemplateException {
+
+            private static final long serialVersionUID = 6981096067851899978L;
+            
+            /** Constructor, creates a new TemplateRecursionException. */
+            public TemplateRecursionException() {
+                super();
+            }
         }
     }
     

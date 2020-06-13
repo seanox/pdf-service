@@ -34,7 +34,8 @@
       - Placeholders without value are removed at the end
   CR: Template Preview Properties: Omission of the prefix 'static'
       Data and static use the same data/properties.
-      Data uses this as a structured map, statics as a flat map.
+      Data uses all data as a structured map.
+      Statics used only non-structured keys, without dot and list index as a flat map.
   CR: Maven: Update of dependencies
   CR: Maven: Update to use Java 11
 

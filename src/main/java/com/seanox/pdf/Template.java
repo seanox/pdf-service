@@ -96,6 +96,55 @@ public abstract class Template extends Service.Template {
     /** Pattern for the detection of ampersand (non entity) */
     private final static Pattern PATTERN_AMPERSAND = Pattern.compile("(?i)&(?!#\\d+;)(?!#x[0-9a-f]+;)(?![a-z]+;)");
     
+    /** Naturally sort comparator */
+    private static class NaturalComparator implements Comparator<String> {
+        
+        /**
+         * Normalizes the numeric fragments that they can be sorted.
+         * @param  string string to be escaped
+         * @return the normalized string
+         */
+        private static String normalize(String string) {
+            
+            String buffer = "";
+            string = StringUtils.trimToEmpty(string);
+            for (String fragment : string.split("(?:(?<=\\d)(?!\\d))|(?:(?<!\\d)(?=\\d))")) {
+                try {
+                    fragment = Long.valueOf(fragment).toString();
+                    fragment = Long.toString(fragment.length(), 36).toUpperCase() + fragment;
+                } catch (NumberFormatException exception) {
+                }
+                buffer += fragment;
+            }
+            return buffer;
+        }
+
+        @Override
+        public int compare(String string1, String string2) {
+
+            string1 = NaturalComparator.normalize(string1);
+            string2 = NaturalComparator.normalize(string2);
+            return string1.compareTo(string2);
+        }
+    }    
+    
+    /**
+     * Exception object for syntactic and structural errors in the properties
+     * file of the preview data.
+     */
+    static class PreviewDataParserException extends Exception {
+        
+        private static final long serialVersionUID = 8942579089465571742L;
+
+        /**
+         * Constructor, creates a new PreviewDataParserException object.
+         * @param message
+         */
+        PreviewDataParserException(String message) {
+            super(message);
+        }
+    }
+    
     /** 
      * CharSequence for Markup.
      * {@link Markup} works like a {@link String}, but no HTML symbols are escaped.
@@ -148,77 +197,34 @@ public abstract class Template extends Service.Template {
         }
     }
     
-    /** Naturally sort comparator */
-    private static class NaturalComparator implements Comparator<String> {
-        
-        /**
-         * Normalizes the numeric fragments that they can be sorted.
-         * @param  string string to be escaped
-         * @return the normalized string
-         */
-        private static String normalize(String string) {
-            
-            String buffer = "";
-            string = StringUtils.trimToEmpty(string);
-            for (String fragment : string.split("(?:(?<=\\d)(?!\\d))|(?:(?<!\\d)(?=\\d))")) {
-                try {
-                    fragment = Long.valueOf(fragment).toString();
-                    fragment = Long.toString(fragment.length(), 36).toUpperCase() + fragment;
-                } catch (NumberFormatException exception) {
-                }
-                buffer += fragment;
-            }
-            return buffer;
-        }
-
-        @Override
-        public int compare(String string1, String string2) {
-
-            string1 = NaturalComparator.normalize(string1);
-            string2 = NaturalComparator.normalize(string2);
-            return string1.compareTo(string2);
-        }
-    }    
-    
-    /**
-     * Exception object for syntactic and structural errors in the properties
-     * file of the preview data.
-     */
-    static class PreviewDataParserException extends Exception {
-        
-        private static final long serialVersionUID = 8942579089465571742L;
-
-        /**
-         * Constructor, creates a new PreviewDataParserException object.
-         * @param message
-         */
-        PreviewDataParserException(String message) {
-            super(message);
-        }
-    }
-    
     /**
      * Creates a nested map structure for a data object, comparable to JSON.
-     * The nesting is based on the dot as separator in the key.<br>
-     * The data structure supports three data types: {@link Map},
-     * {@link Collection}, Text.<br>
-     * Text can be a {@link String} or {@link Markup} if it contains sequences:
+     * The nesting is based on the dot as separator in the key.
+     * The data structure supports the data types:
+     *     {@link Collection}, {@link Map}, {@link Markup}, Text.
+     * {@link Collection} and {@link Collection} are only used for nesting.
+     * Text is {@link Markup} if it contains HTML sequences:
      *     {@code <.../>}, {@code >...</} {@code  &...;}.<br>
-     * With {@link Markup} ({@link CharSequence}) there is no escape of HTML symbols.
-     * At the end a key with a String or Markup as value must always be used.<br>
+     * {@link Markup} Markup indicates text where the escape of HTML symbols is
+     * not required. At the end a key with a text value is always expected.<br>
      * <br>
      * Rules:
      * <ul>
      *   <li>
-     *     the properties are used for data and statics<br>
-     *     data use a structured map and statics use a flat map 
+     *     Properties are used for data and statics<br>
+     *     Data uses all data as a structured map<br>
+     *     Statics used only non-structured keys, without dot and list index
      *   </li>
      *   <li>
-     *     each dot in the key creates/uses a sub-map for the structured data map
+     *     Key with dot is an indicator for structured data<br>
+     *     Each dot in the key creates/uses a sub-map for the structured data map
      *   </li>
      *   <li>
-     *     if a (partial)key ends with [n], a list with a map is created/used<br>
-     *     n is the index in the list
+     *     Keys / partial keys ending with [n] create a list with (sub-)map<br>
+     *         as an example:<br>
+     *     report.data[0].value = Value 1<br>
+     *     report.data[1].value = Value 2<br>
+     *     report.data[2].value = Value 3
      *   </li>
      * </ul>
      */
@@ -284,10 +290,10 @@ public abstract class Template extends Service.Template {
     }
 
     /**
-     * Loads preview data based on a properties file corresponding to template.
+     * Loads preview data of a properties file, corresponding to a template.
      * The properties file are in the same package and use the same name.<br>
      * <dir>e.g. ArticleTemplateImpl -&gt; ArticleTemplateImpl.properties</dir>
-     * @return the data for one data record as preview
+     * @return the structured data for the preview
      * @throws Exception
      *     In case of unexpected errors.
      */
@@ -311,10 +317,11 @@ public abstract class Template extends Service.Template {
     }
     
     /**
-     * Loads preview statics based on a properties file corresponding to template.
+     * Loads preview statics of a properties file, corresponding to a template.
      * The properties file are in the same package and use the same name.<br>
      * <dir>e.g. ArticleTemplateImpl -&gt; ArticleTemplateImpl.properties</dir>
-     * @return the data for one data record as preview
+     * Statics only contain non-structured keys, without dot and list index. 
+     * @return the flat static data for the preview
      * @throws Exception
      *     In case of unexpected errors.
      */
@@ -322,7 +329,11 @@ public abstract class Template extends Service.Template {
     protected Map<String, String> getPreviewStatics()
             throws Exception {
         return this.getPreviewProperties().entrySet().stream()
-                .collect(Collectors.toMap(entry -> String.valueOf(entry.getKey()), entry -> String.valueOf(entry.getValue())));
+                .filter(entry -> ((String)entry.getKey()).matches("[\\w-]"))
+                .collect(Collectors.toMap(
+                        (entry) -> String.valueOf(entry.getKey()),
+                        (entry) -> String.valueOf(entry.getValue()),
+                        (existing, value) -> value));
     }
 
     /**
