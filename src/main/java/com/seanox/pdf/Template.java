@@ -72,12 +72,12 @@ import com.seanox.pdf.Service.Meta;
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer<br>
  * <br>
- * Template 4.0.0 20200612<br>
+ * Template 4.0.0 20200613<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 4.0.0 20200612
+ * @version 4.0.0 20200613
  */
 public abstract class Template extends Service.Template {
     
@@ -200,7 +200,7 @@ public abstract class Template extends Service.Template {
     /**
      * Creates a nested map structure for a data object, comparable to JSON.
      * The nesting is based on the dot as separator in the key.<br>
-     * The map structure supports three data types: {@link Map},
+     * The data structure supports three data types: {@link Map},
      * {@link Collection}, Text.<br>
      * Text can be a {@link String} or {@link Markup} if it contains sequences:
      *     {@code <.../>}, {@code >...</} {@code  &...;}.<br>
@@ -488,27 +488,6 @@ public abstract class Template extends Service.Template {
         return result;
     }    
     
-    @Override
-    protected Meta customizeMeta(Meta meta) {
-
-        Map<String, Object> data = meta.getData();
-        data = Template.escapeHtml(data);
-        data = Template.indicateEmpty(data);
-
-        Map<String, String> statics = meta.getStatics();
-        if (statics == null)
-            statics = new HashMap<>();
-        statics = statics.entrySet().stream()
-                .filter(entry -> entry.getValue() != null)
-                .collect(Collectors.toMap(
-                        (entry) -> entry.getKey().toLowerCase(),
-                        (entry) -> Template.escapeHtml(entry.getValue(),
-                                PATTERN_MARKUP_DETECTION.matcher(entry.getValue()).find()),  
-                        (existing, value) -> value));
-        
-        return new Meta(meta.getLocale(), data, statics);
-    }
-    
     /**
      * Resolves meta directives #include in markup recursively.
      * @param  path
@@ -594,5 +573,36 @@ public abstract class Template extends Service.Template {
         }});
         
         return new String(generator.extract());
+    }
+    
+    @Override
+    protected byte[] render(Meta meta)
+            throws Exception {
+        
+        if (meta == null)
+            meta = new Meta();
+        
+        //Preparation/customization of the meta object before rendering.
+        //The rendering is done in three steps (content, header, footer) and so
+        //this can be done once for all steps.
+
+        Map<String, Object> data = meta.getData();
+        data = Template.escapeHtml(data);
+        data = Template.indicateEmpty(data);
+
+        Map<String, String> statics = meta.getStatics();
+        if (statics == null)
+            statics = new HashMap<>();
+        statics = statics.entrySet().stream()
+                .filter(entry -> entry.getValue() != null)
+                .collect(Collectors.toMap(
+                        (entry) -> entry.getKey().toLowerCase(),
+                        (entry) -> Template.escapeHtml(entry.getValue(),
+                                PATTERN_MARKUP_DETECTION.matcher(entry.getValue()).find()),  
+                        (existing, value) -> value));
+
+        meta = new Meta(meta.getLocale(), data, statics);
+         
+        return super.render(meta);
     }
 }

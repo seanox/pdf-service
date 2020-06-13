@@ -136,12 +136,12 @@ import com.seanox.pdf.Template.Markup;
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer<br>
  * <br>
- * Service 4.0.0 20200612<br>
+ * Service 4.0.0 20200613<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 4.0.0 20200612
+ * @version 4.0.0 20200613
  */
 public class Service {
     
@@ -387,7 +387,7 @@ public class Service {
          *     In case of unexpected errors.
          */
         @SuppressWarnings("unchecked")
-        public final static Class<Template>[] scan()
+        public static Class<Template>[] scan()
                 throws Exception {
 
             if (Template.templates != null)
@@ -697,28 +697,14 @@ public class Service {
         }
         
         /**
-         * Preparation/customization of the meta object before rendering.<br>
-         * The rendering is done in three steps (content, header, footer) and so
-         * this can be done once for all steps.
-         * @param  meta
-         * @return the customized meta-object
-         */
-        protected Meta customizeMeta(Meta meta) {
-            return meta;
-        }
-        
-        /**
          * Creates the PDF based on the data records as meta object.
          * @param  meta data records as map array
          * @return the created PDF as byte array
          * @throws Exception
          *     In case of unexpected errors.
          */
-        final protected byte[] render(Meta meta)
+        protected byte[] render(Meta meta)
                 throws Exception {
-
-            //optional preparation/customization of the meta object
-            meta = this.customizeMeta(meta);
 
             if (meta == null)
                 meta = new Meta();
