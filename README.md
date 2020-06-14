@@ -99,6 +99,7 @@ CR: Service Meta Static: Update to use Map<String, String> instead of Map<String
 CR: Template API: Separation when loading data and statics for the preview  
 CR: Template API: Omission of final for the methods scan and render  
 CR: Template API: Added of public for Multiplex and Template.merge(Collection documents)  
+CR: Template API: Refactored/moved Type to Template.Type  
 CR: Template Generate: Unified behavior of data placeholders and static placeholders  
 CR: Template Preview Properties: Omission of the prefix 'static'  
 CR: Template Statics: Added of the exists pendants  

@@ -340,22 +340,6 @@ public class Service {
             meta.statics = this.statics;
             return meta;
         }
-
-        /**
-         * Meta-Type is required during generation so that the corresponding
-         * meta data (Key-Value Map) is used for the markup.
-         */
-        public static enum Type {
-
-            /** Meta-Type HEADER */
-            HEADER,
-
-            /** Meta-Type DATA */
-            DATA,
-
-            /** Meta-Type FOOTER */
-            FOOTER
-        }
     }
 
     /** Abstract class for implementing templates. */
@@ -386,6 +370,22 @@ public class Service {
              * extension 'html'.
              */
             String template() default "";
+        }
+        
+        /**
+         * Meta-Type is required during generation so that the corresponding
+         * meta data (Key-Value Map) is used for the markup.
+         */
+        public static enum Type {
+
+            /** Meta-Type HEADER */
+            HEADER,
+
+            /** Meta-Type DATA */
+            DATA,
+
+            /** Meta-Type FOOTER */
+            FOOTER
         }
         
         /** Array of template implementations detected in the ClassPath */
@@ -587,7 +587,7 @@ public class Service {
          * @param  meta
          * @return the created (X)HTML markup for the PDF creation
          */
-        protected abstract String generate(String markup, Meta.Type type, Meta meta);
+        protected abstract String generate(String markup, Type type, Meta meta);
         
         /**
          * Merges a collection of PDDocuments into one. 
@@ -704,7 +704,7 @@ public class Service {
                 
                 ByteArrayOutputStream content = new ByteArrayOutputStream();
                 builder = new PdfRendererBuilder();
-                builder.withHtmlContent(this.generate(multiplex.content, Meta.Type.DATA, meta), base.toString());
+                builder.withHtmlContent(this.generate(multiplex.content, Type.DATA, meta), base.toString());
                 builder.toStream(content);
                 builder.run();
                 artifacts.add(PDDocument.load(content.toByteArray()));
@@ -733,7 +733,7 @@ public class Service {
                                 && !multiplex.header.trim().isEmpty()) {
                             ByteArrayOutputStream header = new ByteArrayOutputStream();
                             builder = new PdfRendererBuilder();
-                            builder.withHtmlContent(this.generate(multiplex.header, Meta.Type.HEADER, meta), base.toString());
+                            builder.withHtmlContent(this.generate(multiplex.header, Type.HEADER, meta), base.toString());
                             builder.toStream(header);
                             builder.run();
                             
@@ -751,7 +751,7 @@ public class Service {
                                 && !multiplex.footer.trim().isEmpty()) {
                             ByteArrayOutputStream footer = new ByteArrayOutputStream();
                             builder = new PdfRendererBuilder();
-                            builder.withHtmlContent(this.generate(multiplex.footer, Meta.Type.FOOTER, meta), base.toString());
+                            builder.withHtmlContent(this.generate(multiplex.footer, Type.FOOTER, meta), base.toString());
                             builder.toStream(footer);
                             builder.run();  
                             

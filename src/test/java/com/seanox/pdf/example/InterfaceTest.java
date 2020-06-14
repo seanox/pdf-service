@@ -30,7 +30,14 @@ import com.seanox.pdf.Service.Template;
 /**
  * Not a real test class.
  * Here the implementation and use of the Template-API shall be tested and
- * protected by the compiler.
+ * protected by the compiler..<br>
+ * <br>
+ * InterfaceTest 4.0.0 20200614<br>
+ * Copyright (C) 2020 Seanox Software Solutions<br>
+ * Alle Rechte vorbehalten.
+ *
+ * @author  Seanox Software Solutions
+ * @version 4.0.0 20200614
  */
 class InterfaceTest extends Template {
 
@@ -99,7 +106,7 @@ class InterfaceTest extends Template {
     }
 
     @Override
-    protected String generate(String markup, Meta.Type type, Meta meta) {
+    protected String generate(String markup, Type type, Meta meta) {
         return null;
     }
     
