@@ -57,8 +57,10 @@ import com.seanox.pdf.Service.Meta;
  * Sections/blocks are only rendered if a corresponding map entry exists.
  *  
  * <dir><code>![static-text]</code></dir>
- * Placeholder for static text from the ResourceBundle.
- * As language {@link Service.Meta#locale} is used.
+ * Placeholder for static non-structured text e.g. from the ResourceBundle.
+ * 
+ * <dir><code>![static-text-exists]</code></dir>
+ * Pendant to any placeholder of static non-structured text, if it exists.
  *  
  * <dir><code>#[locale]</code></dir>
  * Placeholder provided by {@link Service} with the current language.
@@ -72,12 +74,12 @@ import com.seanox.pdf.Service.Meta;
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer<br>
  * <br>
- * Template 4.0.0 20200613<br>
+ * Template 4.0.0 20200614<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 4.0.0 20200613
+ * @version 4.0.0 20200614
  */
 public abstract class Template extends Service.Template {
     
@@ -229,7 +231,7 @@ public abstract class Template extends Service.Template {
      * </ul>
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
-    private static void collectPreviewData(Map<String, Object> map, String key, String value)
+    private static <T> void collectPreviewData(Map<String, T> map, String key, String value)
             throws PreviewDataParserException {
         
         if (!PATTERN_EXPRESSION.matcher(key).find())  
@@ -243,7 +245,7 @@ public abstract class Template extends Service.Template {
                     entry = PATTERN_LIST_EXPRESSION.matcher(entry).replaceAll("$1").trim();
                     if (!map.containsKey(entry)
                             || !(map.get(entry) instanceof List))
-                        map.put(entry, new ArrayList<>());
+                        map.put(entry, (T)new ArrayList<>());
                     List list = (List)map.get(entry);
                     if (list.size() < index)
                         throw new PreviewDataParserException("Invalid key index: " + key);
@@ -255,7 +257,7 @@ public abstract class Template extends Service.Template {
                 } else {
                     if (!map.containsKey(entry)
                             || !(map.get(entry) instanceof Map))
-                        map.put(entry, new HashMap<>());
+                        map.put(entry, (T)new HashMap<>());
                     map = (Map)map.get(entry);
                 }
             }
@@ -265,8 +267,8 @@ public abstract class Template extends Service.Template {
         if (value == null)
             value = "";
         if (PATTERN_MARKUP_DETECTION.matcher(value).find())
-            map.put(key, new Markup(value));
-        else map.put(key, value);
+            map.put(key, (T)new Markup(value));
+        else map.put(key, (T)value);
     }
     
     /**
@@ -329,7 +331,7 @@ public abstract class Template extends Service.Template {
     protected Map<String, String> getPreviewStatics()
             throws Exception {
         return this.getPreviewProperties().entrySet().stream()
-                .filter(entry -> ((String)entry.getKey()).matches("[\\w-]"))
+                .filter(entry -> ((String)entry.getKey()).matches("[\\w-]+"))
                 .collect(Collectors.toMap(
                         (entry) -> String.valueOf(entry.getKey()),
                         (entry) -> String.valueOf(entry.getValue()),
@@ -471,9 +473,9 @@ public abstract class Template extends Service.Template {
      * @return collection with additional exists keys
      */    
     @SuppressWarnings({"rawtypes", "unchecked"})
-    private static Map<String, Object> indicateEmpty(Map<String, Object> map) {
+    private static <T> Map<String, T> indicateEmpty(Map<String, T> map) {
         
-        Map<String, Object> result = new HashMap<>();
+        Map<String, T> result = new HashMap<>();
         if (map == null)
             map = new HashMap<>();
         map.entrySet().forEach(entry -> {
@@ -481,18 +483,18 @@ public abstract class Template extends Service.Template {
                 if (entry.getValue() instanceof Collection) {
                     Collection value = (Collection)entry.getValue();
                     if (!value.isEmpty())
-                        result.put(entry.getKey() + "-exists", "exists");
-                    result.put(entry.getKey(), Template.indicateEmpty(value));
+                        result.put(entry.getKey() + "-exists", (T)"exists");
+                    result.put(entry.getKey(), (T)Template.indicateEmpty(value));
                 } else if (entry.getValue() instanceof Map) {
                     Map value = (Map)entry.getValue();
                     if (!value.isEmpty())
-                        result.put(entry.getKey() + "-exists", "exists");
-                    result.put(entry.getKey(), Template.indicateEmpty(value));
+                        result.put(entry.getKey() + "-exists", (T)"exists");
+                    result.put(entry.getKey(), (T)Template.indicateEmpty(value));
                 } else {
                     String value = String.valueOf(entry.getValue());
                     if (!value.trim().isEmpty())
-                        result.put(entry.getKey() + "-exists", "exists");
-                    result.put(entry.getKey(), value);
+                        result.put(entry.getKey() + "-exists", (T)"exists");
+                    result.put(entry.getKey(), (T)value);
                 }
             }
         });
@@ -611,6 +613,7 @@ public abstract class Template extends Service.Template {
                         (entry) -> Template.escapeHtml(entry.getValue(),
                                 PATTERN_MARKUP_DETECTION.matcher(entry.getValue()).find()),  
                         (existing, value) -> value));
+        statics = Template.indicateEmpty(statics);
 
         meta = new Meta(meta.getLocale(), data, statics);
          

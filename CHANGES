@@ -36,6 +36,7 @@
       Data and static use the same data/properties.
       Data uses all data as a structured map.
       Statics used only non-structured keys, without dot and list index as a flat map.
+  CR: Template Statics: Added of the exists pendants
   CR: Maven: Update of dependencies
   CR: Maven: Update to use Java 11
 
