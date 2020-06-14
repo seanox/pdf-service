@@ -144,12 +144,12 @@ import com.seanox.pdf.Service.Template.TemplateException;
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer<br>
  * <br>
- * Service 4.0.0 20200613<br>
+ * Service 4.0.0 20200614<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 4.0.0 20200613
+ * @version 4.0.0 20200614
  */
 public class Service {
     
@@ -595,7 +595,7 @@ public class Service {
          * @return the merged PDDocuments
          * @throws IOException
          */
-        private static PDDocument merge(Collection<PDDocument> documents)
+        protected static PDDocument merge(Collection<PDDocument> documents)
                 throws IOException {
 
             PDFMergerUtility merge = new PDFMergerUtility();
@@ -801,10 +801,21 @@ public class Service {
          * number) can also be used.
          *
          * The multiplexer separates the markup for the fragments: header,
-         * content, footer. So that three templates can be created from one
-         * template and each fragment can be rendered individually as a PDF.
+         * content, footer into completely separate (X)HTML documents. So that
+         * three templates can be created from one template and each fragment
+         * can be rendered individually as a PDF.
+         * 
+         * <dir><b>Header</b></dir>
+         * The complete (X)HTML document with {@code BODY > HEADER} only.
+         * 
+         * <dir><b>Content</b></dir>
+         * The complete (X)HTMl document without {@code BODY > HEADER} and
+         * without {@code BODY > FOOTER}.
+         * 
+         * <dir><b>Footer</b></dir>
+         * The complete (X)HTML document with {@code BODY > FOOTER} only.
          */
-        private static class Multiplex {
+        protected static class Multiplex {
 
             /** markup of header */
             private String header;
@@ -815,6 +826,30 @@ public class Service {
             /** markup of footer */
             private String footer;
             
+            /**
+             * Return value of header.
+             * @return value of header
+             */
+            public String getHeader() {
+                return this.header;
+            }
+
+            /**
+             * Return value of content.
+             * @return value of content
+             */
+            public String getContent() {
+                return this.content;
+            }
+
+            /**
+             * Return value of footer.
+             * @return value of footer
+             */
+            public String getFooter() {
+                return this.footer;
+            }
+
             /**
              * Creates a list of nodes from a NodeList.
              * @param  nodes
@@ -951,7 +986,7 @@ public class Service {
              *     header, content an footer
              * @throws Exception
              */
-            private static Multiplex demux(String markup)
+            public static Multiplex demux(String markup)
                     throws Exception {
 
                 DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();

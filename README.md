@@ -98,8 +98,10 @@ CR: Service Meta: Added more variants of the constructor
 CR: Service Meta Static: Update to use Map<String, String> instead of Map<String, CharSequence>  
 CR: Template API: Separation when loading data and statics for the preview  
 CR: Template API: Omission of final for the methods scan and render  
+CR: Template API: Added of public for Multiplex and Template.merge(Collection documents)  
 CR: Template Generate: Unified behavior of data placeholders and static placeholders  
 CR: Template Preview Properties: Omission of the prefix 'static'  
+CR: Template Statics: Added of the exists pendants  
 CR: Maven: Update of dependencies  
 CR: Maven: Update to use Java 11  
 
