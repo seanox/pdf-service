@@ -310,8 +310,8 @@ public class PreviewTest {
         data.put("X", "2");
         meta.setData(data);
         Map<String, String> statics = new TreeMap<>();
-        statics.put("x", "1");
-        statics.put("X", "2");
+        statics.put("x", "A");
+        statics.put("X", "B");
         meta.setStatics(statics);
         
         File output = new File(TEMP, "DuplicateTemplate.pdf");
