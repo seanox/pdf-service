@@ -119,9 +119,18 @@ import com.seanox.pdf.Service.Template.TemplateException;
  * <dir><code>#[palceholder]</code></dir>
  * Simple placeholder, global or in a section.
  *  
+ * <dir><code>#[palceholder-exists]</code></dir>
+ * Pendant to any placeholder, if it exists.
+ *  
  * <dir><code>#[section[[...]]]</code></dir>
  * Section/Bock can contain more substructures.
  * Sections/blocks are only rendered if a corresponding map entry exists.
+ *  
+ * <dir><code>![static-text]</code></dir>
+ * Placeholder for static non-structured text e.g. from the ResourceBundle.
+ * 
+ * <dir><code>![static-text-exists]</code></dir>
+ * Pendant to any placeholder of static non-structured text, if it exists.
  *  
  * <dir><code>#[locale]</code></dir>
  * Placeholder provided by {@link Service} with the current language.

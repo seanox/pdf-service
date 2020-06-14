@@ -117,7 +117,7 @@ import ...
 
 Map<String, String> statics = new HashMap<String, String>() {
     private static final long serialVersionUID = 1L; {
-    put("ARTICLE_NUMBER", "Article number");
+    put("ARTICLE_NUMBER", "Article Number");
     put("ARTICLE_PRICE", "Price");
     put("ADDRESS_TEL", "Tel");
     put("ADDRESS_FAX", "Fax");
@@ -364,6 +364,8 @@ https://github.com/seanox/pdf-service/tree/master/src/test/resources/pdf
 Meta tags are not an HTML standard.  
 They are additional instructions for the generator.  
 Meta tags works exclusive, line-based and start with a hash.
+The description refers to the template generator which is integrated in Seanox
+PDF-Service.  
 
 #### #include
 
@@ -531,7 +533,7 @@ footer and contain the current page and total number of pages.
 </html>
 ```
 
-For each key and placeholder from Meta-Data an exists-placeholder is provided.  
+For each key and placeholder an exists-placeholder is provided.  
 This can be used in the markup and in combination with CSS to output/display
 markup depending on the existence of values in meta-data.
     
@@ -595,8 +597,33 @@ If no differences were found, the return value is `null`.
 
 
 ## Mock-Up
-TODO:
 
+Mock-up is part of the preview and design process to design and test the markup
+of the PDFs independently of the project. For this purpose, a property file with
+the same name can be provided parallel to the template file.
+
+The properties creates a nested map structure for a data object, comparable to
+JSON. The nesting is based on the dot as separator in the key.  
+The data structure supports the data types: Collection, Map, Markup, Text.  
+Collection and Map are only used for nesting.  
+Text is markup if it contains HTML sequences `<.../>` or `>...</`.  
+Markup indicates text where the escape of HTML symbols is not required.  
+At the end a key with a text value is always expected.  
+
+Properties are used for data and statics.    
+Data uses all data as a structured map.  
+Statics used only non-structured keys, without dot and list index.  
+
+Key with dot is an indicator for structured data.  
+Each dot in the key creates/uses a sub-map for the structured data map.
+
+Keys and partial keys ending with [n] create/use a list with a (sub-)map.
+
+```
+report.data[0].value = Value 1
+report.data[1].value = Value 2
+report.data[2].value = Value 3
+```
 
 ## Template API
 TODO:
@@ -608,9 +635,9 @@ TODO:
 
 ## PDF-Tools
 
-The standalone command line tools include some helpers focused on the design
-process and testing outside and independent of projects.  
-Includes: Compare, Designer, Preview as command line applications  
+The command line tools include helpers that focus on the design process and
+testing outside and independent of projects.  
+Includes: Compare, Designer, Preview  
 
 ### Download
 
