@@ -20,20 +20,22 @@
       java -cp seanox-pdf-tools.jar com.seanox.pdf.Preview <paths/filters/globs> ...
   CR: Service Meta: Added more variants of the constructor
   CR: Service Meta Static: Update to use Map<String, String> instead of Map<String, CharSequence>
-  CR: Template API: Separation when loading data and statics for the preview
-      There is still one properties file used for both.
-      But now there are two separate methods to get the data and statics.
-  CR: Template API: Omission of final for the methods scan and render
+  CR: Template Scan: Omission of final attribute in the access modifier
+  CR: Template Render: Omission of final attribute in the access modifier
       Enables the preparation/customization of the meta object before rendering.
       The rendering is done in three steps (content, header, footer) and so this can be done once for all steps.
-  CR: Template API: Added of public for Multiplex and Template.merge(Collection documents)
-  CR: Template API: Refactored/moved Type to Template.Type
+  CR: Template Multiplex: Change from access modifier to public
+  CR: Template Merge: Change from access modifier to public
+  CR: Template Type: Refactored/moved Type to Template.Type
   CR: Template Generate: Unified behavior of data placeholders and static placeholders
       - Placeholders are case insensitive
       - Placeholders are limited to the following characters: a-z A-Z 0-9 _-
       - Placeholders must begin with a letter
       - Placeholders cannot be inserted subsequently
       - Placeholders without value are removed at the end
+  CR: Template Preview: Separation when loading data and statics for the preview
+      There is still one properties file used for both.
+      But now there are two separate methods to get the data and statics.
   CR: Template Preview Properties: Omission of the prefix 'static'
       Data and static use the same data/properties.
       Data uses all data as a structured map.

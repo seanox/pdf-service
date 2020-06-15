@@ -96,11 +96,13 @@ CR: Compare: Optimization of the output of differences
 CR: PDF Tools: Integrated as standalone Java application  
 CR: Service Meta: Added more variants of the constructor  
 CR: Service Meta Static: Update to use Map<String, String> instead of Map<String, CharSequence>  
-CR: Template API: Separation when loading data and statics for the preview  
-CR: Template API: Omission of final for the methods scan and render  
-CR: Template API: Added of public for Multiplex and Template.merge(Collection documents)  
-CR: Template API: Refactored/moved Type to Template.Type  
+CR: Template Scan: Omission of final attribute in the access modifier  
+CR: Template Render: Omission of final attribute in the access modifier  
+CR: Template Multiplex: Change from access modifier to public  
+CR: Template Merge: Change from access modifier to public  
+CR: Template Type: Refactored/moved Type to Template.Type  
 CR: Template Generate: Unified behavior of data placeholders and static placeholders  
+CR: Template Preview: Separation when loading data and statics for the preview  
 CR: Template Preview Properties: Omission of the prefix 'static'  
 CR: Template Statics: Added of the exists pendants  
 CR: Maven: Update of dependencies  
