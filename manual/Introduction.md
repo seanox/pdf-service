@@ -271,7 +271,7 @@ public static class ExampleTemplate extends Template {
 ```
 
 The complete example can be found here:  
-https://github.com/seanox/pdf-service/blob/master/src/test/java/com/seanox/pdf/example/UsageTemplate.java#L1
+https://github.com/seanox/pdf-service/blob/master/src/test/java/com/seanox/pdf/example/UsageTemplate.java
 
 ### Markup
 
@@ -363,7 +363,7 @@ because they have been implemented alternatively in the PDF service.
 ```
 
 The complete example and more can be found here:  
-https://github.com/seanox/pdf-service/blob/master/src/test/resources/com/seanox/pdf/example/UsageTemplate%24ExampleTemplate.html#L1  
+https://github.com/seanox/pdf-service/blob/master/src/test/resources/com/seanox/pdf/example/UsageTemplate%24ExampleTemplate.html  
 https://github.com/seanox/pdf-service/tree/master/src/test/resources/pdf
 
 ### Meta Tags
@@ -400,7 +400,7 @@ resource.
 ```
 
 The complete example and more can be found here:  
-https://github.com/seanox/pdf-service/blob/master/src/test/resources/pdf/articleIncludeX.html#L1  
+https://github.com/seanox/pdf-service/blob/master/src/test/resources/pdf/articleIncludeX.html  
 https://github.com/seanox/pdf-service/tree/master/src/test/resources/pdf
 
 ### Placeholder
@@ -572,7 +572,7 @@ markup depending on the existence of values in meta-data.
 ```
 
 The complete example and more can be found here:  
-https://github.com/seanox/pdf-service/blob/master/src/test/resources/pdf/articleA.html#L1  
+https://github.com/seanox/pdf-service/blob/master/src/test/resources/pdf/articleA.html  
 https://github.com/seanox/pdf-service/tree/master/src/test/resources/pdf
 
 
@@ -645,7 +645,11 @@ TODO:
 TODO:
 
 ### Resources
-TODO:
+
+Templates are based on an implementation of the [Template](#template) and the
+annoation [Resources](#resources), which with `base` and `template` contains
+information about the base directory of the resources (CSS, images, fonts, ...),
+as well the path of the markup template with the same name.
 
 ### Multiplex
 
