@@ -17,7 +17,7 @@ Seanox PDF-Service for generating/rendering PDFs based on
 
 The static service contains an abstraction of templates, an API for templates,
 renderer and markup generators, a markup generator with preview function and
-mockup data support.  
+mock-up data support.  
 The templates supports includes and independent areas for header, content and
 footer, which are assembled by overlay for each page. Header and footer are
 borderless overlays and can therefore also use the border area of the content.  
