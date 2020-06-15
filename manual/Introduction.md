@@ -6,9 +6,9 @@
 Seanox PDF-Service for generating/rendering PDFs based on
 [Open HTML to PDF](https://github.com/danfickle/openhtmltopdf).
 
-The static service contains an abstraction of templates, an API for templates
-and markup generators, a markup generator with preview function and mockup data
-support.  
+The static service contains an abstraction of templates, an API for templates,
+renderer and markup generators, a markup generator with preview function and
+mockup data support.  
 The templates supports includes and independent areas for header, content and
 footer, which are assembled by overlay for each page. Header and footer are
 borderless overlays and can therefore also use the border area of the content.  
@@ -32,8 +32,8 @@ e.g. margins of the document can be used by the header and footer
 language setting is also transferred to the template and thus fonts matching the
 language can be used
 - Creation of markup as preview e.g. for the frontend
-- API for templates and other markup generators
-abstract templates for individual generators
+- API for templates and other renderer and markup generators 
+abstract templates for individual renderer and generators
 - PDF comparison for test automation  
 pixel- and color-based with difference image generation
 - PDF Tools as standalone Java applications  
@@ -57,7 +57,14 @@ designing and testing outside and independent of projects
 * [Test](#test)
 * [Mock-Up](#mock-up)
 * [Template API](#template-api)
-* [Generator API](#generator-api)
+  * [Template](#template)
+  * [Resources](#resources)
+  * [Multiplex](#multiplex)
+  * [Type](#type)
+  * [TemplateException](#templateexception)
+  * [TemplateResourceException](#templateresourceexception)
+  * [TemplateResourceNotFoundException](#templateresourcenotfoundexception)
+  * [TemplateRecursionException](#templaterecursionexception)
 * [PDF-Tools](#pdf-tools)
   * [Compare](#compare)
   * [Preview](#preview)
@@ -173,12 +180,12 @@ File output = new File("example.pdf");
 Files.write(output.toPath(), data, StandardOpenOption.CREATE);
 ```
 
-The render method needs one more template.  
+The render method needs an implemented template.  
 Why as a template implementation?  
 The implementation makes the template usage traceable for the compiler and
 protects against errors.  
-Another point is the Template and Generator API, whose implementation is defined
-by the templates. The service only uses the API and has no own template and
+Another point is the Template API, whose implementation is defined by the
+templates. The service only uses the API and has no own template and markup
 generator.
 
 ```java
@@ -599,11 +606,13 @@ If no differences were found, the return value is `null`.
 ## Mock-Up
 
 Mock-up is part of the preview and design process to design and test the markup
-of the PDFs independently of the project. For this purpose, a property file with
-the same name can be provided parallel to the template file.
+of the PDFs independently of the project.  
+For this purpose, a property file with the same name can be provided parallel to
+the template file.
 
 The properties creates a nested map structure for a data object, comparable to
-JSON. The nesting is based on the dot as separator in the key.  
+JSON.  
+The nesting is based on the dot as separator in the key.  
 The data structure supports the data types: Collection, Map, Markup, Text.  
 Collection and Map are only used for nesting.  
 Text is markup if it contains HTML sequences `<.../>` or `>...</`.  
@@ -625,12 +634,70 @@ report.data[1].value = Value 2
 report.data[2].value = Value 3
 ```
 
+Examples and more can be found here:  
+https://github.com/seanox/pdf-service/tree/master/src/test/resources/pdf
+
+
 ## Template API
 TODO:
 
-
-## Generator API
+### Template
 TODO:
+
+### Resources
+TODO:
+
+### Multiplex
+
+The template can contain three fragments: header, content, footer.  
+The content can be generated in one step. Because the content is framed in a
+page and the page can contain margins in which headers and footers must be
+inserted. Header and footer must therefore be inserted later as an overlay.
+Header and footer can contain their own placeholders and are therefore generated
+separately. So the special placeholders `#[page]` (current page number) and
+`#[pages]` (total number) can also be used.
+
+The multiplexer separates the markup for the fragments: header, content, footer
+into completely separate (X)HTML documents. This way, three templates can be
+created from one template and each fragment can be rendered individually as PDF.
+
+#### Header
+
+The complete (X)HTML document with `BODY > HEADER` only.
+
+#### Content
+
+The complete (X)HTMl document without `BODY > HEADER` and without
+`BODY > FOOTER`.
+
+#### Footer
+
+The complete (X)HTML document with `BODY > FOOTER` only.
+
+### Type
+
+The template can contain three fragments: header, content, footer.  
+The rendering of the markup uses overlays.  
+During rendering, the type tells the generator which fragments of the markup is
+generated. The generator can thus react specifically to the fragments if it is
+necessary for the generator implementation.  
+Type provides the constants for the layers as enumeration.        
+
+### TemplateException
+
+General exception in the context of the templates.
+
+### TemplateResourceException
+
+Exception when accessing and using template resources.
+
+### TemplateResourceNotFoundException
+
+Exception if template resources are not found.
+
+### TemplateRecursionException
+
+Exception for endless recursions in the context of the templates.
 
 
 ## PDF-Tools

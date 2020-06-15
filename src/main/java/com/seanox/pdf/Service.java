@@ -206,8 +206,8 @@ public class Service {
      * Meta object for creating PDFs.
      * The PDF creation is based on templates and is decoupled from the business
      * logic. The templates only know placeholders and structures.
-     * Templates consist of the parts: header, data and footer, which all use
-     * the data from the meta object.
+     * Templates consist of the fragments: header, data and footer, which all
+     * use the data from the meta object.
      * The following data are supported: locale for internationalization (i18n),
      * structured data and static texts.<br>
      * <br>
@@ -370,22 +370,6 @@ public class Service {
              * extension 'html'.
              */
             String template() default "";
-        }
-        
-        /**
-         * Meta-Type is required during generation so that the corresponding
-         * meta data (Key-Value Map) is used for the markup.
-         */
-        public static enum Type {
-
-            /** Meta-Type HEADER */
-            HEADER,
-
-            /** Meta-Type DATA */
-            DATA,
-
-            /** Meta-Type FOOTER */
-            FOOTER
         }
         
         /** Array of template implementations detected in the ClassPath */
@@ -578,6 +562,26 @@ public class Service {
                 this.setData(Template.this.getPreviewData());
                 this.setStatics(Template.this.getPreviewStatics());
             }});
+        }
+        
+        /**
+         * The template can contain three fragments: header, content, footer.
+         * The rendering of the markup uses overlays.
+         * During rendering, the type tells the generator which fragment of the
+         * markup is generated. The generator can thus react specifically to the
+         * fragments if it is necessary for the generator implementation.
+         * Type provides the constants for the layers as enumeration.
+         */
+        public static enum Type {
+
+            /** Meta-Type HEADER */
+            HEADER,
+
+            /** Meta-Type DATA */
+            DATA,
+
+            /** Meta-Type FOOTER */
+            FOOTER
         }
 
         /**

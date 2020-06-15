@@ -153,10 +153,10 @@ class Generator {
     
     /**
      * Determines whether a valid placeholder starts at the specified position
-     * in a model (fragment). In this case the length of the complete
-     * placeholder is returned. If no placeholder can be determined, the length
-     * 0 is returned. If no further data is available in the model for analysis
-     * (end of data is reached) a negative value is returned.
+     * in a model (segment). In this case the length of the complete placeholder
+     * is returned. If no placeholder can be determined, the return value is 0.
+     * If no further data is available in the model for analysis (end of data is
+     * reached) a negative value is returned.
      * @param  model  Model(Fragmet)
      * @param  cursor Position
      * @return the position of the next placeholder or segment, otherwise a
@@ -336,7 +336,7 @@ class Generator {
      * @param  scope  Scope or segment
      * @param  values Values
      * @param  clean  {@code true} for final cleanup
-     * @return the filled model (fragment)
+     * @return the filled model (segment)
      */    
     @SuppressWarnings({"unchecked", "rawtypes"})
     private byte[] assemble(String scope, Map<String, Object> values, boolean clean) {
