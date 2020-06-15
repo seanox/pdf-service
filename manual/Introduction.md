@@ -48,6 +48,7 @@ designing and testing outside and independent of projects
   * [Implementation](#implementation)
   * [Markup](#markup)
   * [Meta Tags](#meta-tags)
+    * [#include](#include)
   * [Placeholder](#placeholder)
     * [Static Placeholder](#static-placeholder)
     * [Data Value Placeholder](#data-structure-placeholder)
@@ -639,10 +640,13 @@ https://github.com/seanox/pdf-service/tree/master/src/test/resources/pdf
 
 
 ## Template API
-TODO:
 
 ### Template
-TODO:
+
+Abstract class for implementing templates.  
+The implementation defines the resource management, the preparation of markup,
+the generation of markup and can optionally also define the PDF rendering.  
+The service only uses the API and has no own template and markup generator.
 
 ### Resources
 

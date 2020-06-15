@@ -343,7 +343,13 @@ public class Service {
         }
     }
 
-    /** Abstract class for implementing templates. */
+    /** 
+     * Abstract class for implementing templates.
+     * The implementation defines the resource management, the preparation of
+     * markup, the generation of markup and can optionally also define the PDF
+     * rendering. The service only uses the API and has no own template and
+     * markup generator.
+     */
     public static abstract class Template {
         
         /**
