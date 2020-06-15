@@ -284,8 +284,8 @@ placeholder for the generator.
   <head>
     <style type="text/css">
       @page {
-        margin:36mm 18mm 40mm 18mm;
-        size:A4 portrait;
+        margin: 36mm 18mm 40mm 18mm;
+        size: A4 portrait;
       }
       ...
     </style>
@@ -307,8 +307,8 @@ overlay.
   <head>
     <style type="text/css">
       @page {
-        margin:36mm 18mm 40mm 18mm;
-        size:A4 portrait;
+        margin: 36mm 18mm 40mm 18mm;
+        size: A4 portrait;
       }
       ...
     </style>
@@ -336,8 +336,8 @@ because they have been implemented alternatively in the PDF service.
   <head>
     <style type="text/css">
       @page {
-        margin:36mm 18mm 40mm 18mm;
-        size:A4 portrait;
+        margin: 36mm 18mm 40mm 18mm;
+        size: A4 portrait;
       }
       body {
         ...
