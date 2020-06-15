@@ -26,8 +26,8 @@ import com.seanox.pdf.Template;
 /** 
  * Example of using the PDF service.
  * Template and preview data are in the same package.
- * The resources (css, images, ...) are in the ClassPath /pdf/... and are used
- * in the template relative.<br>
+ * The resources (CSS, images, fonts, ...) are in the ClassPath /pdf/... and are
+ * used in the template relative.<br>
  * <br>
  * ArticleMultiTemplate 1.0.0 20200313<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>

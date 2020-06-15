@@ -227,9 +227,9 @@ public static class ExampleTemplate extends Template {
 ```
 
 Template need the annotation `@Resources`.  
-This annotation determines where in the ClassPath the resources (e.g. styles,
-images, fonts, ...) for the template are located and, if necessary, determines
-the file name of the template if this cannot be derived from the Java class.
+This annotation defines where in the ClassPath the resources (CSS, images,
+fonts, ...) for the template are located and, if necessary, defines the file
+name of the template if this cannot be derived from the Java class.
 
 ```java
 import com.fasterxml.jackson.databind.ObjectMapper;

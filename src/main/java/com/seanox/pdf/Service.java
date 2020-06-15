@@ -80,7 +80,8 @@ import com.seanox.pdf.Service.Template.TemplateException;
  * <pre>
  *   Service.render(template, meta);
  *    
- *   Files.write(new File(template + ".pdf").toPath(), Service.render(template, meta), StandardOpenOption.CREATE);
+ *   Files.write(new File(template + ".pdf").toPath(),
+ *           Service.render(template, meta), StandardOpenOption.CREATE);
  * </pre>
  *  
  * <dir><b>How it works:</b></dir>
@@ -100,15 +101,15 @@ import com.seanox.pdf.Service.Template.TemplateException;
  * Templates are based on an implementation of the {@link Template} and the
  * annoation {@link Resources}, which with {@link Resources#base()} and
  * {@link Resources#template()}) contains information about the base directory
- * of the resources (stylesheets, images, fonts, ...), as well the path of the
- * markup template with the same name.
+ * of the resources (CSS, images, fonts, ...), as well the path of the markup
+ * template with the same name.
  * It is practical if the template implementation, the markup template and any
  * template extensions (properties, ...) are stored in the same package.
  * 
- * The resources (stylesheets, images, fonts, ...) use HTML-to-PDF from the
- * ClassPath, means the base URI required by the HTML-to-PDF converter refers to
- * the ClassPath of this class. The location in the ClassPath can be defined
- * with {@link Resources#base()}.
+ * The resources (CSS, images, fonts, ...) use HTML-to-PDF from the ClassPath,
+ * means the base URI required by the HTML-to-PDF converter refers to the
+ * ClassPath of this class. The location in the ClassPath can be defined with
+ * {@link Resources#base()}.
  *  
  * <dir><b>About the templates</b></dir>
  * The template implementation takes over the rendering of the templates.
@@ -349,9 +350,9 @@ public class Service {
          * Templates are based on an implementation of the
          * {@link Template} and the annoation {@link Resources}, which with
          * {@link Resources#base()} and {@link Resources#template()}) contains 
-         * information about the base directory of the resources (stylesheets,
-         * images, fonts, ...), as well the path of the markup template with the
-         * same name.
+         * information about the base directory of the resources (CSS, images,
+         * fonts, ...), as well the path of the markup template with the same
+         * name.
          */
         @Documented
         @Target(ElementType.TYPE)
@@ -411,7 +412,7 @@ public class Service {
         }
 
         /**
-         * Returns the resources path (stylesheets, images, fonts, ...)
+         * Returns the resources path (CSS, images, fonts, ...).
          * @return the resources path
          */
         protected String getBasePath() {
@@ -424,7 +425,7 @@ public class Service {
         }  
         
         /**
-         * Returns the URI of resources path (stylesheets, images, fonts, ...)
+         * Returns the URI of resources path (CSS, images, fonts, ...).
          * @return the URI of resources path
          * @throws TemplateResourceNotFoundException
          *     If the resources path cannot be found in the ClassPath.

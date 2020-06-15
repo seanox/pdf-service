@@ -38,8 +38,8 @@ import com.seanox.pdf.Template;
 /** 
  * Example of using the PDF service.
  * Template and preview data are in the same package.
- * The resources (css, images, ...) are in the ClassPath /pdf/... and are used
- * in the template relative.<br>
+ * The resources (CSS, images, fonts, ...) are in the ClassPath /pdf/... and are
+ * used in the template relative.<br>
  * <br>
  * UsageTemplate 1.2.1 20200610<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
@@ -192,11 +192,11 @@ public class UsageTemplate {
         }
     }
     
-    //The template is derived from the standard template and therefore requires
-    //only a annotation. Optionally, the path from the template can also be
-    //specified if the template is not in the template implementation.
-    //Base determines where in the ClassPath the resources (fonts, images,
-    //styles, ...) for PDF creation are located.
+    //The template is derived from Template and therefore requires only a
+    //annotation. Optionally, the path from the template can also be specified
+    //if the template is not in the template implementation.
+    //Base defines where in the ClassPath the resources (CSS, images, fonts, ...)
+    //for PDF creation are located.
     @Resources(base="/pdf")
     public static class ExampleTemplate extends Template {
     }
