@@ -49,12 +49,12 @@ import com.seanox.pdf.example.UsageTemplate;
 /** 
  * Wrapper to run the {@link Preview} with the test classes and resources.<br>
  * <br>
- * PreviewTest 3.6.0 20200610<br>
+ * PreviewTest 3.6.0 20200615<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.6.0 20200610
+ * @version 3.6.0 20200615
  */
 @RunWith(JUnitPlatform.class)
 @SuppressWarnings("javadoc")
@@ -205,6 +205,9 @@ public class PreviewTest {
         PreviewTest.validatePreviewPdf(new File(ROOT, master), time);
         
         master = "src/test/resources/pdf/compareB_preview.pdf";
+        PreviewTest.validatePreviewPdf(new File(ROOT, master), time);
+        
+        master = "src/test/resources/pdf/overlays_preview.pdf";
         PreviewTest.validatePreviewPdf(new File(ROOT, master), time);
     }
     
