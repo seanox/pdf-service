@@ -10,7 +10,9 @@
    incl. the Maven-dependency version and update the version in pom.xml
    > ant release
 6. Final commit of the release
+   #0000 Release x.x.x
 7. Create tag with the short form of the release notes
+   first line: Version x.x.x xxxxxxxx
 
 A. Release to the Maven Repository
    > mvn clean deploy
