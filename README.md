@@ -76,9 +76,11 @@ https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
 <dependency>
     <groupId>com.seanox</groupId>
     <artifactId>seanox-pdf-service</artifactId>
-    <version>3.7.3</version>
+    <version>4.0.0</version>
 </dependency>
 ```
+
+[Seanox PDF-Tools 4.0.0](https://github.com/seanox/pdf-service/raw/master/releases/seanox-pdf-tools-4.0.0.jar)
 
 
 # Manuals
@@ -86,7 +88,7 @@ https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
 
 
 # Changes (Change Log)
-## 4.0.0 202007xx (summary of the next version)  
+## 4.0.0 20200704 (summary of the current version)  
 BF: Generator: Correction of errors due to duplicate map entries  
 BF: Service Render: Correction of errors if the template contains no header and no footer  
 BF: Service Multiplex: Correction of the error-causing indentation of XML documents  
@@ -106,7 +108,6 @@ CR: Template Preview: Separation when loading data and statics for the preview
 CR: Template Preview Properties: Omission of the prefix 'static'  
 CR: Template Statics: Added of the exists pendants  
 CR: Maven: Update of dependencies  
-CR: Maven: Update to use Java 11  
 
 [Read more](https://raw.githubusercontent.com/seanox/pdf-service/master/CHANGES)
 

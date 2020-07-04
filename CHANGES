@@ -1,4 +1,4 @@
-4.0.0 202007xx
+4.0.0 20200704
   BF: Generator: Correction of errors due to duplicate map entries
       Occurs when the map entries are made case-insensitive.
   BF: Service Render: Correction of errors if the template contains no header and no footer
@@ -42,7 +42,6 @@
       Statics used only non-structured keys, without dot and list index as a flat map.
   CR: Template Statics: Added of the exists pendants
   CR: Maven: Update of dependencies
-  CR: Maven: Update to use Java 11
 
 3.7.3 20200530
   BF: Template: Correction of case insensitive statics
