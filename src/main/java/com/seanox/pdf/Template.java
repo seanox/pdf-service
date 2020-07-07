@@ -20,6 +20,7 @@
  */
 package com.seanox.pdf;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -74,12 +75,12 @@ import com.seanox.pdf.Service.Meta;
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer<br>
  * <br>
- * Template 4.0.0 20200614<br>
+ * Template 4.0.1 20200707<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 4.0.0 20200614
+ * @version 4.0.1 20200707
  */
 public abstract class Template extends Service.Template {
     
@@ -585,7 +586,7 @@ public abstract class Template extends Service.Template {
                 put("locale", meta.getLocale().getLanguage());
         }});
         
-        return new String(generator.extract());
+        return new String(generator.extract(), StandardCharsets.UTF_8);
     }
     
     @Override
