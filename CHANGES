@@ -1,6 +1,6 @@
 4.0.1 2020xxxx
-  BF: Template Generate: Correction to use UTF-8
-      Important e.g. for Korean and Japanese
+  BF: Template: Correction of encoding
+      better support / correction e.g. for Japanese and Korean
 
 4.0.0 20200704
   BF: Generator: Correction of errors due to duplicate map entries

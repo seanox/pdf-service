@@ -30,6 +30,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -145,12 +146,12 @@ import com.seanox.pdf.Service.Template.TemplateException;
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer<br>
  * <br>
- * Service 4.0.0 20200614<br>
+ * Service 4.0.1 20200708<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 4.0.0 20200614
+ * @version 4.0.1 20200708
  */
 public class Service {
     
@@ -984,6 +985,7 @@ public class Service {
                 transformer.setOutputProperty(OutputKeys.METHOD, "xml");
                 transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
                 transformer.setOutputProperty(OutputKeys.INDENT, "no");
+                transformer.setOutputProperty(OutputKeys.ENCODING, StandardCharsets.US_ASCII.name());
                 ByteArrayOutputStream buffer = new ByteArrayOutputStream();
                 transformer.transform(new DOMSource(document), new StreamResult(buffer));
 
