@@ -3,22 +3,28 @@
   font-weight:normal;
   font-style:normal;
   src:url('../fonts/PlayfairDisplay-Medium.ttf');
-} 
+}
 @font-face {
   font-family:'PlayfairReg';
   font-weight:normal;
   font-style:normal;
   src:url('../fonts/PlayfairDisplay-Regular.ttf');
-}    
+}
 @font-face {
   font-family:'RobotoMed';
   font-weight:normal;
   font-style:normal;
   src:url('../fonts/Roboto-Medium.ttf');
-} 
+}
 @font-face {
   font-family:'RobotoReg';
   font-weight:normal;
   font-style:normal;
   src:url('../fonts/Roboto-Regular.ttf');
+}
+@font-face {
+  font-family:'KosugiReg';
+  font-weight:normal;
+  font-style:normal;
+  src:url('../fonts/Kosugi-Regular.ttf');
 }
