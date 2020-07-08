@@ -47,9 +47,9 @@ import com.seanox.pdf.Service.Template.Resources;
 import com.seanox.pdf.example.UsageTemplate;
 
 /** 
- * Wrapper to run the {@link Preview} with the test classes and resources.<br>
+ * Unit test for the PDF Server and Tools.<br>
  * <br>
- * PreviewTest 3.6.0 20200615<br>
+ * UnitTest 3.6.0 20200615<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
@@ -58,7 +58,7 @@ import com.seanox.pdf.example.UsageTemplate;
  */
 @RunWith(JUnitPlatform.class)
 @SuppressWarnings("javadoc")
-public class PreviewTest {
+public class UnitTest {
     
     private final static File ROOT = new File(".");
     
@@ -119,7 +119,7 @@ public class PreviewTest {
 
     private static void validatePreviewPdf(File master)
             throws IOException {
-        PreviewTest.validatePreviewPdf(master, -1);
+        UnitTest.validatePreviewPdf(master, -1);
     }
     
     private static boolean compareImages(File master, File compare)
@@ -157,58 +157,58 @@ public class PreviewTest {
         Preview.main(new String[] {"./src/test/resources/pdf/*.html"});
         
         master = "src/test/resources/pdf/report_preview.pdf";
-        PreviewTest.validatePreviewPdf(new File(ROOT, master), time);
+        UnitTest.validatePreviewPdf(new File(ROOT, master), time);
 
         master = "src/test/resources/pdf/reportDiffs_preview.pdf";
-        PreviewTest.validatePreviewPdf(new File(ROOT, master), time);
+        UnitTest.validatePreviewPdf(new File(ROOT, master), time);
         File[] diffs = Compare.compare(new File(TEMP, new File(master).getName()), new File(TEMP, "report_preview.pdf"));
         Assertions.assertNotNull(diffs);
         Assertions.assertEquals(3, diffs.length);
         master = "src/test/resources/pdf/reportDiffs_diffs_page_1.png";
         Files.copy(new File(master).toPath(), new File(TEMP, new File(master).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
-        Assertions.assertTrue(PreviewTest.compareImages(new File(TEMP, new File(master).getName()), diffs[0]));
+        Assertions.assertTrue(UnitTest.compareImages(new File(TEMP, new File(master).getName()), diffs[0]));
         master = "src/test/resources/pdf/reportDiffs_diffs_page_2.png";
         Files.copy(new File(master).toPath(), new File(TEMP, new File(master).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
-        Assertions.assertTrue(PreviewTest.compareImages(new File(TEMP, new File(master).getName()), diffs[1]));
+        Assertions.assertTrue(UnitTest.compareImages(new File(TEMP, new File(master).getName()), diffs[1]));
         master = "src/test/resources/pdf/reportDiffs_diffs_page_3.png";
         Files.copy(new File(master).toPath(), new File(TEMP, new File(master).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
-        Assertions.assertTrue(PreviewTest.compareImages(new File(TEMP, new File(master).getName()), diffs[2]));
+        Assertions.assertTrue(UnitTest.compareImages(new File(TEMP, new File(master).getName()), diffs[2]));
 
         master = "src/test/resources/pdf/articleC_preview.pdf";
-        PreviewTest.validatePreviewPdf(new File(ROOT, master), time);        
+        UnitTest.validatePreviewPdf(new File(ROOT, master), time);        
 
         master = "src/test/resources/pdf/articleB_preview.pdf";
-        PreviewTest.validatePreviewPdf(new File(ROOT, master), time);
+        UnitTest.validatePreviewPdf(new File(ROOT, master), time);
         
         master = "src/test/resources/pdf/articleA_preview.pdf";
-        PreviewTest.validatePreviewPdf(new File(ROOT, master), time);
+        UnitTest.validatePreviewPdf(new File(ROOT, master), time);
 
         master = "src/test/resources/pdf/articleIncludeA_preview.pdf";
-        PreviewTest.validatePreviewPdf(new File(ROOT, master), time);
+        UnitTest.validatePreviewPdf(new File(ROOT, master), time);
 
         master = "src/test/resources/pdf/articleIncludeC_preview.pdf";
-        PreviewTest.validatePreviewPdf(new File(ROOT, master), time);
+        UnitTest.validatePreviewPdf(new File(ROOT, master), time);
         
         master = "src/test/resources/pdf/articleIncludeX_preview.pdf";
-        PreviewTest.validatePreviewPdf(new File(ROOT, master), time);
+        UnitTest.validatePreviewPdf(new File(ROOT, master), time);
         
         master = "target/test-classes/com/seanox/pdf/example/ArticleSingleTemplate_preview.pdf";
-        PreviewTest.validatePreviewPdf(new File(ROOT, master), time);
+        UnitTest.validatePreviewPdf(new File(ROOT, master), time);
         
         master = "target/test-classes/com/seanox/pdf/example/ArticleSingleIncludeTemplate_preview.pdf";
-        PreviewTest.validatePreviewPdf(new File(ROOT, master), time);
+        UnitTest.validatePreviewPdf(new File(ROOT, master), time);
         
         master = "target/test-classes/com/seanox/pdf/example/ArticleMultiTemplate_preview.pdf";
-        PreviewTest.validatePreviewPdf(new File(ROOT, master), time);
+        UnitTest.validatePreviewPdf(new File(ROOT, master), time);
         
         master = "src/test/resources/pdf/compareA_preview.pdf";
-        PreviewTest.validatePreviewPdf(new File(ROOT, master), time);
+        UnitTest.validatePreviewPdf(new File(ROOT, master), time);
         
         master = "src/test/resources/pdf/compareB_preview.pdf";
-        PreviewTest.validatePreviewPdf(new File(ROOT, master), time);
+        UnitTest.validatePreviewPdf(new File(ROOT, master), time);
         
         master = "src/test/resources/pdf/overlays_preview.pdf";
-        PreviewTest.validatePreviewPdf(new File(ROOT, master), time);
+        UnitTest.validatePreviewPdf(new File(ROOT, master), time);
     }
     
     @Test
@@ -277,7 +277,7 @@ public class PreviewTest {
                 "structure_body_header_footer_empty_preview.pdf",
                 "structure_empty_preview.pdf"}) {
             master = "src/test/resources/pdf/" + master;
-            PreviewTest.validatePreviewPdf(new File(ROOT, master));
+            UnitTest.validatePreviewPdf(new File(ROOT, master));
         }
     }
     
@@ -297,7 +297,7 @@ public class PreviewTest {
                 "structure_body_header_preview.pdf",
                 "structure_body_preview.pdf"}) {
             master = "src/test/resources/pdf/" + master;
-            PreviewTest.validatePreviewPdf(new File(ROOT, master));        
+            UnitTest.validatePreviewPdf(new File(ROOT, master));        
         }
     }
     
@@ -342,7 +342,7 @@ public class PreviewTest {
         
         String master = "src/test/resources/pdf/compareB_diffs_page_1.png";
         Files.copy(new File(master).toPath(), new File(TEMP, new File(master).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
-        Assertions.assertTrue(PreviewTest.compareImages(new File(TEMP, new File(master).getName()), diffs[0]));
+        Assertions.assertTrue(UnitTest.compareImages(new File(TEMP, new File(master).getName()), diffs[0]));
     }
 
     @Resources(base="/pdf")
