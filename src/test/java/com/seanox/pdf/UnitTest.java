@@ -209,6 +209,9 @@ public class UnitTest {
         
         master = "src/test/resources/pdf/overlays_preview.pdf";
         UnitTest.validatePreviewPdf(new File(ROOT, master), time);
+        
+        master = "src/test/resources/pdf/encoding_utf_8_preview.pdf";
+        UnitTest.validatePreviewPdf(new File(ROOT, master), time);
     }
     
     @Test

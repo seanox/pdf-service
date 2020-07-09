@@ -28,3 +28,9 @@
   font-style:normal;
   src:url('../fonts/Kosugi-Regular.ttf');
 }
+@font-face {
+  font-family:'GugiReg';
+  font-weight:normal;
+  font-style:normal;
+  src:url('../fonts/Gugi-Regular.ttf');
+}
