@@ -1,5 +1,5 @@
-4.0.1 2020xxxx
-  BF: Template: Correction of encoding
+4.0.1 20200709
+  BF: Template: Correction of Unicode support
       better support / correction e.g. for Japanese and Korean
 
 4.0.0 20200704

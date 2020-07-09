@@ -76,11 +76,11 @@ https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
 <dependency>
     <groupId>com.seanox</groupId>
     <artifactId>seanox-pdf-service</artifactId>
-    <version>4.0.0</version>
+    <version>4.0.1</version>
 </dependency>
 ```
 
-[Seanox PDF-Tools 4.0.0](https://github.com/seanox/pdf-service/raw/master/releases/seanox-pdf-tools-4.0.0.jar)
+[Seanox PDF-Tools 4.0.1](https://github.com/seanox/pdf-service/raw/master/releases/seanox-pdf-tools-4.0.1.jar)
 
 
 # Manuals
@@ -88,26 +88,8 @@ https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
 
 
 # Changes (Change Log)
-## 4.0.0 20200704 (summary of the current version)  
-BF: Generator: Correction of errors due to duplicate map entries  
-BF: Service Render: Correction of errors if the template contains no header and no footer  
-BF: Service Multiplex: Correction of the error-causing indentation of XML documents  
-BF: Template Generate:Correction of errors due to duplicate map entries  
-CR: Compare: Integral part of the API and PDF Tools  
-CR: Compare: Optimization of the output of differences  
-CR: PDF Tools: Integrated as standalone Java application  
-CR: Service Meta: Added more variants of the constructor  
-CR: Service Meta Static: Update to use Map<String, String> instead of Map<String, CharSequence>  
-CR: Template Scan: Omission of final attribute in the access modifier  
-CR: Template Render: Omission of final attribute in the access modifier  
-CR: Template Multiplex: Change from access modifier to public  
-CR: Template Merge: Change from access modifier to public  
-CR: Template Type: Refactored/moved Type to Template.Type  
-CR: Template Generate: Unified behavior of data placeholders and static placeholders  
-CR: Template Preview: Separation when loading data and statics for the preview  
-CR: Template Preview Properties: Omission of the prefix 'static'  
-CR: Template Statics: Added of the exists pendants  
-CR: Maven: Update of dependencies  
+## 4.0.1 20200709 (summary of the current version)  
+BF: Template: Correction of Unicode support  
 
 [Read more](https://raw.githubusercontent.com/seanox/pdf-service/master/CHANGES)
 
