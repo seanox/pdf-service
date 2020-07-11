@@ -456,6 +456,12 @@ The name of the placeholder always refers to the current branch in the tree.
 ```
 #[NAME[[...]]]
 ```
+
+__Structural placeholders are unique.__  
+__During parsing of the markup all placeholders are determined.__  
+__If structural placeholders are defined more than once, they overwrite those__
+__already determined.__
+
  
 The placeholder syntax has no syntax for navigating the tree.  
 This is made using the nesting of the data structure placeholders.  
