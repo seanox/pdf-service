@@ -21,6 +21,7 @@
         <p exists="#[websiteUrl-exists]">![ADDRESS_WEB]: #[websiteUrl]</p>
       </article>
       ]]]
+      <!-- -->
       #[article[[
       <article id="article">
         <h3>![PAGE_PRODUCT_DATA_SHEET]</h3>
@@ -42,7 +43,11 @@
                   <td>#[materialText]</td>
                 </tr>
               </table>
-              <!-- more fields with distance -->
+              <!-- more fields without effect, will check a RegExp overflow -->
+              ![additionalPartsPriceGrossText-exists]
+              #[additionalPartsPriceGrossText-exists]
+              ![xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx-xxxxxxxxxx]
+              ![xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx-xxxxxxxxxx]
               <p></p>
             </td>
             <td rowspan="2"></td>

@@ -49,12 +49,18 @@ import com.seanox.pdf.example.UsageTemplate;
 /** 
  * Unit test for the PDF Server and Tools.<br>
  * <br>
- * UnitTest 3.6.0 20200615<br>
+ * Test-Runtime Configuration:
+ * <ul>
+ *   <li>Oracle Java 11</li>
+ *   <li>JUnit 5</li>
+ * </ul>
+ * <br>
+ * UnitTest 3.6.1 20200711<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.6.0 20200615
+ * @version 3.6.1 20200711
  */
 @RunWith(JUnitPlatform.class)
 @SuppressWarnings("javadoc")
@@ -104,17 +110,17 @@ public class UnitTest {
     private static void validatePreviewPdf(File master, long time)
             throws IOException {
         
-        Assertions.assertTrue(master.exists());
+        Assertions.assertTrue(master.exists(), master.toString());
         if (time >= 0)
             Assertions.assertTrue(master.lastModified() < time);
         File compare = new File(master.getParentFile(), master.getName().replaceAll("_preview\\.pdf$", ".pdf"));
-        Assertions.assertTrue(compare.exists());
+        Assertions.assertTrue(compare.exists(), master.toString());
         if (time >= 0)
-            Assertions.assertTrue(compare.lastModified() > time);
+            Assertions.assertTrue(compare.lastModified() > time, master.toString());
         Files.copy(master.toPath(), new File(TEMP, master.getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
         Files.move(compare.toPath(), new File(TEMP, compare.getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
-        Assertions.assertNull(Compare.compare(new File(TEMP, master.getName()), new File(TEMP, compare.getName())));
-        Assertions.assertEquals(new File(TEMP, master.getName()).length(), new File(TEMP, compare.getName()).length());
+        Assertions.assertNull(Compare.compare(new File(TEMP, master.getName()), new File(TEMP, compare.getName())), master.toString());
+        Assertions.assertEquals(new File(TEMP, master.getName()).length(), new File(TEMP, compare.getName()).length(), master.toString());
     }
 
     private static void validatePreviewPdf(File master)
@@ -287,8 +293,6 @@ public class UnitTest {
     @Test
     public void test06()
             throws IOException {
-        
-        long time = System.currentTimeMillis();
         
         for (String master : new String[] {
                 "structure_body_content_footer_preview.pdf",
