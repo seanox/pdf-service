@@ -1,5 +1,5 @@
-4.0.1 202007xx
-  BF: Generator: Correction of expensive/hungry RegExp  
+4.0.2 20200711
+  BF: Generator: Correction of expensive/hungry RegExp
   BF: Template: Correction of expensive/hungry RegExp
 
 4.0.1 20200709

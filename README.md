@@ -76,11 +76,11 @@ https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
 <dependency>
     <groupId>com.seanox</groupId>
     <artifactId>seanox-pdf-service</artifactId>
-    <version>4.0.1</version>
+    <version>4.0.2</version>
 </dependency>
 ```
 
-[Seanox PDF-Tools 4.0.1](https://github.com/seanox/pdf-service/raw/master/releases/seanox-pdf-tools-4.0.1.jar)
+[Seanox PDF-Tools 4.0.2](https://github.com/seanox/pdf-service/raw/master/releases/seanox-pdf-tools-4.0.2.jar)
 
 
 # Manuals
@@ -88,8 +88,9 @@ https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
 
 
 # Changes (Change Log)
-## 4.0.1 20200709 (summary of the current version)  
-BF: Template: Correction of Unicode support  
+## 4.0.2 20200711 (summary of the current version)  
+BF: Generator: Correction of expensive/hungry RegExp  
+BF: Template: Correction of expensive/hungry RegExp  
 
 [Read more](https://raw.githubusercontent.com/seanox/pdf-service/master/CHANGES)
 
