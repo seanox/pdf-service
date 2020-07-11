@@ -119,12 +119,12 @@ import java.util.stream.Collectors;
  * {@link #set(Map)} in combination with {@link #extract()}, but focus on only
  * one segment.<br>
  * <br>
- * Generator 5.2.1 20200514<br>
+ * Generator 5.2.2 20200710<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 5.2.1 20200514
+ * @version 5.2.2 20200710
  */
 class Generator {
 
@@ -290,7 +290,7 @@ class Generator {
 
             byte[] patch = new byte[0];
             String fetch = new String(model, cursor, offset);
-            if (fetch.matches("^(?si)#\\[[a-z]([\\w\\-]*\\w)*\\[\\[.*\\]\\]\\]$")) {
+            if (fetch.matches("^(?si)#\\[[a-z]([\\w\\-]*\\w){0,1}\\[\\[.*\\]\\]\\]$")) {
                 
                 //scope is determined from: #[scope[[segment]]
                 String scope = fetch.substring(2);
@@ -307,7 +307,7 @@ class Generator {
                 
                 //as new placeholder only the scope is used
                 patch = ("#[").concat(scope).concat("]").getBytes();
-            } else if (fetch.matches("^(?i)#\\[[a-z]([\\w-]*\\w)*\\]$")) {
+            } else if (fetch.matches("^(?i)#\\[[a-z]([\\w-]*\\w){0,1}\\]$")) {
                 patch = fetch.toLowerCase().getBytes();
             } else if (fetch.matches("^(?i)#\\[0x([0-9a-f]{2})+\\]$")) {
                 cursor += fetch.length() +1;
@@ -388,7 +388,7 @@ class Generator {
 
             patch = new byte[0];
             fetch = new String(this.model, cursor, offset);
-            if (fetch.matches("^(?i)#\\[[a-z]([\\w-]*\\w)*\\]$")) {
+            if (fetch.matches("^(?i)#\\[[a-z]([\\w-]*\\w){0,1}\\]$")) {
                 fetch = fetch.substring(2, fetch.length() -1);
                 
                 //the placeholders of not transmitted keys are ignored, with

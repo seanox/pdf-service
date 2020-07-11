@@ -74,12 +74,12 @@ import com.seanox.pdf.Service.Meta;
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer<br>
  * <br>
- * Template 4.0.0 20200614<br>
+ * Template 4.0.1 20200710<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 4.0.0 20200614
+ * @version 4.0.1 20200710
  */
 public abstract class Template extends Service.Template {
     
@@ -87,7 +87,7 @@ public abstract class Template extends Service.Template {
     private final static Pattern PATTERN_MARKUP_DETECTION = Pattern.compile("(?si).*(((<|>).*(<\\s*/)|(/\\s*>))|(&#\\d+;)|(&#x[0-9a-f]+;)|(&[a-z]+;)).*");  
     
     /** Pattern for the validation of expressions */
-    private final static Pattern PATTERN_EXPRESSION = Pattern.compile("^(?i)([a-z](?:[\\w\\-]*\\w)*)((?:\\[\\s*\\d+\\s*\\])*)(\\.([a-z](?:[\\w\\-]*\\w)*)((?:\\[\\s*\\d+\\s*\\])*))*$");
+    private final static Pattern PATTERN_EXPRESSION = Pattern.compile("^(?i)([a-z](?:[\\w\\-]*\\w){0,1})((?:\\[\\s*\\d+\\s*\\]){0,1})(\\.([a-z](?:[\\w\\-]*\\w){0,1})((?:\\[\\s*\\d+\\s*\\]){0,1}))*$");
     
     /** Pattern for the validation of list expressions */
     private final static Pattern PATTERN_LIST_EXPRESSION = Pattern.compile("^(.*)\\s*\\[\\s*(\\d+)\\s*\\]$");
@@ -569,7 +569,7 @@ public abstract class Template extends Service.Template {
         Matcher matcher = pattern.matcher(markup);
         while (matcher.find()) {
             String value = null;
-            if (matcher.group(0).matches("^(?i)!\\[[a-z]([\\w-]*\\w)*\\]$"))
+            if (matcher.group(0).matches("^(?i)!\\[[a-z]([\\w-]*\\w){0,1}\\]$"))
                 value = statics.get(matcher.group(1).toLowerCase());
             if (value == null)
                 value = "";

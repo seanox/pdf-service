@@ -1,3 +1,7 @@
+4.0.1 202007xx
+  BF: Generator: Correction of expensive/hungry RegExp  
+  BF: Template: Correction of expensive/hungry RegExp
+
 4.0.1 20200709
   BF: Template: Correction of Unicode support
       better support / correction e.g. for Japanese and Korean
