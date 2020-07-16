@@ -21,11 +21,13 @@
 package com.seanox.pdf;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
@@ -74,12 +76,12 @@ import com.seanox.pdf.Service.Meta;
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer<br>
  * <br>
- * Template 4.0.1 20200710<br>
+ * Template 4.0.2 20200716<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 4.0.1 20200710
+ * @version 4.0.2 20200716
  */
 public abstract class Template extends Service.Template {
     
@@ -97,6 +99,12 @@ public abstract class Template extends Service.Template {
 
     /** Pattern for the detection of ampersand (non entity) */
     private final static Pattern PATTERN_AMPERSAND = Pattern.compile("(?i)&(?!#\\d+;)(?!#x[0-9a-f]+;)(?![a-z]+;)");
+    
+    /** Pattern for the validation of key */
+    private final static Pattern PATTERN_KEY = Pattern.compile("^((\\w+\\[\\d+\\])|(\\w+))(\\.((\\w+\\[\\d+\\])|(\\w+)))*$");
+    
+    /** Pattern for splitting keys */
+    private final static Pattern PATTERN_KEY_DELIMITER = Pattern.compile("\\.");
     
     /** Naturally sort comparator */
     private static class NaturalComparator implements Comparator<String> {
@@ -231,44 +239,54 @@ public abstract class Template extends Service.Template {
      * </ul>
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
-    private static <T> void collectPreviewData(Map<String, T> map, String key, String value)
+    private static void collectPreviewData(Map<String, Object> map, String key, CharSequence value)
             throws PreviewDataParserException {
+        
+        Objects.requireNonNull(map);
         
         if (!PATTERN_EXPRESSION.matcher(key).find())  
             throw new PreviewDataParserException("Invalid key: " + key);
         
-        if (key.contains(".")) {
-            String path = key.replaceAll("\\.[^\\.]+$", "");
-            for (String entry : path.split("\\.")) {
-                if (PATTERN_LIST_EXPRESSION.matcher(entry).find()) {
-                    int index = Integer.valueOf(PATTERN_LIST_EXPRESSION.matcher(entry).replaceAll("$2")).intValue();
-                    entry = PATTERN_LIST_EXPRESSION.matcher(entry).replaceAll("$1").trim();
-                    if (!map.containsKey(entry)
-                            || !(map.get(entry) instanceof List))
-                        map.put(entry, (T)new ArrayList<>());
-                    List list = (List)map.get(entry);
-                    if (list.size() < index)
-                        throw new PreviewDataParserException("Invalid key index: " + key);
+        if (!PATTERN_KEY.matcher(key).find())  
+            throw new PreviewDataParserException("Invalid key: " + key);
+        
+        if (value == null)
+            value = "";
+        if (PATTERN_MARKUP_DETECTION.matcher(value).find())
+            value = new Markup(value);           
+        
+        List<String> entries = new ArrayList<>(Arrays.asList(PATTERN_KEY_DELIMITER.split(key)));
+        while (entries.size() > 0) {
+            String entry = entries.remove(0);
+            if (PATTERN_LIST_EXPRESSION.matcher(entry).find()) {
+                int index = Integer.valueOf(PATTERN_LIST_EXPRESSION.matcher(entry).replaceAll("$2")).intValue();
+                entry = PATTERN_LIST_EXPRESSION.matcher(entry).replaceAll("$1").trim();
+                if (!map.containsKey(entry)
+                        || !(map.get(entry) instanceof List))
+                    map.put(entry, new ArrayList<>());
+                List list = (List)map.get(entry);
+                if (list.size() < index)
+                    throw new PreviewDataParserException("Invalid key index: " + key);
+                if (entries.size() > 0) {
                     if (list.size() > index) {
                         if (!(list.get(index) instanceof Map))
                             list.set(index, new HashMap<>());
                     } else list.add(index, new HashMap<>());
                     map = (Map)list.get(index);
                 } else {
+                    if (list.size() > index)
+                        list.set(index, value);
+                    else list.add(index, new HashMap<>());
+                }
+            } else {
+                if (entries.size() > 0) {
                     if (!map.containsKey(entry)
                             || !(map.get(entry) instanceof Map))
-                        map.put(entry, (T)new HashMap<>());
+                        map.put(entry, new HashMap<>());
                     map = (Map)map.get(entry);
-                }
+                } else map.put(entry, value);
             }
-            key = key.replaceAll("^.*\\.", "");
         }
-        
-        if (value == null)
-            value = "";
-        if (PATTERN_MARKUP_DETECTION.matcher(value).find())
-            map.put(key, (T)new Markup(value));
-        else map.put(key, (T)value);
     }
     
     /**

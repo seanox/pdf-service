@@ -1,3 +1,6 @@
+4.0.3 2020xxxx
+  BF: Template Preview Properties: Correction of the logic during parsing
+
 4.0.2 20200711
   BF: Generator: Correction of expensive/hungry RegExp
   BF: Template: Correction of expensive/hungry RegExp
