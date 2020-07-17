@@ -55,12 +55,12 @@ import com.seanox.pdf.example.UsageTemplate;
  *   <li>JUnit 5</li>
  * </ul>
  * <br>
- * UnitTest 3.6.1 20200711<br>
+ * UnitTest 3.6.2 20200717<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.6.1 20200711
+ * @version 3.6.2 20200717
  */
 @RunWith(JUnitPlatform.class)
 @SuppressWarnings("javadoc")
@@ -218,6 +218,9 @@ public class UnitTest {
         
         master = "src/test/resources/pdf/encoding_utf_8_preview.pdf";
         UnitTest.validatePreviewPdf(new File(ROOT, master), time);
+        
+        master = "src/test/resources/pdf/generator_preview.pdf";
+        UnitTest.validatePreviewPdf(new File(ROOT, master), time);        
     }
     
     @Test

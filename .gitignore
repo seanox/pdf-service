@@ -4,6 +4,4 @@
 .project
 .settings
 
-/src/test/resources/pdf/*.pdf
-/*.pdf
 /temp/

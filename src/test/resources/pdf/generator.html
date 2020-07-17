@@ -1,0 +1,108 @@
+<html>
+  <body>
+    <pre>
+    #[x]
+    #[a]
+    #[e]
+    #[k]
+    </pre>
+  
+    #[templates[[
+    
+      Very special test and example for understanding the function of the
+      generator and the preview data.
+      
+            Generator
+            ----
+      Structural placeholders are unique, comparable with templates and are
+      overwritten during parsing.  
+      The last definition wins.
+      
+      The depth or the nested structures are not important.
+      The nesting is only a visual support for the developer.
+            
+            Preview Data
+            ----
+      Preview data as well as the data map primarily support a structured data
+      structure, comparable to a tree structure.
+      The branches/trees can be created by sub-maps and lists.
+      But in the end it must be a key with a value corresponding to the
+      placeholder.    
+      
+      Therefore no value is shown in the example of:
+          k.l[0].m.n[0].o.p[0] / k.l[0].m.n[0].o.p[1]
+      
+      #[a[[
+      A+++
+        #[b]
+        #[c]
+      ---A
+      ]]]
+      #[b[[
+      B+++
+        #[c]
+      ---B
+      ]]]
+      #[c[[
+      C+++
+        #[d]
+      ---C
+      ]]]
+      
+      = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+      
+      #[e[[
+      E+++
+        #[f]
+      ---E
+      ]]]
+      #[f[[
+      F+++
+        #[g]
+      ---F
+      ]]]
+      #[g[[
+      G+++
+        #[h]
+      ---G
+      ]]]
+      #[h[[
+      H+++
+        #[i]
+      ---H
+      ]]]
+      #[i[[
+      I+++
+        #[j]
+      ---I
+      ]]]
+      
+      = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+      
+      #[k[[
+      K+++
+        #[l]
+      ---K  
+      ]]]
+      #[l[[
+      L+++
+        #[m]
+      ---L  
+      ]]]
+      #[m[[
+      M+++
+        #[n]
+      ---M  
+      ]]]
+      #[n[[
+      N+++
+        #[p]
+      ---N  
+      ]]]
+      #[p[[
+      P+++
+      ---P
+      ]]]
+    ]]]
+  </body>
+</html>
