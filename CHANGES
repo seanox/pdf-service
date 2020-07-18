@@ -1,5 +1,6 @@
 4.0.3 2020xxxx
   BF: Template Preview Properties: Correction of the logic during parsing
+  BF: JUnit: Cleanup of JUnit4
 
 4.0.2 20200711
   BF: Generator: Correction of expensive/hungry RegExp

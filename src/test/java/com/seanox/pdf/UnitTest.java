@@ -37,8 +37,6 @@ import javax.imageio.ImageIO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 
 import com.openhtmltopdf.util.XRLog;
 import com.seanox.pdf.Service.Meta;
@@ -62,7 +60,6 @@ import com.seanox.pdf.example.UsageTemplate;
  * @author  Seanox Software Solutions
  * @version 3.6.2 20200717
  */
-@RunWith(JUnitPlatform.class)
 @SuppressWarnings("javadoc")
 public class UnitTest {
     

@@ -229,6 +229,25 @@
         </configuration>
       </plugin> 
       
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <!-- latest version does not work well with JUnit5 -->
+        <version>2.19.1</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-surefire-provider</artifactId>
+            <!-- latest version does not work well with JUnit5 -->
+            <version>1.0.3</version>
+          </dependency>
+          <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.jupiter.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+
       <!-- 
         For building the seanox-pdf-tools.jar with all dependencies as a standalone java application:
             mvn clean compile assembly:single
