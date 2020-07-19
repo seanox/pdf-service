@@ -461,7 +461,6 @@ __Structural placeholders are unique.__
 __During parsing of the markup all placeholders are determined.__  
 __If structural placeholders are defined more than once, they overwrite those__
 __already determined.__
-
  
 The placeholder syntax has no syntax for navigating the tree.  
 This is made using the nesting of the data structure placeholders.  
@@ -473,6 +472,12 @@ This is made using the nesting of the data structure placeholders.
   ]]]
 ]]]
 ```
+
+__For a basic understanding of the structured placeholders it is important to__
+__understand that they do not represent a real structure or nesting. They are__
+__templates for placeholders and these templates may contain other templates__
+__than placeholders. Therefore, the placeholders can also be defined at that__
+__location. They are simply used in the structure.__
 
 The example uses in the map the value of: `A -> B -> C'
 
