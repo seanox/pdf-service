@@ -146,12 +146,12 @@ import com.seanox.pdf.Service.Template.TemplateException;
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer<br>
  * <br>
- * Service 4.0.1 20200708<br>
+ * Service 4.0.1 20200722<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 4.0.1 20200708
+ * @version 4.0.1 20200722
  */
 public class Service {
     
@@ -686,9 +686,6 @@ public class Service {
 
             if (meta == null)
                 meta = new Meta();
-
-            if (meta.data == null)
-                meta.data = new HashMap<>();
 
             //Data is copied because it is manipulated later for the header and
             //footer by adding the keys and values for locale, page and pages.

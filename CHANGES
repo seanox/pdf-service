@@ -1,4 +1,5 @@
 4.0.3 2020xxxx
+  BF: Service: Optimization of the code
   BF: Template Preview Properties: Correction of the logic during parsing
   BF: JUnit: Cleanup of JUnit4
 
