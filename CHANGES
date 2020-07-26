@@ -1,5 +1,7 @@
 4.0.3 2020xxxx
   BF: Service: Optimization of the code
+  BF: Template: Correction/optimization of exits-placeholder
+      Exits placeholders are only created if the value is not null, not empty and not blank.
   BF: Template Preview Properties: Correction of the logic during parsing
   BF: JUnit: Cleanup of JUnit4
 
@@ -9,7 +11,7 @@
 
 4.0.1 20200709
   BF: Template: Correction of Unicode support
-      better support / correction e.g. for Japanese and Korean
+      better support/correction e.g. for Japanese and Korean
 
 4.0.0 20200704
   BF: Generator: Correction of errors due to duplicate map entries
@@ -21,7 +23,7 @@
   CR: Compare: Integral part of the API and PDF Tools
       PDF Tools: Compare, Designer, Preview
   CR: Compare: Optimization of the output of differences
-      - Gray: the original / no difference
+      - Gray: the original/no difference
       - Blue: only in the compare
       - Green: only in the master
       - Yellow: nowhere (overlapping)
@@ -147,7 +149,7 @@
   CR: Preview: General optimization of the preview creation.
   CR: Designer: Added support for pure markup files
   CR: Designer: General optimization of the preview creation.
-  CR: Designer: Harmonisation of data storage / PDF output
+  CR: Designer: Harmonisation of data storage/PDF output
       The output is now consistently at the place of the template
   CR: Examples: Added various examples
       single, multiple, with and without template implementation

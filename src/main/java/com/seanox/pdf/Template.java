@@ -52,7 +52,8 @@ import com.seanox.pdf.Service.Meta;
  * Simple placeholder, global or in a section.
  *  
  * <dir><code>#[palceholder-exists]</code></dir>
- * Pendant to any placeholder, if it exists.
+ * Pendant to any placeholder, if the value is not {@code null}, not empty and
+ * not blank. Then the placeholder contains the value {@code exists}.
  *  
  * <dir><code>#[section[[...]]]</code></dir>
  * Section/Bock can contain more substructures.
@@ -62,7 +63,9 @@ import com.seanox.pdf.Service.Meta;
  * Placeholder for static non-structured text e.g. from the ResourceBundle.
  * 
  * <dir><code>![static-text-exists]</code></dir>
- * Pendant to any placeholder of static non-structured text, if it exists.
+ * Pendant to any placeholder of static non-structured text, if the value is not
+ * {@code null}, not empty and not blank. Then the placeholder contains the
+ * value {@code exists}.
  *  
  * <dir><code>#[locale]</code></dir>
  * Placeholder provided by {@link Service} with the current language.
@@ -76,12 +79,12 @@ import com.seanox.pdf.Service.Meta;
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer<br>
  * <br>
- * Template 4.0.2 20200716<br>
+ * Template 4.0.2 20200726<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 4.0.2 20200716
+ * @version 4.0.2 20200726
  */
 public abstract class Template extends Service.Template {
     
@@ -483,7 +486,8 @@ public abstract class Template extends Service.Template {
     }
     
     /**
-     * Extends the maps by an exists-key for each key.
+     * Extends the maps by an exists-key for each key, whose value is not empty,
+     * not blank and not {@code null} . The value is then {@code exists}.
      * This hack is necessary because CSS :empty has no effect in OpenHtmlToPdf
      * and empty elements cannot be smoothed out by CSS. Therefore the inverted
      * exists solution.
@@ -509,10 +513,12 @@ public abstract class Template extends Service.Template {
                         result.put(entry.getKey() + "-exists", (T)"exists");
                     result.put(entry.getKey(), (T)Template.indicateEmpty(value));
                 } else {
-                    String value = String.valueOf(entry.getValue());
-                    if (!value.trim().isEmpty())
-                        result.put(entry.getKey() + "-exists", (T)"exists");
-                    result.put(entry.getKey(), (T)value);
+                    if (entry.getValue() != null) {
+                        String value = String.valueOf(entry.getValue());
+                        if (!value.trim().isEmpty())
+                            result.put(entry.getKey() + "-exists", (T)"exists");
+                        result.put(entry.getKey(), (T)value);
+                    } else result.put(entry.getKey(), entry.getValue());
                 }
             }
         });

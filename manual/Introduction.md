@@ -554,7 +554,9 @@ footer and contain the current page and total number of pages.
 
 For each key and placeholder an exists-placeholder is provided.  
 This can be used in the markup and in combination with CSS to output/display
-markup depending on the existence of values in meta-data.
+markup depending on the existence of values in meta-data.  
+The Exists placeholder contains the value `exists` if the value is not `null`,
+not empty and not blank.
     
 ```html
 <html>
