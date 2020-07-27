@@ -1,7 +1,7 @@
 4.0.3 2020xxxx
   BF: Service: Optimization of the code
-  BF: Template: Correction/optimization of exits-placeholder
-      Exits placeholders are only created if the value is not null, not empty and not blank.
+  BF: Template: Correction/optimization of exists-placeholder
+      Exists placeholders are only created if the value is not null, not empty and not blank.
   BF: Template Preview Properties: Correction of the logic during parsing
   BF: JUnit: Cleanup of JUnit4
 

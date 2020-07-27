@@ -27,7 +27,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -97,7 +100,7 @@ public class UnitTest {
     }
 
     @Test
-    public void test01() {
+    public void checkDependencies() {
 
         //test for the correct dependencies in the project / classpath
         Class<?> dataAccessException = org.springframework.dao.DataAccessException.class;
@@ -150,7 +153,7 @@ public class UnitTest {
     }
 
     @Test
-    public void test02()
+    public void checkTemplateGeneration()
             throws Exception {
         
         String master;
@@ -221,7 +224,7 @@ public class UnitTest {
     }
     
     @Test
-    public void test03() {
+    public void checkTemplatesWithErrors() {
         
         try {
             Preview.execute(new File(ROOT, "src/test/resources/pdf/articleIncludeB.html"));
@@ -250,7 +253,7 @@ public class UnitTest {
     }
     
     @Test
-    public void test04()
+    public void checkUsageTemplate()
             throws IOException {
         
         String master;
@@ -272,7 +275,7 @@ public class UnitTest {
     }
     
     @Test
-    public void test05()
+    public void checkMarkupStructureEmpty()
             throws IOException {
         
         for (String master : new String[] {
@@ -291,7 +294,7 @@ public class UnitTest {
     }
     
     @Test
-    public void test06()
+    public void checkMarkupStructureNotEmpty()
             throws IOException {
         
         for (String master : new String[] {
@@ -308,8 +311,12 @@ public class UnitTest {
         }
     }
     
+    @Resources(base="/pdf")
+    static class DuplicateTemplate extends com.seanox.pdf.Template {
+    }
+    
     @Test
-    public void test07()
+    public void checkDuplicateTemplate()
             throws Exception {
         
         long time = System.currentTimeMillis();
@@ -340,7 +347,7 @@ public class UnitTest {
     }
 
     @Test
-    public void test08()
+    public void checkCompare()
             throws Exception {
         
         File[] diffs = Compare.compare(new File(TEMP, "compareA.pdf"), new File(TEMP, "compareB.pdf"));
@@ -351,8 +358,57 @@ public class UnitTest {
         Files.copy(new File(master).toPath(), new File(TEMP, new File(master).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
         Assertions.assertTrue(UnitTest.compareImages(new File(TEMP, new File(master).getName()), diffs[0]));
     }
-
+    
     @Resources(base="/pdf")
-    public static class DuplicateTemplate extends com.seanox.pdf.Template {
+    static class ExistsTemplate extends com.seanox.pdf.Template {
+    }    
+    
+    @Test
+    public void checkExistsTemplate()
+            throws Exception {
+        
+        long time = System.currentTimeMillis();
+        
+        Map<String, String> statics = new HashMap<String, String>() {
+            private static final long serialVersionUID = 1L; {
+            put("VALUE_EMPTY", "");
+            put("VALUE_BLANK", " ");
+            put("VALUE_NULL", null);
+            put("VALUE_NOT_EMPTY", "1");
+            put("VALUE_NOT_BLANK", "2");
+            put("VALUE_NOT_NULL", "3");
+        }};
+        
+        Map<String, Object> data = new HashMap<String, Object>() {
+            private static final long serialVersionUID = 1L; {
+            put("VALUE_EMPTY", "");
+            put("VALUE_BLANK", " ");
+            put("VALUE_NULL", null);
+            put("VALUE_NOT_EMPTY", "1");
+            put("VALUE_NOT_BLANK", "2");
+            put("VALUE_NOT_NULL", "3");
+            
+            put("COLLECTION_NULL", null);
+            put("COLLECTION_EMPTY", new ArrayList<>());
+            put("COLLECTION_NOT_EMPTY", Arrays.asList(new Map[] {statics}));
+
+            put("MAP_NULL", null);
+            put("MAP_EMPTY", new HashMap<>());
+            put("MAP_NOT_EMPTY", statics);
+        }};
+        
+        File output = new File(TEMP, "ExistsTemplate.pdf");
+        byte[] pdf = Service.render(ExistsTemplate.class, new Service.Meta(data, statics));
+        Files.write(output.toPath(), pdf, StandardOpenOption.CREATE);
+        
+        String master = "src/test/resources/com/seanox/pdf/ExistsTemplate_preview.pdf";
+        Assertions.assertTrue(new File(ROOT, master).exists());
+        Assertions.assertTrue(new File(ROOT, master).lastModified() < time);
+        Files.copy(new File(ROOT, master).toPath(), new File(TEMP, new File(master).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
+        String compare = "ExistsTemplate.pdf";
+        Assertions.assertTrue(new File(TEMP, compare).exists());
+        Assertions.assertTrue(new File(TEMP, compare).lastModified() > time);
+        Assertions.assertNull(Compare.compare(new File(TEMP, new File(master).getName()), new File(TEMP, compare)));
+        Assertions.assertEquals(new File(ROOT, master).length(), new File(TEMP, compare).length());
     }
 }
