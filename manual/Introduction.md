@@ -91,8 +91,7 @@ import com.seanox.pdf.Service;
 import ...
 
 byte[] data = Service.render(..., ...);
-File output = new File("example.pdf");
-Files.write(output.toPath(), data, StandardOpenOption.CREATE);
+Files.write(Paths.get("example.pdf"), data, StandardOpenOption.CREATE);
 ```
 
 The data is passed to the renderer as a meta object.  
@@ -111,8 +110,7 @@ meta.setData(...);
 meta.setStatics(...);
 
 byte[] data = Service.render(..., meta);
-File output = new File("example.pdf");
-Files.write(output.toPath(), data, StandardOpenOption.CREATE);
+Files.write(Paths.get("example.pdf"), data, StandardOpenOption.CREATE);
 ```
 
 Static texts are mapped as simple Map<String, String> and are used e.g. for
@@ -138,8 +136,7 @@ meta.setData(...);
 meta.setStatics(statics);
 
 byte[] data = Service.render(..., meta);
-File output = new File("example.pdf");
-Files.write(output.toPath(), data, StandardOpenOption.CREATE);
+Files.write(Paths.get("example.pdf"), data, StandardOpenOption.CREATE);
 ```
 
 The data structure is a structured map for data objects (entities).  
@@ -177,8 +174,7 @@ meta.getData().put("articles", ...stream().map(
 ).collect(Collectors.toList()));
 
 byte[] data = Service.render(..., meta);
-File output = new File("example.pdf");
-Files.write(output.toPath(), data, StandardOpenOption.CREATE);
+Files.write(Paths.get("example.pdf"), data, StandardOpenOption.CREATE);
 ```
 
 The render method needs an implemented template.  
@@ -216,8 +212,7 @@ meta.getData().put("articles", ...stream().map(
 ).collect(Collectors.toList()));
 
 byte[] data = Service.render(ExampleTemplate.class, meta);
-File output = new File("example.pdf");
-Files.write(output.toPath(), data, StandardOpenOption.CREATE);
+Files.write(Paths.get("example.pdf"), data, StandardOpenOption.CREATE);
 ```
 
 ```java
@@ -259,8 +254,7 @@ meta.getData().put("articles", ...stream().map(
 ).collect(Collectors.toList()));
 
 byte[] data = Service.render(ExampleTemplate.class, meta);
-File output = new File("example.pdf");
-Files.write(output.toPath(), data, StandardOpenOption.CREATE);
+Files.write(Paths.get("example.pdf"), data, StandardOpenOption.CREATE);
 ```
 
 ```java

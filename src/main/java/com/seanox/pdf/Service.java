@@ -81,8 +81,8 @@ import com.seanox.pdf.Service.Template.TemplateException;
  * <pre>
  *   Service.render(template, meta);
  *    
- *   Files.write(new File(template + ".pdf").toPath(),
- *           Service.render(template, meta), StandardOpenOption.CREATE);
+ *   Files.write(Paths.get(template + ".pdf"), Service.render(template, meta),
+ *         StandardOpenOption.CREATE);
  * </pre>
  *  
  * <dir><b>How it works:</b></dir>
