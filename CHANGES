@@ -4,6 +4,7 @@
       Exists placeholders are only created if the value is not null, not empty and not blank.
   BF: Template Preview Properties: Correction of the logic during parsing
   BF: JUnit: Cleanup of JUnit4
+  BF: Maven: Minimization and update dependencies  
 
 4.0.2 20200711
   BF: Generator: Correction of expensive/hungry RegExp
