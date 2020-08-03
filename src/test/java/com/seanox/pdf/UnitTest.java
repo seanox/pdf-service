@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
@@ -56,12 +57,12 @@ import com.seanox.pdf.example.UsageTemplate;
  *   <li>JUnit 5</li>
  * </ul>
  * <br>
- * UnitTest 3.6.2 20200717<br>
+ * UnitTest 3.6.2 20200803<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.6.2 20200717
+ * @version 3.6.2 20200803
  */
 @SuppressWarnings("javadoc")
 public class UnitTest {
@@ -99,14 +100,6 @@ public class UnitTest {
         TEMP.mkdirs();
     }
 
-    @Test
-    public void checkDependencies() {
-
-        //test for the correct dependencies in the project / classpath
-        Class<?> dataAccessException = org.springframework.dao.DataAccessException.class;
-        Assertions.assertNotNull(dataAccessException);
-    }
-    
     private static void validatePreviewPdf(File master, long time)
             throws IOException {
         
@@ -160,7 +153,7 @@ public class UnitTest {
         
         long time = System.currentTimeMillis();
         
-        Preview.main(new String[] {"./src/test/resources/pdf/*.html"});
+        Preview.main("./src/test/resources/pdf/*.html");
         
         master = "src/test/resources/pdf/report_preview.pdf";
         UnitTest.validatePreviewPdf(new File(ROOT, master), time);
@@ -171,13 +164,13 @@ public class UnitTest {
         Assertions.assertNotNull(diffs);
         Assertions.assertEquals(3, diffs.length);
         master = "src/test/resources/pdf/reportDiffs_diffs_page_1.png";
-        Files.copy(new File(master).toPath(), new File(TEMP, new File(master).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(Paths.get(master), new File(TEMP, new File(master).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
         Assertions.assertTrue(UnitTest.compareImages(new File(TEMP, new File(master).getName()), diffs[0]));
         master = "src/test/resources/pdf/reportDiffs_diffs_page_2.png";
-        Files.copy(new File(master).toPath(), new File(TEMP, new File(master).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(Paths.get(master), new File(TEMP, new File(master).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
         Assertions.assertTrue(UnitTest.compareImages(new File(TEMP, new File(master).getName()), diffs[1]));
         master = "src/test/resources/pdf/reportDiffs_diffs_page_3.png";
-        Files.copy(new File(master).toPath(), new File(TEMP, new File(master).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(Paths.get(master), new File(TEMP, new File(master).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
         Assertions.assertTrue(UnitTest.compareImages(new File(TEMP, new File(master).getName()), diffs[2]));
 
         master = "src/test/resources/pdf/articleC_preview.pdf";
@@ -261,7 +254,7 @@ public class UnitTest {
 
         long time = System.currentTimeMillis();
         
-        UsageTemplate.main(null);
+        UsageTemplate.main();
         master = "src/test/resources/com/seanox/pdf/example/UsageTemplate_preview.pdf";
         Assertions.assertTrue(new File(ROOT, master).exists());
         Assertions.assertTrue(new File(ROOT, master).lastModified() < time);
@@ -355,7 +348,7 @@ public class UnitTest {
         Assertions.assertEquals(1, diffs.length);
         
         String master = "src/test/resources/pdf/compareB_diffs_page_1.png";
-        Files.copy(new File(master).toPath(), new File(TEMP, new File(master).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(Paths.get(master), new File(TEMP, new File(master).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
         Assertions.assertTrue(UnitTest.compareImages(new File(TEMP, new File(master).getName()), diffs[0]));
     }
     

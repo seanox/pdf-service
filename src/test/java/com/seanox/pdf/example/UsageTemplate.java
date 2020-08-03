@@ -22,6 +22,7 @@ package com.seanox.pdf.example;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,17 +42,17 @@ import com.seanox.pdf.Template;
  * The resources (CSS, images, fonts, ...) are in the ClassPath /pdf/... and are
  * used in the template relative.<br>
  * <br>
- * UsageTemplate 1.2.1 20200610<br>
+ * UsageTemplate 1.2.1 20200803<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 1.2.1 20200610
+ * @version 1.2.1 20200803
  */
 @SuppressWarnings("javadoc")
 public class UsageTemplate {
     
-    public static void main(String[] options) {
+    public static void main(String... options) {
  
         //The static texts are required as a Map<String, String>.
         //Often they are available in a similar way as properties or JSON file
@@ -93,8 +94,7 @@ public class UsageTemplate {
         //The file name is derived from the UsageTemplate class.
         try {
             byte[] data = Service.render(ExampleTemplate.class, meta);
-            File output = new File(UsageTemplate.class.getSimpleName() + ".pdf");
-            Files.write(output.toPath(), data, StandardOpenOption.CREATE);
+            Files.write(Paths.get(UsageTemplate.class.getSimpleName() + ".pdf"), data, StandardOpenOption.CREATE);
         } catch (Exception exception) {
             exception.printStackTrace();
         }
