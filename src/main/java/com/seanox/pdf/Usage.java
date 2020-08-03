@@ -26,12 +26,12 @@ import java.io.PrintStream;
 /** 
  * Output of information on how to use the command line tools.<br>
  * <br>
- * Usage 3.8.0 20200605<br>
+ * Usage 3.8.0 20200803<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.8.0 20200605
+ * @version 3.8.0 20200803
  */
 public class Usage {
 
@@ -60,7 +60,7 @@ public class Usage {
      * @throws Exception
      *     In case of unexpected errors.
      */     
-    public static void main(String[] options) throws Exception {
+    public static void main(String... options) throws Exception {
         
         System.out.println("Seanox PDF Tools Usage [Version 3.8.0 20200605]");
         System.out.println("Copyright (C) 2020 Seanox Software Solutions");
