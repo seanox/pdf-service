@@ -20,7 +20,6 @@
  */
 package com.seanox.pdf.example;
 
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -42,12 +41,12 @@ import com.seanox.pdf.Template;
  * The resources (CSS, images, fonts, ...) are in the ClassPath /pdf/... and are
  * used in the template relative.<br>
  * <br>
- * UsageTemplate 1.2.1 20200803<br>
+ * UsageTemplate 1.2.1 20200804<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 1.2.1 20200803
+ * @version 1.2.1 20200804
  */
 @SuppressWarnings("javadoc")
 public class UsageTemplate {
@@ -105,34 +104,26 @@ public class UsageTemplate {
         
         static Object get() {
             return new Object() {
-                String name = "Jane Doe Toys Limited";
-                String street = "Western Road";
-                String location = "GB BN1 2NW Brighton";
-                String phone = "+44 1234 05678 0";
-                String fax = "+44 1234 05678 1";
-                String email = "mail@outlet.local";
-                String websiteUrl = "https://outlet.local";
-                
                 public String getName() {
-                    return this.name;
+                    return "Jane Doe Toys Limited";
                 }
                 public String getStreet() {
-                    return this.street;
+                    return "Western Road";
                 }
                 public String getLocation() {
-                    return this.location;
+                    return "GB BN1 2NW Brighton";
                 }
                 public String getPhone() {
-                    return this.phone;
+                    return "+44 1234 05678 0";
                 }
                 public String getFax() {
-                    return this.fax;
+                    return "+44 1234 05678 1";
                 }
                 public String getEmail() {
-                    return this.email;
+                    return "mail@outlet.local";
                 }
                 public String getWebsiteUrl() {
-                    return this.websiteUrl;
+                    return "https://outlet.local";
                 }
             };    
         }
@@ -144,48 +135,36 @@ public class UsageTemplate {
         static List<Object> list() {
             return new ArrayList<Object>() {{
                 add(new Object() {
-                    String title = "Example A-1";
-                    String articleNumber = "A-1";
-                    String price = "123.00 GBP";
-                    
                     public String getTitle() {
-                        return this.title;
+                        return "Example A-1";
                     }
                     public String getArticleNumber() {
-                        return this.articleNumber;
+                        return "A-1";
                     }
                     public String getPrice() {
-                        return this.price;
+                        return "123.00 GBP";
                     }
                 });
                 add(new Object() {
-                    String title = "Example B-2";
-                    String articleNumber = "B-2";
-                    String price = "234.00 GBP";
-                    
                     public String getTitle() {
-                        return this.title;
+                        return "Example B-2";
                     }
                     public String getArticleNumber() {
-                        return this.articleNumber;
+                        return "B-2";
                     }
                     public String getPrice() {
-                        return this.price;
+                        return "234.00 GBP";
                     }
                 });
                 add(new Object() {
-                    String title = "Example C-3";
-                    String articleNumber = "C-3";
-                    String price = "345.00 GBP";
-                    
                     public String getTitle() {
-                        return this.title;
+                        return "Example C-3";
                     }
                     public String getArticleNumber() {
-                        return this.articleNumber;
+                        return "C-3";
                     }
                     public String getPrice() {
-                        return this.price;
+                        return "345.00 GBP";
                     }
                 });                
             }};
