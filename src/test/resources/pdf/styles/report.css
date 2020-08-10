@@ -86,7 +86,7 @@ p {
   position:static;
   -fs-table-paginate:paginate;
 }
-#report > table  thead  hr {
+#report > table > thead hr {
   border:1px solid #D9D9D9;
 }
 

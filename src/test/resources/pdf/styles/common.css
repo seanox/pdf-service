@@ -10,7 +10,7 @@ article {
 }
 
 * {
-  box-sizing:border-box;
+  box-sizing:content-box;
   position:relative;
 }
 
