@@ -133,7 +133,7 @@ class Datasource {
             throws Exception {
         
         Properties properties = new Properties();
-        properties.load(Datasource.class.getResourceAsStream("/" + Datasource.class.getName().replace(".", "/") + ".properties"));
+        properties.load(Datasource.class.getResourceAsStream("/data/" + Datasource.class.getSimpleName() + ".properties"));
 
         Map<String, Object> map = new HashMap<>();
         Set keySet = new TreeSet<>(new NaturalComparator());

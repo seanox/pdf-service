@@ -1,0 +1,191 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="./styles/fonts.css"/>
+    <link rel="stylesheet" type="text/css" href="./styles/page.css"/>
+    <link rel="stylesheet" type="text/css" href="./styles/common.css"/>
+    <link rel="stylesheet" type="text/css" href="./styles/example.css"/>
+  </head>
+  <body lang="#[locale]">
+    <header id="header">
+      <span>![TEMPLATE]</span>
+      <img src="![PAGE_LOGO_URL]"/>
+    </header> 
+    <section id="sheet">
+      #[outlet[[
+      <article id="outlet">
+        <h1>#[name]</h1>
+        <p exists="#[street-exists]">#[street]</p>
+        <p exists="#[location-exists]">#[zipCode] #[location]</p>
+        <p exists="#[phone-exists]">![ADDRESS_TEL]: #[phone]</p>
+        <p exists="#[fax-exists]">![ADDRESS_FAX]: #[fax]</p>
+        <p exists="#[email-exists]">![ADDRESS_E_MAIL]: #[email]</p>
+        <p exists="#[websiteUrl-exists]">![ADDRESS_WEB]: #[websiteUrl]</p>
+      </article>
+      ]]]
+
+      <!--
+        Nested table structure so that the section and chapter headings can
+        be repeated during page breaks.
+        table 
+          header: section headings
+          body:
+            table 1
+              header: chapter 1 headings
+              body: chapter 1 content
+            ...  
+            table n
+              header: chapter n headings
+              body: chapter n content
+      -->
+      
+      #[articles[[
+      <article id="article">
+        <table>
+          <thead>
+            <tr>
+              <th>
+                <h3>![PAGE_PRODUCT_DATA_SHEET]</h3>
+                <h1>#[headline]</h1>              
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <table id="articleSummary">
+                  <tr>
+                    <td>
+                      <table id="articleSummaryDetails">
+                        <tr exists="#[articleNumber-exists]">
+                          <td>![ARTICLE_NUMBER]</td>
+                          <td>#[articleNumber]</td>
+                        </tr>
+                        <tr exists="#[colorText-exists]">
+                          <td>![ARTICLE_COLOUR]</td>
+                          <td>#[colorText]</td>
+                        </tr>                                
+                        <tr exists="#[materialText-exists]">
+                          <td>![ARTICLE_MATERIAL]</td>
+                          <td>#[materialText]</td>
+                        </tr>
+                      </table>
+                    </td>
+                    <td rowspan="2"></td>
+                    <td rowspan="2" id="articleSummaryImage">
+                      <img src="#[images[[#[large]]]]"/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <table id="articleSummaryPrice">
+                        <tr>
+                          <td>![ARTICLE_PRICE_NETT]</td>
+                          <td>#[articlePrice[[#[netText]]]]</td>
+                        </tr>
+                        <tr>
+                          <td>![ARTICLE_PRICE_GROSS]</td>
+                          <td>#[articlePrice[[#[grossText]]]]</td>
+                        </tr>                                
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+                <table id="articleDescription" exists="#[description-exists]">
+                  <thead>
+                    <tr>
+                      <th>
+                        <h2 exists="#[description-exists]">![ARTICLE_DESCRIPTION]</h2>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>
+                          #[description]
+                        </p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </article>
+      ]]]
+      
+      #[report[[
+      <article id="report">
+        <table>
+          <thead>
+            <tr>
+              <th>
+                <h3>![PAGE_REPORT_EXAMPLE]</h3>
+                <h1>![PAGE_REPORT]</h1>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <p>![PAGE_REPORT_TEXT]</p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <table id="reportData">
+                  <thead>
+                    <tr>
+                      <th>![REPORT_HEADER_A_TITLE]</th>
+                      <th>![REPORT_HEADER_B_TITLE]</th>
+                      <th>![REPORT_HEADER_C_TITLE]</th>
+                      <th>![REPORT_HEADER_D_TITLE]</th>
+                      <th>![REPORT_HEADER_E_TITLE]</th>
+                      <th>![REPORT_HEADER_F_TITLE]</th>
+                    </tr>
+                    <tr>
+                      <th colspan="6">
+                        <hr/>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    #[data[[
+                    <tr>
+                      <td>#[a]</td>
+                      <td>#[b]</td>
+                      <td>#[c]</td>
+                      <td>#[d]</td>
+                      <td>#[e]</td>
+                      <td>#[f]</td>
+                    </tr>
+                    ]]]            
+                  </tbody>
+                </table>                
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </article>
+      ]]]
+    </section> 
+    <footer id="footer">
+      <section>
+        <p>
+          ![PAGE_LEGAL]
+        </p>
+        <table>
+          <tr>
+            <td class="date">
+              ![SYSTEM_DATE]
+            </td>
+            <td class="page">
+              #[page] ![PAGE_OF] #[pages]
+            </td>
+          </tr>
+        </table>
+      </section>
+    </footer>
+  </body>
+</html>
