@@ -1,0 +1,11 @@
+#outlet {
+  display: block;
+}
+#outlet h1 {
+  font: 12pt RobotoMed;
+  margin-bottom: 2mm;
+}
+#outlet p {
+  margin: 0.75mm 0mm 0mm 0mm;
+  padding: 0mm;
+}
