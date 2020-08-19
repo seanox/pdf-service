@@ -1,36 +1,36 @@
 @font-face {
-  font-family:'PlayfairMed';
-  font-weight:normal;
-  font-style:normal;
-  src:url('../fonts/PlayfairDisplay-Medium.ttf');
+  font-family: 'PlayfairMed';
+  font-weight: normal;
+  font-style: normal;
+  src: url('../fonts/PlayfairDisplay-Medium.ttf');
 }
 @font-face {
-  font-family:'PlayfairReg';
-  font-weight:normal;
-  font-style:normal;
-  src:url('../fonts/PlayfairDisplay-Regular.ttf');
+  font-family: 'PlayfairReg';
+  font-weight: normal;
+  font-style: normal;
+  src: url('../fonts/PlayfairDisplay-Regular.ttf');
 }
 @font-face {
-  font-family:'RobotoMed';
-  font-weight:normal;
-  font-style:normal;
-  src:url('../fonts/Roboto-Medium.ttf');
+  font-family: 'RobotoMed';
+  font-weight: normal;
+  font-style: normal;
+  src: url('../fonts/Roboto-Medium.ttf');
 }
 @font-face {
-  font-family:'RobotoReg';
-  font-weight:normal;
-  font-style:normal;
-  src:url('../fonts/Roboto-Regular.ttf');
+  font-family: 'RobotoReg';
+  font-weight: normal;
+  font-style: normal;
+  src: url('../fonts/Roboto-Regular.ttf');
 }
 @font-face {
-  font-family:'KosugiReg';
-  font-weight:normal;
-  font-style:normal;
-  src:url('../fonts/Kosugi-Regular.ttf');
+  font-family: 'KosugiReg';
+  font-weight: normal;
+  font-style: normal;
+  src: url('../fonts/Kosugi-Regular.ttf');
 }
 @font-face {
-  font-family:'GugiReg';
-  font-weight:normal;
-  font-style:normal;
-  src:url('../fonts/Gugi-Regular.ttf');
+  font-family: 'GugiReg';
+  font-weight: normal;
+  font-style: normal;
+  src: url('../fonts/Gugi-Regular.ttf');
 }
