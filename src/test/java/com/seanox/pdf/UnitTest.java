@@ -23,6 +23,7 @@ package com.seanox.pdf;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -31,6 +32,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -57,12 +59,12 @@ import com.seanox.pdf.example.UsageTemplate;
  *   <li>JUnit 5</li>
  * </ul>
  * <br>
- * UnitTest 3.6.2 20200803<br>
+ * UnitTest 3.6.3 20200823<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.6.2 20200803
+ * @version 3.6.4 20200823
  */
 @SuppressWarnings("javadoc")
 public class UnitTest {
@@ -122,27 +124,20 @@ public class UnitTest {
     }
     
     private static boolean compareImages(File master, File compare)
-            throws IOException {
-        
-        if (master.length()
-                != compare.length())
-            return false;
-        
+            throws Exception {
+
         BufferedImage masterImage = ImageIO.read(master);
         BufferedImage compareImage = ImageIO.read(compare);
-        if (masterImage.getHeight() != compareImage.getHeight()
-                || masterImage.getWidth() != compareImage.getWidth())
-            return false;
-        
-        for (int y = 0; y < masterImage.getHeight(); y++) {
-            for (int x = 0; x < masterImage.getWidth(); x++) {
-                if (masterImage.getRGB(x, y)
-                        != compareImage.getRGB(x, y))
-                    return false;
-            }
-        }
-        
-        return true;
+        Method method = Compare.class.getDeclaredMethod("compareImage", BufferedImage.class, BufferedImage.class);
+        method.setAccessible(true);
+        BufferedImage deltaImage = (BufferedImage)method.invoke(null, masterImage, compareImage);
+        if (deltaImage == null)
+            return true;
+        String deltaTimestamp = String.format("%tY%<tm%<td%<tH%<tM%<tS", new Date()); 
+        String deltaName = "_diffs_" + deltaTimestamp;
+        File deltaFile = new File(compare.getParentFile(), compare.getName().replaceAll("\\.\\w+$", deltaName + ".png"));
+        ImageIO.write(deltaImage, "png", deltaFile);
+        return false;
     }
 
     @Test
