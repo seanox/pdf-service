@@ -696,7 +696,7 @@ The rendering of the markup uses overlays.
 During rendering, the type tells the generator which fragments of the markup is
 generated. The generator can thus react specifically to the fragments if it is
 necessary for the generator implementation.  
-Type provides the constants for the layers as enumeration.        
+Type provides the constants for the layers as enumeration.
 
 ### TemplateException
 
