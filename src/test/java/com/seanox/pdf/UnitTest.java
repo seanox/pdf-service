@@ -43,6 +43,10 @@ import javax.imageio.ImageIO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.AfterAllCallback;
+import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.ExtensionContext;
 
 import com.openhtmltopdf.util.XRLog;
 import com.seanox.pdf.Service.Meta;
@@ -59,19 +63,22 @@ import com.seanox.pdf.example.UsageTemplate;
  *   <li>JUnit 5</li>
  * </ul>
  * <br>
- * UnitTest 3.6.3 20200823<br>
+ * UnitTest 3.6.2 20200827<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.6.4 20200823
+ * @version 3.6.2 20200827
  */
 @SuppressWarnings("javadoc")
+@ExtendWith(UnitTest.Watcher.class)
 public class UnitTest {
     
     private final static File ROOT = new File(".");
     
     private final static File TEMP = new File(ROOT, "temp");
+    
+    private final static boolean DEBUG = false;
     
     static {
         XRLog.setLevel("com.openhtmltopdf.config", Level.WARNING);
@@ -88,6 +95,24 @@ public class UnitTest {
         XRLog.setLevel("com.openhtmltopdf.render", Level.WARNING);
         
         XRLog.setLoggingEnabled(false);
+    }
+
+    private static class Watcher implements AfterTestExecutionCallback, AfterAllCallback {
+        
+        private boolean failed;
+        
+        @Override
+        public void afterTestExecution(ExtensionContext context) throws Exception {
+            if (context.getExecutionException().isPresent())
+                this.failed = true;
+        }
+
+        @Override
+        public void afterAll(ExtensionContext context) throws Exception {
+            if (this.failed
+                    && UnitTest.DEBUG)
+                Runtime.getRuntime().exec("cmd /C start " + TEMP);
+        }
     }
     
     @BeforeAll
