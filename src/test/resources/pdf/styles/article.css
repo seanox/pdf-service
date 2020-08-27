@@ -44,75 +44,76 @@ p {
 #article * {
   border: 0mm solid;
 }
-#article > h1 {
-  font: 24pt PlayfairReg;
-  margin-bottom: 5mm; 
-}
-#article > h2 {
-  font: 10.5pt RobotoReg;
-  margin-top: 8mm;
-}
-#article > h3 {
+#article h3 {
+  margin: 9mm 0mm 0.75mm 0mm; 
   font: 10pt RobotoReg;
-  margin-bottom: 0.5mm;
 }
-#article > table {
+#article h1 {
+  margin: 0mm;
+  font: 24pt PlayfairReg;
 }
-#article > table:after {
-  border-bottom: 6px solid #FFFFFF;
-  content: '';
-  display: block;
-  position: relative;
-  top: -6px;
+#article h2 {
+  margin: 6mm 0mm 0.75mm 0mm;
+  font: 10.5pt RobotoReg;
+  font-weight: bold;
 }
-#article > table > tr > td:first-child,
-#article > table > tr > td:last-child {
-  width: 84mm;
+#articleSummary {
+  margin-top: 6.75mm;
 }
-#article > table > tr > td:first-child + td {
+#articleSummary > tr > td:nth-child(1) {
+  width: 85mm;
 }
-#article > table > tr > td:first-child {
+#articleSummary > tr > td:nth-child(2) {
+  padding: 0mm;
+}
+#articleSummary > tr > td:nth-child(3) {
+  width: 85mm;
+}
+#articleSummary > tr > td:first-child {
   background: #F2F2F2;
 }
-#article > table img {
-  max-width: 84mm;
-  top: -2px;
-  border-top: 1px solid #FFFFFF;
+#articleSummary > tr:first-child + tr > td {
+  vertical-align: bottom;
 }
-#article > table table td:first-child {
+#articleSummaryDetails {
+  margin-bottom: 6mm;
+}
+#articleSummaryDetails td:first-child,
+#articleSummaryPrice td:first-child {
   padding-left: 5mm;
 }
-#article > table table td:last-child {
+#articleSummaryDetails td:last-child,
+#articleSummaryPrice td:last-child {
   font-weight: bold;
   padding-right: 5mm;
   text-align: right;
 }
-#article > table table tr:first-child td {
+#articleSummaryDetails tr:first-child td {
   padding-top: 5mm;
 }
-#article > table table tr:last-child td {
+#articleSummaryDetails tr td {
+  padding: 0mm 0mm 0.75mm 0mm;
+}
+#articleSummaryPrice {
+  margin-top: 6mm;  
+}
+#articleSummaryPrice tr:last-child td {
   padding-bottom: 5mm;
 }
-#article > table > tr:first-child + tr > td {
-  vertical-align: bottom;
+#articleSummaryPrice tr td {
+  padding: 0.75mm 0mm 0mm 0mm;
 }
-#article #articlePrice {
-  top: -6px;
+#articleSummaryPrice tr:first-child td {
+  font: 11pt RobotoReg!important;
+  font-weight: bold!important;
 }
-#article #articlePrice tr td {
-  font: 11pt RobotoReg;
-  font-weight: bold;
+#articleSummaryPrice tr:last-child td {
+  font-size: 12pt!important;
+  font-weight: bold!important;
 }
-#article #articlePrice tr:last-child td {
-  font: 12pt RobotoReg;
-  font-weight: bold;
-}
-#article #articleDescription br {
+#articleSummaryImage img {
   display: block;
-  height: 6pt;
-}
-#article > table + h2 {
-  margin-top: 4mm;
+  max-width: 85mm;
 }
 
 

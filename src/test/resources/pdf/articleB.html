@@ -10,7 +10,7 @@
     <header id="header">
       <span>#[template[[#[name]]]]</span>
       <img src="![PAGE_LOGO_URL]"/>
-    </header> 
+    </header>
     <section id="sheet">
       #[outlet[[
       <article id="outlet">
@@ -23,15 +23,14 @@
         <p exists="#[websiteUrl-exists]">![ADDRESS_WEB]: #[websiteUrl]</p>
       </article>
       ]]]
-      <!-- -->
       #[article[[
       <article id="article">
         <h3>![PAGE_PRODUCT_DATA_SHEET]</h3>
         <h1>#[headline]</h1>
-        <table>
+        <table id="articleSummary">
           <tr>
             <td>
-              <table>
+              <table id="articleSummaryDetails">
                 <tr exists="#[articleNumber-EXISTS]">
                   <td>![article_number]</td>
                   <td>#[ARTICLENUMBER]</td>
@@ -39,7 +38,7 @@
                 <tr exists="#[colorText-exists]">
                   <td>![ARTICLE_COLOUR]</td>
                   <td>#[colorText]</td>
-                </tr>                                
+                </tr>
                 <tr exists="#[materialText-exists]">
                   <td>![ARTICLE_MATERIAL]</td>
                   <td>#[materialText]</td>
@@ -53,14 +52,14 @@
               <p></p>
             </td>
             <td rowspan="2"></td>
-            <td rowspan="2">
+            <td rowspan="2" id="articleSummaryImage">
               <img src="#[images[[#[large]]]]"/>
             </td>
           </tr>
           <tr>
             <td>
               <p></p>
-              <table id="articlePrice">
+              <table id="articleSummaryPrice">
                 <tr>
                   <td>![ARTICLE_PRICE_NETT]</td>
                   <td>#[articlePrice[[#[netText]]]]</td>
@@ -68,7 +67,7 @@
                 <tr>
                   <td>![ARTICLE_PRICE_GROSS]</td>
                   <td>#[articlePrice[[#[grossText]]]]</td>
-                </tr>                                
+                </tr>
               </table>
             </td>
           </tr>
@@ -79,7 +78,7 @@
         </p>
       </article>
       ]]]
-    </section> 
+    </section>
     <footer id="footer">
       <section>
         <p>

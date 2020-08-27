@@ -91,13 +91,13 @@ public class UsageComplexTemplate {
         //The delegate returns a entity.
         //The template generator expects a structured map, that means keys as
         //string and values as collection + string.
-        //The ObjectMapper creates this map.        
+        //The ObjectMapper creates this map.
         meta.getData().put("outlet", new ObjectMapper().convertValue(OutletDelegate.get(), Map.class));
 
         //The delegate returns a list of entities.
         //The template generator expects a structured map, that means keys as
         //string and values as collection + string.
-        //The ObjectMapper creates this map.        
+        //The ObjectMapper creates this map.
         meta.getData().put("articles", ArticleDelegate.list().stream().map(
                 entity -> new ObjectMapper().convertValue(entity, Map.class)
             ).collect(Collectors.toList()));
