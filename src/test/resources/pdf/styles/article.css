@@ -61,13 +61,13 @@ p {
   margin-top: 6.75mm;
 }
 #articleSummary > tr > td:nth-child(1) {
-  width: 85mm;
+  width: 83.5mm;
 }
 #articleSummary > tr > td:nth-child(2) {
   padding: 0mm;
 }
 #articleSummary > tr > td:nth-child(3) {
-  width: 85mm;
+  width: 83.5mm;
 }
 #articleSummary > tr > td:first-child {
   background: #F2F2F2;
@@ -113,7 +113,7 @@ p {
 }
 #articleSummaryImage img {
   display: block;
-  max-width: 85mm;
+  max-width: 83.5mm;
 }
 
 
