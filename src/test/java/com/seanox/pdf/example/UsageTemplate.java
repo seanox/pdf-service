@@ -23,9 +23,7 @@ package com.seanox.pdf.example;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -34,6 +32,8 @@ import com.seanox.pdf.Service;
 import com.seanox.pdf.Service.Meta;
 import com.seanox.pdf.Service.Template.Resources;
 import com.seanox.pdf.Template;
+import com.seanox.pdf.example.data.ArticleDelegate;
+import com.seanox.pdf.example.data.OutletDelegate;
 
 /** 
  * Example of using the PDF service.
@@ -51,7 +51,8 @@ import com.seanox.pdf.Template;
 @SuppressWarnings("javadoc")
 public class UsageTemplate {
     
-    public static void main(String... options) {
+    public static void main(String... options)
+            throws Exception {
  
         //The static texts are required as a Map<String, String>.
         //Often they are available in a similar way as properties or JSON file
@@ -77,16 +78,15 @@ public class UsageTemplate {
         //The template generator expects a structured map, that means keys as
         //string and values as collection + string.
         //The ObjectMapper creates this map.
-        meta.getData().put("outlet", new ObjectMapper().convertValue(ExampleOutletDelegate.get(), Map.class));
+        meta.getData().put("outlet", new ObjectMapper().convertValue(OutletDelegate.get(), Map.class));        
 
         //The delegate returns a list of entities.
         //The template generator expects a structured map, that means keys as
         //string and values as collection + string.
         //The ObjectMapper creates this map.
-        meta.getData().put("articles", ExampleArticleDelegate.list().stream().map(
+        meta.getData().put("articles", ArticleDelegate.list().stream().map(
                 entity -> new ObjectMapper().convertValue(entity, Map.class)
             ).collect(Collectors.toList()));
-        
         
         //The render-method of the template creates the final PDF.
         //The PDF is output to the current working directory.
@@ -96,78 +96,6 @@ public class UsageTemplate {
             Files.write(Paths.get(UsageTemplate.class.getSimpleName() + ".pdf"), data, StandardOpenOption.CREATE);
         } catch (Exception exception) {
             exception.printStackTrace();
-        }
-    }
-    
-    //Simulation of the data access layer as delegate.
-    private static class ExampleOutletDelegate {
-        
-        static Object get() {
-            return new Object() {
-                public String getName() {
-                    return "Jane Doe Toys Limited";
-                }
-                public String getStreet() {
-                    return "Western Road";
-                }
-                public String getLocation() {
-                    return "GB BN1 2NW Brighton";
-                }
-                public String getPhone() {
-                    return "+44 1234 05678 0";
-                }
-                public String getFax() {
-                    return "+44 1234 05678 1";
-                }
-                public String getEmail() {
-                    return "mail@outlet.local";
-                }
-                public String getWebsiteUrl() {
-                    return "https://outlet.local";
-                }
-            };    
-        }
-    }
-    
-    //Simulation of the data access layer as delegate.
-    private static class ExampleArticleDelegate {
-        
-        static List<Object> list() {
-            return new ArrayList<Object>() {{
-                add(new Object() {
-                    public String getTitle() {
-                        return "Example A-1";
-                    }
-                    public String getArticleNumber() {
-                        return "A-1";
-                    }
-                    public String getPrice() {
-                        return "123.00 GBP";
-                    }
-                });
-                add(new Object() {
-                    public String getTitle() {
-                        return "Example B-2";
-                    }
-                    public String getArticleNumber() {
-                        return "B-2";
-                    }
-                    public String getPrice() {
-                        return "234.00 GBP";
-                    }
-                });
-                add(new Object() {
-                    public String getTitle() {
-                        return "Example C-3";
-                    }
-                    public String getArticleNumber() {
-                        return "C-3";
-                    }
-                    public String getPrice() {
-                        return "345.00 GBP";
-                    }
-                });                
-            }};
         }
     }
     
