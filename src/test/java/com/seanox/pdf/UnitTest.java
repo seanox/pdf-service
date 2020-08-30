@@ -97,7 +97,7 @@ public class UnitTest {
         XRLog.setLoggingEnabled(false);
     }
 
-    private static class Watcher implements AfterTestExecutionCallback, AfterAllCallback {
+    public static class Watcher implements AfterTestExecutionCallback, AfterAllCallback {
         
         private boolean failed;
         
