@@ -7,7 +7,7 @@
   
   <groupId>com.seanox</groupId>
   <artifactId>seanox-pdf-service</artifactId>
-  <version>4.0.2</version>
+  <version>4.0.3</version>
   <packaging>jar</packaging>
   
   <name>pdf-service</name>

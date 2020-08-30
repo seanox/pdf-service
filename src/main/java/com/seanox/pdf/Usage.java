@@ -62,7 +62,7 @@ public class Usage {
      */     
     public static void main(String... options) throws Exception {
         
-        System.out.println("Seanox PDF Tools Usage [Version 3.8.0 20200605]");
+        System.out.println("Seanox PDF Tools Usage [Version 3.8.1 20200803]");
         System.out.println("Copyright (C) 2020 Seanox Software Solutions");
         System.out.println();
         System.out.println("This java archive contains several command line tools.");

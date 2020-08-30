@@ -1,10 +1,10 @@
-4.0.3 2020xxxx
+4.0.3 20200830
   BF: Service: Optimization of the code
   BF: Template: Correction/optimization of exists-placeholder
       Exists placeholders are only created if the value is not null, not empty and not blank.
   BF: Template Preview Properties: Correction of the logic during parsing
   BF: JUnit: Cleanup of JUnit4
-  BF: Maven: Minimization and update dependencies  
+  BF: Maven: Minimization and update dependencies
 
 4.0.2 20200711
   BF: Generator: Correction of expensive/hungry RegExp

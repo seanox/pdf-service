@@ -58,7 +58,7 @@ public class Compare {
     public static void main(String... options)
             throws Exception {
         
-        System.out.println("Seanox PDF Comparator [Version 1.1.0 20200610]");
+        System.out.println("Seanox PDF Comparator [Version 1.1.1 20200803]");
         System.out.println("Copyright (C) 2020 Seanox Software Solutions");
         System.out.println();
         
