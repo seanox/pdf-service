@@ -62,26 +62,32 @@ p {
 
 
 #report * {
-  border: 0mm solid;
 }
 #report h1 {
   font: 24pt PlayfairReg;
-  margin-bottom: 5mm; 
+  margin-bottom: 6mm; 
 }
-#report h2 {
-  font: 10.5pt RobotoReg;
-  margin-top: 8mm;
-}
-#report h3 {
-  font: 10pt RobotoReg;
-  margin-bottom: 0.5mm;
-}
-#report > table {
+#report table {
   position: static;
   -fs-table-paginate: paginate;
 }
-#report > table > thead hr {
+#report table > thead hr {
   border: 1px solid #D9D9D9;
+}
+#reportData tr:first-child th, 
+#reportData tr td {
+  padding: 1.5mm;   
+}
+#reportData tr:first-child th {
+  padding-top: 6mm;
+}
+#reportData tr th:first-child, 
+#reportData tr td:first-child {
+  padding-left: 0mm;   
+}
+#reportData tr th:last-child, 
+#reportData tr td:last-child {
+  padding-right: 0mm;   
 }
 
 
