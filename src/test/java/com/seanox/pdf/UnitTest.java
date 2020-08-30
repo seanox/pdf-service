@@ -63,12 +63,12 @@ import com.seanox.pdf.example.UsageTemplate;
  *   <li>JUnit 5</li>
  * </ul>
  * <br>
- * UnitTest 3.6.2 20200827<br>
+ * UnitTest 3.7.0 20200827<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.6.2 20200827
+ * @version 3.7.0 20200827
  */
 @SuppressWarnings("javadoc")
 @ExtendWith(UnitTest.Watcher.class)

@@ -149,12 +149,12 @@ import com.seanox.pdf.Service.Template.TemplateException;
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer<br>
  * <br>
- * Service 4.0.1 20200722<br>
+ * Service 4.0.2 20200722<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 4.0.1 20200722
+ * @version 4.0.2 20200722
  */
 public class Service {
     

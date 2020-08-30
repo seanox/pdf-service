@@ -26,12 +26,12 @@ import java.io.PrintStream;
 /** 
  * Output of information on how to use the command line tools.<br>
  * <br>
- * Usage 3.8.0 20200803<br>
+ * Usage 3.8.1 20200803<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.8.0 20200803
+ * @version 3.8.1 20200803
  */
 public class Usage {
 

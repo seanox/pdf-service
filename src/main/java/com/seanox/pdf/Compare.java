@@ -39,12 +39,12 @@ import org.apache.pdfbox.rendering.PDFRenderer;
 /** 
  * Pixel-based comparison of PDF files.<br>
  * <br>
- * Compare 1.1.0 20200803<br>
+ * Compare 1.1.1 20200803<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 1.1.0 20200803
+ * @version 1.1.1 20200803
  */
 public class Compare {
     

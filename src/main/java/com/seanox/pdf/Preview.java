@@ -37,12 +37,12 @@ import com.openhtmltopdf.util.XRLog;
  * Tool for the design process to create a test output of the rendered PDFs.
  * The PDFs are output in the same directory as the template.<br>
  * <br>
- * Preview 3.4.0 20200803<br>
+ * Preview 3.4.1 20200803<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.4.0 20200803
+ * @version 3.4.1 20200803
  */
 public class Preview {
     

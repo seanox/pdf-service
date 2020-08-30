@@ -41,12 +41,12 @@ import com.seanox.pdf.example.data.OutletDelegate;
  * The resources (CSS, images, fonts, ...) are in the ClassPath /pdf/... and are
  * used in the template relative.<br>
  * <br>
- * UsageTemplate 1.2.1 20200804<br>
+ * UsageTemplate 1.3.0 20200804<br>
  * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 1.2.1 20200804
+ * @version 1.3.0 20200804
  */
 @SuppressWarnings("javadoc")
 public class UsageTemplate {
