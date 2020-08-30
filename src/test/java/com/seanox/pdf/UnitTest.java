@@ -267,7 +267,7 @@ public class UnitTest {
     
     @Test
     public void checkUsageTemplate()
-            throws IOException {
+            throws Exception {
         
         String master;
         String compare;
