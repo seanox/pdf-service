@@ -4,7 +4,7 @@
  * Diese Software unterliegt der Version 2 der Apache License.
  *
  * PDF Service
- * Copyright (C) 2020 Seanox Software Solutions
+ * Copyright (C) 2021 Seanox Software Solutions
  *  
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -100,7 +100,7 @@ import com.seanox.pdf.Service.Template.TemplateException;
  *  
  * <dir><b>Useful information:</b></dir>
  * Templates are based on an implementation of the {@link Template} and the
- * annoation {@link Resources}, which with {@link Resources#base()} and
+ * annotation {@link Resources}, which with {@link Resources#base()} and
  * {@link Resources#template()}) contains information about the base directory
  * of the resources (CSS, images, fonts, ...), as well the path of the markup
  * template with the same name.
@@ -118,10 +118,10 @@ import com.seanox.pdf.Service.Template.TemplateException;
  * As engine {@link Generator} is used, here you can find more details.
  * The most important in short form:
  *  
- * <dir><code>#[palceholder]</code></dir>
+ * <dir><code>#[placeholder]</code></dir>
  * Simple placeholder, global or in a section.
  *  
- * <dir><code>#[palceholder-exists]</code></dir>
+ * <dir><code>#[placeholder-exists]</code></dir>
  * Pendant to any placeholder, if the value is not {@code null}, not empty and
  * not blank. Then the placeholder contains the value {@code exists}.
  *  
@@ -149,12 +149,12 @@ import com.seanox.pdf.Service.Template.TemplateException;
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer<br>
  * <br>
- * Service 4.0.2 20200722<br>
- * Copyright (C) 2020 Seanox Software Solutions<br>
+ * Service 4.0.3 20210722<br>
+ * Copyright (C) 2021 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 4.0.2 20200722
+ * @version 4.0.3 20210722
  */
 public class Service {
     
@@ -249,7 +249,6 @@ public class Service {
         
         /** 
          * Constructor, creates a new Meta object.
-         * @param locale
          * @param data
          */
         public Meta(Map<String, Object> data) {
@@ -358,7 +357,7 @@ public class Service {
         
         /**
          * Templates are based on an implementation of the
-         * {@link Template} and the annoation {@link Resources}, which with
+         * {@link Template} and the annotation {@link Resources}, which with
          * {@link Resources#base()} and {@link Resources#template()}) contains 
          * information about the base directory of the resources (CSS, images,
          * fonts, ...), as well the path of the markup template with the same
@@ -583,7 +582,7 @@ public class Service {
          * fragments if it is necessary for the generator implementation.
          * Type provides the constants for the layers as enumeration.
          */
-        public static enum Type {
+        public enum Type {
 
             /** Meta-Type HEADER */
             HEADER,

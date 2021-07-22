@@ -4,7 +4,7 @@
  * Diese Software unterliegt der Version 2 der Apache License.
  *
  * PDF Service
- * Copyright (C) 2020 Seanox Software Solutions
+ * Copyright (C) 2021 Seanox Software Solutions
  *  
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -48,10 +48,10 @@ import com.seanox.pdf.Service.Meta;
  * As engine {@link Generator} is used, here you can find more details.
  * The most important in short form:
  *  
- * <dir><code>#[palceholder]</code></dir>
+ * <dir><code>#[placeholder]</code></dir>
  * Simple placeholder, global or in a section.
  *  
- * <dir><code>#[palceholder-exists]</code></dir>
+ * <dir><code>#[placeholder-exists]</code></dir>
  * Pendant to any placeholder, if the value is not {@code null}, not empty and
  * not blank. Then the placeholder contains the value {@code exists}.
  *  
@@ -79,20 +79,20 @@ import com.seanox.pdf.Service.Meta;
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer<br>
  * <br>
- * Template 4.0.2 20200726<br>
- * Copyright (C) 2020 Seanox Software Solutions<br>
+ * Template 4.0.3 20210722<br>
+ * Copyright (C) 2021 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 4.0.2 20200726
+ * @version 4.0.3 20210722
  */
 public abstract class Template extends Service.Template {
     
     /** Pattern for the detection of markup */
-    private final static Pattern PATTERN_MARKUP_DETECTION = Pattern.compile("(?si).*(((<|>).*(<\\s*/)|(/\\s*>))|(&#\\d+;)|(&#x[0-9a-f]+;)|(&[a-z]+;)).*");  
+    private final static Pattern PATTERN_MARKUP_DETECTION = Pattern.compile("(?si).*(((<|>).*(<\\s*/)|(/\\s*>))|(&#\\d+;)|(&#x[0-9a-f]+;)|(&[a-z]+;)).*");
     
     /** Pattern for the validation of expressions */
-    private final static Pattern PATTERN_EXPRESSION = Pattern.compile("^(?i)([a-z](?:[\\w\\-]*\\w){0,1})((?:\\[\\s*\\d+\\s*\\]){0,1})(\\.([a-z](?:[\\w\\-]*\\w){0,1})((?:\\[\\s*\\d+\\s*\\]){0,1}))*$");
+    private final static Pattern PATTERN_EXPRESSION = Pattern.compile("^(?i)([a-z](?:[\\w\\-]*\\w)?)((?:\\[\\s*\\d+\\s*\\])?)(\\.([a-z](?:[\\w\\-]*\\w)?)((?:\\[\\s*\\d+\\s*\\])?))*$");
     
     /** Pattern for the validation of list expressions */
     private final static Pattern PATTERN_LIST_EXPRESSION = Pattern.compile("^(.*)\\s*\\[\\s*(\\d+)\\s*\\]$");
@@ -168,7 +168,7 @@ public abstract class Template extends Service.Template {
         private String string;
         
         /**
-         * Construcor, creates a new Markup object.
+         * Constructor, creates a new Markup object.
          * The value {@code null} is interpreted like an empty text.
          * @param text
          */
@@ -445,9 +445,7 @@ public abstract class Template extends Service.Template {
         
         if (collection == null)
             collection = new ArrayList<>();
-        return collection.stream().map(
-                entry -> Template.escapeHtml(entry)
-            ).collect(Collectors.toList());
+        return collection.stream().map(Template::escapeHtml).collect(Collectors.toList());
     }
     
     /**
@@ -593,7 +591,7 @@ public abstract class Template extends Service.Template {
         Matcher matcher = pattern.matcher(markup);
         while (matcher.find()) {
             String value = null;
-            if (matcher.group(0).matches("^(?i)!\\[[a-z]([\\w-]*\\w){0,1}\\]$"))
+            if (matcher.group(0).matches("^(?i)!\\[[a-z]([\\w-]*\\w)?\\]$"))
                 value = statics.get(matcher.group(1).toLowerCase());
             if (value == null)
                 value = "";

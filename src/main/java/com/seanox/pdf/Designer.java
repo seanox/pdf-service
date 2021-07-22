@@ -4,7 +4,7 @@
  * Diese Software unterliegt der Version 2 der Apache License.
  *
  * PDF Service
- * Copyright (C) 2020 Seanox Software Solutions
+ * Copyright (C) 2021 Seanox Software Solutions
  *  
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -38,7 +38,7 @@ import com.openhtmltopdf.util.XRLog;
  * directory. The PDFs are output in the same directory as the template.<br>
  * <br>
  * Designer 3.2.3 20200803<br>
- * Copyright (C) 2020 Seanox Software Solutions<br>
+ * Copyright (C) 2021 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
@@ -71,7 +71,7 @@ public class Designer {
             throws Exception {
         
         System.out.println("Seanox PDF Design Deamon [Version 3.2.3 20200803]");
-        System.out.println("Copyright (C) 2020 Seanox Software Solutions");
+        System.out.println("Copyright (C) 2021 Seanox Software Solutions");
         System.out.println();
         
         if (options == null

@@ -4,7 +4,7 @@
  * Diese Software unterliegt der Version 2 der Apache License.
  *
  * PDF Service
- * Copyright (C) 2020 Seanox Software Solutions
+ * Copyright (C) 2021 Seanox Software Solutions
  *  
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -119,12 +119,12 @@ import java.util.stream.Collectors;
  * {@link #set(Map)} in combination with {@link #extract()}, but focus on only
  * one segment.<br>
  * <br>
- * Generator 5.2.2 20200710<br>
- * Copyright (C) 2020 Seanox Software Solutions<br>
+ * Generator 5.2.3 20210722<br>
+ * Copyright (C) 2021 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 5.2.2 20200710
+ * @version 5.2.3 20210722
  */
 class Generator {
 
@@ -157,7 +157,7 @@ class Generator {
      * is returned. If no placeholder can be determined, the return value is 0.
      * If no further data is available in the model for analysis (end of data is
      * reached) a negative value is returned.
-     * @param  model  Model(Fragmet)
+     * @param  model  Model(Fragment)
      * @param  cursor Position
      * @return the position of the next placeholder or segment, otherwise a
      *         negative value
@@ -290,7 +290,7 @@ class Generator {
 
             byte[] patch = new byte[0];
             String fetch = new String(model, cursor, offset);
-            if (fetch.matches("^(?si)#\\[[a-z]([\\w\\-]*\\w){0,1}\\[\\[.*\\]\\]\\]$")) {
+            if (fetch.matches("^(?si)#\\[[a-z]([\\w\\-]*\\w)?\\[\\[.*\\]\\]\\]$")) {
                 
                 //scope is determined from: #[scope[[segment]]
                 String scope = fetch.substring(2);
@@ -307,7 +307,7 @@ class Generator {
                 
                 //as new placeholder only the scope is used
                 patch = ("#[").concat(scope).concat("]").getBytes();
-            } else if (fetch.matches("^(?i)#\\[[a-z]([\\w-]*\\w){0,1}\\]$")) {
+            } else if (fetch.matches("^(?i)#\\[[a-z]([\\w-]*\\w)?\\]$")) {
                 patch = fetch.toLowerCase().getBytes();
             } else if (fetch.matches("^(?i)#\\[0x([0-9a-f]{2})+\\]$")) {
                 cursor += fetch.length() +1;
@@ -388,7 +388,7 @@ class Generator {
 
             patch = new byte[0];
             fetch = new String(this.model, cursor, offset);
-            if (fetch.matches("^(?i)#\\[[a-z]([\\w-]*\\w){0,1}\\]$")) {
+            if (fetch.matches("^(?i)#\\[[a-z]([\\w-]*\\w)?\\]$")) {
                 fetch = fetch.substring(2, fetch.length() -1);
                 
                 //the placeholders of not transmitted keys are ignored, with
