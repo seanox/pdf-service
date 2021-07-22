@@ -4,7 +4,7 @@
  * Diese Software unterliegt der Version 2 der Apache License.
  *
  * PDF Service
- * Copyright (C) 2020 Seanox Software Solutions
+ * Copyright (C) 2021 Seanox Software Solutions
  *  
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -42,7 +42,7 @@ import com.seanox.pdf.example.data.OutletDelegate;
  * used in the template relative.<br>
  * <br>
  * UsageTemplate 1.3.0 20200804<br>
- * Copyright (C) 2020 Seanox Software Solutions<br>
+ * Copyright (C) 2021 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions

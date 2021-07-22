@@ -4,7 +4,7 @@
  * Diese Software unterliegt der Version 2 der Apache License.
  *
  * PDF Service
- * Copyright (C) 2020 Seanox Software Solutions
+ * Copyright (C) 2021 Seanox Software Solutions
  *  
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -33,7 +33,7 @@ import com.seanox.pdf.Service.Template;
  * protected by the compiler..<br>
  * <br>
  * InterfaceTest 4.0.0 20200614<br>
- * Copyright (C) 2020 Seanox Software Solutions<br>
+ * Copyright (C) 2021 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
@@ -88,14 +88,12 @@ class InterfaceTest extends Template {
     }
 
     @Override
-    protected Map<String, Object> getPreviewData()
-            throws Exception {
+    protected Map<String, Object> getPreviewData() {
         return null;
     }
 
     @Override
-    protected Map<String, String> getPreviewStatics()
-            throws Exception {
+    protected Map<String, String> getPreviewStatics() {
         return null;
     }
     
