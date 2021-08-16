@@ -68,8 +68,10 @@ p {
   margin-bottom: 6mm; 
 }
 #report table {
-  position: static;
   -fs-table-paginate: paginate;
+}
+#report table * {
+  position: static;
 }
 #report table > thead hr {
   border: 1px solid #D9D9D9;
