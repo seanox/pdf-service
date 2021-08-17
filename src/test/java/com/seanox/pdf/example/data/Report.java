@@ -20,20 +20,15 @@
  */
 package com.seanox.pdf.example.data;
 
-@SuppressWarnings("javadoc")
+import lombok.Data;
+
+@Data
 public class Report {
     
     private Data[] data;
-    
-    public Data[] getData() {
-        return this.data;
-    }
-    public void setData(Data[] data) {
-        this.data = data;
-    }
 
+    @lombok.Data
     static class Data {
-        
         private String a;
         private String b;
         private String c;
@@ -42,54 +37,5 @@ public class Report {
         private String f;
         private String g;
         private String h;
-        
-        public String getA() {
-            return this.a;
-        }
-        public void setA(String a) {
-            this.a = a;
-        }
-        public String getB() {
-            return this.b;
-        }
-        public void setB(String b) {
-            this.b = b;
-        }
-        public String getC() {
-            return this.c;
-        }
-        public void setC(String c) {
-            this.c = c;
-        }
-        public String getD() {
-            return this.d;
-        }
-        public void setD(String d) {
-            this.d = d;
-        }
-        public String getE() {
-            return this.e;
-        }
-        public void setE(String e) {
-            this.e = e;
-        }
-        public String getF() {
-            return this.f;
-        }
-        public void setF(String f) {
-            this.f = f;
-        }
-        public String getG() {
-            return this.g;
-        }
-        public void setG(String g) {
-            this.g = g;
-        }
-        public String getH() {
-            return this.h;
-        }
-        public void setH(String h) {
-            this.h = h;
-        }
     }
 }

@@ -22,9 +22,8 @@ package com.seanox.pdf.example.data;
 
 import java.util.List;
 
-@SuppressWarnings("javadoc")
 public class OutletDelegate {
-    
+
     public static List<Outlet> list()
             throws Exception {
         return Datasource.collect(Outlet.class);

@@ -20,12 +20,11 @@
  */
 package com.seanox.pdf.example.data;
 
-@SuppressWarnings("javadoc")
 public class ReportDelegate {
-    
+
     public static Report get()
             throws Exception {
-        Report report = new Report();
+        final Report report = new Report();
         report.setData(Datasource.collect(Report.Data.class).toArray(new Report.Data[0]));
         return report;
     }

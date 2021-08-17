@@ -20,9 +20,10 @@
  */
 package com.seanox.pdf.example.data;
 
-@SuppressWarnings("javadoc")
+import lombok.Data;
+
+@Data
 public class Outlet {
-    
     private String name;
     private String street;
     private String location;
@@ -30,47 +31,4 @@ public class Outlet {
     private String fax;
     private String email;
     private String websiteUrl;
-    
-    public String getName() {
-        return this.name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-    public String getStreet() {
-        return this.street;
-    }
-    public void setStreet(String street) {
-        this.street = street;
-    }
-    public String getLocation() {
-        return this.location;
-    }
-    public void setLocation(String location) {
-        this.location = location;
-    }
-    public String getPhone() {
-        return this.phone;
-    }
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-    public String getFax() {
-        return this.fax;
-    }
-    public void setFax(String fax) {
-        this.fax = fax;
-    }
-    public String getEmail() {
-        return this.email;
-    }
-    public void setEmail(String email) {
-        this.email = email;
-    }
-    public String getWebsiteUrl() {
-        return this.websiteUrl;
-    }
-    public void setWebsiteUrl(String websiteUrl) {
-        this.websiteUrl = websiteUrl;
-    }
 }
