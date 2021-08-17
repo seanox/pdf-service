@@ -41,25 +41,23 @@ import com.seanox.pdf.example.data.OutletDelegate;
  * The resources (CSS, images, fonts, ...) are in the ClassPath /pdf/... and are
  * used in the template relative.<br>
  * <br>
- * UsageTemplate 1.3.0 20200804<br>
+ * UsageTemplate 4.1.0 20210817<br>
  * Copyright (C) 2021 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 1.3.0 20200804
+ * @version 4.1.0 20210817
  */
-@SuppressWarnings("javadoc")
 public class UsageTemplate {
     
-    public static void main(String... options)
+    public static void main(final String... options)
             throws Exception {
  
-        //The static texts are required as a Map<String, String>.
-        //Often they are available in a similar way as properties or JSON file
-        //and can be easily converted.
-        //Static texts are available in the template in the header, dataset and
-        //footer sections.
-        Map<String, String> statics = new HashMap<String, String>() {
+        // The static texts are required as a Map<String, String>. Often they
+        // are available in a similar way as properties or JSON file and can be
+        // easily converted. Static texts are available in the template in the
+        // header, dataset and footer sections.
+        final Map<String, String> statics = new HashMap<>() {
             private static final long serialVersionUID = 1L; {
             put("ARTICLE_NUMBER", "Article Number");
             put("ARTICLE_PRICE", "Price");
@@ -69,42 +67,36 @@ public class UsageTemplate {
             put("ADDRESS_WEB", "Web");
         }};
         
-        //The template is configured via a meta object.
-        Meta meta = new Meta();
+        // The template is configured via a meta-object.
+        final Meta meta = new Meta();
         meta.setStatics(statics);
         meta.setData(new HashMap<>());
         
-        //The delegate returns a entity.
-        //The template generator expects a structured map, that means keys as
-        //string and values as collection + string.
-        //The ObjectMapper creates this map.
+        // The delegate returns an entity. The template generator expects a
+        // structured map, that means keys as string and values as
+        // collection + string. The ObjectMapper creates this map.
         meta.getData().put("outlet", new ObjectMapper().convertValue(OutletDelegate.get(), Map.class));        
 
-        //The delegate returns a list of entities.
-        //The template generator expects a structured map, that means keys as
-        //string and values as collection + string.
-        //The ObjectMapper creates this map.
+        // The delegate returns a list of entities. The template generator
+        // expects a structured map, that means keys as string and values as
+        // collection + string. The ObjectMapper creates this map.
         meta.getData().put("articles", ArticleDelegate.list().stream().map(
                 entity -> new ObjectMapper().convertValue(entity, Map.class)
             ).collect(Collectors.toList()));
         
-        //The render-method of the template creates the final PDF.
-        //The PDF is output to the current working directory.
-        //The file name is derived from the UsageTemplate class.
-        try {
-            byte[] data = Service.render(ExampleTemplate.class, meta);
-            Files.write(Paths.get(UsageTemplate.class.getSimpleName() + ".pdf"), data, StandardOpenOption.CREATE);
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
+        // The render-method of the template creates the final PDF. The PDF is
+        // output to the current working directory. The file name is derived
+        // from the UsageTemplate class.
+        final byte[] data = Service.render(ExampleTemplate.class, meta);
+        Files.write(Paths.get(UsageTemplate.class.getSimpleName() + ".pdf"), data, StandardOpenOption.CREATE);
     }
     
-    //The template is derived from Template and therefore requires only a
-    //annotation. Optionally, the path from the template can also be specified
-    //if the template is not in the template implementation.
-    //Base defines where in the ClassPath the resources (CSS, images, fonts, ...)
-    //for PDF creation are located.
+    // The template is derived from Template and therefore requires only an
+    // annotation. Optionally, the path from the template can also be specified
+    // if the template is not in the template implementation. Base defines
+    // where in the ClassPath the resources (CSS, images, fonts, ...) for PDF
+    // creation are located.
     @Resources(base="/pdf")
-    public static class ExampleTemplate extends Template {
+    static class ExampleTemplate extends Template {
     }
 }

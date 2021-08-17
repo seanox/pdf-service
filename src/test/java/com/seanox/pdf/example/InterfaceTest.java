@@ -32,12 +32,12 @@ import com.seanox.pdf.Service.Template;
  * Here the implementation and use of the Template-API shall be tested and
  * protected by the compiler..<br>
  * <br>
- * InterfaceTest 4.0.0 20200614<br>
+ * InterfaceTest 4.1.0 20210817<br>
  * Copyright (C) 2021 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 4.0.0 20200614
+ * @version 4.1.0 20210817
  */
 class InterfaceTest extends Template {
 
@@ -70,13 +70,13 @@ class InterfaceTest extends Template {
     }
     
     @Override
-    protected URI getResource(String resource)
+    protected URI getResource(final String resource)
             throws Exception {
         return super.getResource(resource);
     }
 
     @Override
-    protected InputStream getResourceStream(String resource)
+    protected InputStream getResourceStream(final String resource)
             throws Exception {
         return super.getResourceStream(resource);
     }
@@ -104,12 +104,12 @@ class InterfaceTest extends Template {
     }
 
     @Override
-    protected String generate(String markup, Type type, Meta meta) {
+    protected String generate(final String markup, final Type type, final Meta meta) {
         return null;
     }
     
     @Override
-    protected byte[] render(Meta meta)
+    protected byte[] render(final Meta meta)
             throws Exception {
         return super.render(meta);
     }
@@ -120,12 +120,12 @@ class InterfaceTest extends Template {
         Template.normalizePath(null);
         Template.merge(null);
 
-        Multiplex multiplex = Multiplex.demux(null);
+        final Multiplex multiplex = Multiplex.demux(null);
         multiplex.getHeader();
         multiplex.getContent();
         multiplex.getFooter();
-        
-        Resources resources = InterfaceTest.class.getAnnotation(Resources.class);
+
+        final Resources resources = InterfaceTest.class.getAnnotation(Resources.class);
         resources.base();
         resources.template();
     }

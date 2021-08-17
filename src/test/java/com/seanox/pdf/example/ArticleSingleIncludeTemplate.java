@@ -29,13 +29,13 @@ import com.seanox.pdf.Service.Template.Resources;
  * The resources (CSS, images, fonts, ...) are in the ClassPath /pdf/... and are
  * used in the template relative.<br>
  * <br>
- * ArticleSingleIncludeTemplate 1.0.0 20200316<br>
+ * ArticleSingleIncludeTemplate 4.1.0 20210817<br>
  * Copyright (C) 2021 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 1.0.0 20200316
+ * @version 4.1.0 20210817
  */
 @Resources(base="/pdf")
-public class ArticleSingleIncludeTemplate extends Template {
+class ArticleSingleIncludeTemplate extends Template {
 }
