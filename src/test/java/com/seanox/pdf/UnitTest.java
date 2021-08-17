@@ -27,7 +27,7 @@ import com.seanox.pdf.Service.Template;
 import com.seanox.pdf.Service.Template.Resources;
 import com.seanox.pdf.example.UsageTemplate;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
@@ -116,8 +116,8 @@ class UnitTest {
         }
     }
 
-    @BeforeEach
-    private void init()
+    @BeforeAll
+    static void init()
             throws IOException {
         if (TEMP.exists())
             Files.walk(TEMP.toPath())
@@ -269,7 +269,7 @@ class UnitTest {
     void checkMarkupStructureEmpty()
             throws Exception {
         final long time = System.currentTimeMillis();
-        Preview.main("src/test/resources/pdf/structure_*empty.html");
+        Preview.main("src/test/resources/pdf/structure_**empty.html");
         final String resourcePath = "src/test/resources/pdf/";
         UnitTest.validatePreviewPdf(new File(ROOT, resourcePath
                 + "structure_body_content_empty_preview.pdf"), time);
@@ -295,7 +295,7 @@ class UnitTest {
     void checkMarkupStructureNotEmpty()
             throws Exception {
         final long time = System.currentTimeMillis();
-        Preview.main("src/test/resources/pdf/structure_*[!empty].html");
+        Preview.main("src/test/resources/pdf/structure_**.html");
         final String resourcePath = "src/test/resources/pdf/";
         UnitTest.validatePreviewPdf(new File(ROOT, resourcePath
                 + "structure_body_content_footer_preview.pdf"), time);
