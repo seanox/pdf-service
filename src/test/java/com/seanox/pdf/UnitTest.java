@@ -127,8 +127,8 @@ class UnitTest {
         TEMP.mkdirs();
     }
 
-    private static void validatePreviewPdf(final File previewFile, final long time)
-            throws IOException {
+    private static void validatePreviewPdf(final File previewFile)
+            throws Exception {
         final File masterFile = new File(TEMP, previewFile.getName()).getCanonicalFile();
         final File compareFile = new File(masterFile.getParentFile(), masterFile.getName().replaceAll("_preview\\.pdf$", ".pdf")).getCanonicalFile();
         System.out.printf("\tCompare:%n%s%n%s%n%s%n",
@@ -145,10 +145,8 @@ class UnitTest {
         Assertions.assertTrue(previewFile.exists(), previewFile.toString());
         Assertions.assertTrue(masterFile.exists(), masterFile.toString());
         Assertions.assertTrue(compareFile.exists(), compareFile.toString());
-        if (time >= 0)
-            Assertions.assertTrue(previewFile.lastModified() < time);
-        if (time >= 0)
-            Assertions.assertTrue(compareFile.lastModified() > time, previewFile.toString());
+        Assertions.assertTrue(compareFile.lastModified() >= previewFile.lastModified());
+        Assertions.assertTrue(compareFile.lastModified() > masterFile.lastModified());
         final File[] deltaFiles = Compare.compare(masterFile, compareFile);
         System.out.println("\tDifferences:");
         if (Objects.nonNull(deltaFiles))
@@ -178,16 +176,14 @@ class UnitTest {
     void checkTemplateGeneration()
             throws Exception {
 
-        final long time = System.currentTimeMillis();
-
         Preview.main("src/test/resources/pdf/*.html");
 
-        UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/report_preview.pdf"), time);
+        UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/report_preview.pdf"));
 
         String master;
 
         master = "src/test/resources/pdf/reportDiffs_preview.pdf";
-        UnitTest.validatePreviewPdf(new File(ROOT, master), time);
+        UnitTest.validatePreviewPdf(new File(ROOT, master));
         File[] diffs = Compare.compare(new File(TEMP, new File(master).getName()), new File(TEMP, "report_preview.pdf"));
         Assertions.assertNotNull(diffs);
         Assertions.assertEquals(3, diffs.length);
@@ -204,26 +200,25 @@ class UnitTest {
         Files.copy(Paths.get(master), new File(TEMP, new File(master).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
         Assertions.assertTrue(UnitTest.compareImages(new File(TEMP, new File(master).getName()), diffs[2]));
 
-        UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/articleC_preview.pdf"), time);
-        UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/articleB_preview.pdf"), time);
-        UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/articleA_preview.pdf"), time);
-        UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/articleIncludeA_preview.pdf"), time);
-        UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/articleIncludeC_preview.pdf"), time);
-        UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/articleIncludeX_preview.pdf"), time);
-        UnitTest.validatePreviewPdf(new File(ROOT, "target/test-classes/com/seanox/pdf/example/ArticleSingleTemplate_preview.pdf"), time);
-        UnitTest.validatePreviewPdf(new File(ROOT, "target/test-classes/com/seanox/pdf/example/ArticleSingleIncludeTemplate_preview.pdf"), time);
-        UnitTest.validatePreviewPdf(new File(ROOT, "target/test-classes/com/seanox/pdf/example/ArticleMultiTemplate_preview.pdf"), time);
-        UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/compareA_preview.pdf"), time);
-        UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/compareB_preview.pdf"), time);
-        UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/overlays_preview.pdf"), time);
-        UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/encoding_utf_8_preview.pdf"), time);
-        UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/generator_preview.pdf"), time);
+        UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/articleC_preview.pdf"));
+        UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/articleB_preview.pdf"));
+        UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/articleA_preview.pdf"));
+        UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/articleIncludeA_preview.pdf"));
+        UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/articleIncludeC_preview.pdf"));
+        UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/articleIncludeX_preview.pdf"));
+        UnitTest.validatePreviewPdf(new File(ROOT, "target/test-classes/com/seanox/pdf/example/ArticleSingleTemplate_preview.pdf"));
+        UnitTest.validatePreviewPdf(new File(ROOT, "target/test-classes/com/seanox/pdf/example/ArticleSingleIncludeTemplate_preview.pdf"));
+        UnitTest.validatePreviewPdf(new File(ROOT, "target/test-classes/com/seanox/pdf/example/ArticleMultiTemplate_preview.pdf"));
+        UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/compareA_preview.pdf"));
+        UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/compareB_preview.pdf"));
+        UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/overlays_preview.pdf"));
+        UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/encoding_utf_8_preview.pdf"));
+        UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/generator_preview.pdf"));
     }
 
     @Test
     void checkCompatibility()
             throws Exception {
-        final long time = System.currentTimeMillis();
         final File outputFile = new File(TEMP, "compatibility.pdf");
         final String sourceContent = new String(UnitTest.class.getResourceAsStream("/pdf/compatibility.html").readAllBytes());
         Files.deleteIfExists(outputFile.toPath());
@@ -234,7 +229,7 @@ class UnitTest {
             builder.run();
         }
         final String master = "src/test/resources/pdf/compatibility_preview.pdf";
-        UnitTest.validatePreviewPdf(new File(ROOT, master), time);
+        UnitTest.validatePreviewPdf(new File(ROOT, master));
     }
 
     @Test
@@ -259,60 +254,57 @@ class UnitTest {
     @Test
     void checkUsageTemplate()
             throws Exception {
-        final long time = System.currentTimeMillis();
         UsageTemplate.main();
         final String master = "src/test/resources/com/seanox/pdf/example/UsageTemplate_preview.pdf";
-        UnitTest.validatePreviewPdf(new File(ROOT, master).getCanonicalFile(), time);
+        UnitTest.validatePreviewPdf(new File(ROOT, master).getCanonicalFile());
     }
 
     @Test
     void checkMarkupStructureEmpty()
             throws Exception {
-        final long time = System.currentTimeMillis();
         Preview.main("src/test/resources/pdf/structure_**empty.html");
         final String resourcePath = "src/test/resources/pdf/";
         UnitTest.validatePreviewPdf(new File(ROOT, resourcePath
-                + "structure_body_content_empty_preview.pdf"), time);
+                + "structure_body_content_empty_preview.pdf"));
         UnitTest.validatePreviewPdf(new File(ROOT, resourcePath
-                + "structure_body_content_footer_empty_preview.pdf"), time);
+                + "structure_body_content_footer_empty_preview.pdf"));
         UnitTest.validatePreviewPdf(new File(ROOT, resourcePath
-                + "structure_body_empty_preview.pdf"), time);
+                + "structure_body_empty_preview.pdf"));
         UnitTest.validatePreviewPdf(new File(ROOT, resourcePath
-                + "structure_body_footer_empty_preview.pdf"), time);
+                + "structure_body_footer_empty_preview.pdf"));
         UnitTest.validatePreviewPdf(new File(ROOT, resourcePath
-                + "structure_body_header_content_empty_preview.pdf"), time);
+                + "structure_body_header_content_empty_preview.pdf"));
         UnitTest.validatePreviewPdf(new File(ROOT, resourcePath
-                + "structure_body_header_content_footer_empty_preview.pdf"), time);
+                + "structure_body_header_content_footer_empty_preview.pdf"));
         UnitTest.validatePreviewPdf(new File(ROOT, resourcePath
-                + "structure_body_header_empty_preview.pdf"), time);
+                + "structure_body_header_empty_preview.pdf"));
         UnitTest.validatePreviewPdf(new File(ROOT, resourcePath
-                + "structure_body_header_footer_empty_preview.pdf"), time);
+                + "structure_body_header_footer_empty_preview.pdf"));
         UnitTest.validatePreviewPdf(new File(ROOT, resourcePath
-                + "structure_empty_preview.pdf"), time);
+                + "structure_empty_preview.pdf"));
     }
 
     @Test
     void checkMarkupStructureNotEmpty()
             throws Exception {
-        final long time = System.currentTimeMillis();
         Preview.main("src/test/resources/pdf/structure_**.html");
         final String resourcePath = "src/test/resources/pdf/";
         UnitTest.validatePreviewPdf(new File(ROOT, resourcePath
-                + "structure_body_content_footer_preview.pdf"), time);
+                + "structure_body_content_footer_preview.pdf"));
         UnitTest.validatePreviewPdf(new File(ROOT, resourcePath
-                + "structure_body_content_preview.pdf"), time);
+                + "structure_body_content_preview.pdf"));
         UnitTest.validatePreviewPdf(new File(ROOT, resourcePath
-                + "structure_body_footer_preview.pdf"), time);
+                + "structure_body_footer_preview.pdf"));
         UnitTest.validatePreviewPdf(new File(ROOT, resourcePath
-                + "structure_body_header_content_footer_preview.pdf"), time);
+                + "structure_body_header_content_footer_preview.pdf"));
         UnitTest.validatePreviewPdf(new File(ROOT, resourcePath
-                + "structure_body_header_content_preview.pdf"), time);
+                + "structure_body_header_content_preview.pdf"));
         UnitTest.validatePreviewPdf(new File(ROOT, resourcePath
-                + "structure_body_header_footer_preview.pdf"), time);
+                + "structure_body_header_footer_preview.pdf"));
         UnitTest.validatePreviewPdf(new File(ROOT, resourcePath
-                + "structure_body_header_preview.pdf"), time);
+                + "structure_body_header_preview.pdf"));
         UnitTest.validatePreviewPdf(new File(ROOT, resourcePath
-                + "structure_body_preview.pdf"), time);
+                + "structure_body_preview.pdf"));
     }
 
     @Resources(base="/pdf")
@@ -323,8 +315,6 @@ class UnitTest {
     void checkDuplicateTemplate()
             throws Exception {
         
-        final long time = System.currentTimeMillis();
-
         final Meta meta = new Meta();
 
         final Map<String, Object> data = new TreeMap<>();
@@ -342,18 +332,17 @@ class UnitTest {
         Files.write(output.toPath(), pdf, StandardOpenOption.CREATE);
 
         final String master = "src/test/resources/com/seanox/pdf/DuplicateTemplate_preview.pdf";
-        UnitTest.validatePreviewPdf(new File(ROOT, master), time);
+        UnitTest.validatePreviewPdf(new File(ROOT, master));
     }
 
     @Test
     void checkCompare()
             throws Exception {
 
-        final long time = System.currentTimeMillis();
-
         Preview.main("src/test/resources/pdf/compare*.html");
-        UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/compareA_preview.pdf"), time);
-        UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/compareB_preview.pdf"), time);
+
+        UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/compareA_preview.pdf"));
+        UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/compareB_preview.pdf"));
 
         final File[] diffs = Compare.compare(new File(TEMP, "compareA.pdf"), new File(TEMP, "compareB.pdf"));
         Assertions.assertNotNull(diffs);
@@ -372,8 +361,6 @@ class UnitTest {
     void checkExistsTemplate()
             throws Exception {
         
-        final long time = System.currentTimeMillis();
-
         final Map<String, String> statics = new HashMap<>() {
             private static final long serialVersionUID = 1L; {
             put("VALUE_EMPTY", "");
@@ -406,6 +393,6 @@ class UnitTest {
         final byte[] pdf = Service.render(ExistsTemplate.class, new Service.Meta(data, statics));
         Files.write(output.toPath(), pdf, StandardOpenOption.CREATE);
         final String master = "src/test/resources/com/seanox/pdf/ExistsTemplate_preview.pdf";
-        UnitTest.validatePreviewPdf(new File(ROOT, master).getCanonicalFile(), time);
+        UnitTest.validatePreviewPdf(new File(ROOT, master).getCanonicalFile());
     }
 }
