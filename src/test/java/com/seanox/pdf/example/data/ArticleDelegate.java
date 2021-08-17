@@ -22,7 +22,6 @@ package com.seanox.pdf.example.data;
 
 import java.util.List;
 
-@SuppressWarnings("javadoc")
 public class ArticleDelegate {
 
     public static List<Article> list()

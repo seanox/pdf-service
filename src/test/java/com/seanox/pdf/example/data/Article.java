@@ -20,77 +20,21 @@
  */
 package com.seanox.pdf.example.data;
 
-@SuppressWarnings("javadoc")
+import lombok.Data;
+
+@Data
 public class Article {
-    
     private String headline;
     private String articleNumber;
     private String colorText;
     private String materialText;
     private String images;
     private ArticlePrice articlePrice;
-
     private String description;
-    
-    public String getHeadline() {
-        return this.headline;
-    }
-    public void setHeadline(String headline) {
-        this.headline = headline;
-    }
-    public String getArticleNumber() {
-        return this.articleNumber;
-    }
-    public void setArticleNumber(String number) {
-        this.articleNumber = number;
-    }
-    public String getColorText() {
-        return this.colorText;
-    }
-    public void setColorText(String colorText) {
-        this.colorText = colorText;
-    }
-    public String getMaterialText() {
-        return this.materialText;
-    }
-    public void setMaterialText(String materialText) {
-        this.materialText = materialText;
-    }
-    public String getImages() {
-        return this.images;
-    }
-    public void setImages(String images) {
-        this.images = images;
-    }
-    public String getDescription() {
-        return this.description;
-    }
-    public void setDescription(String description) {
-        this.description = description;
-    }
-    public ArticlePrice getArticlePrice() {
-        return this.articlePrice;
-    }
-    public void setArticlePrice(ArticlePrice articlePrice) {
-        this.articlePrice = articlePrice;
-    }
 
+    @Data
     public static class ArticlePrice {
-        
         private String netText;
         private String grossText;
-        
-        public String getNetText() {
-            return this.netText;
-        }
-        public void setNetText(String netText) {
-            this.netText = netText;
-        }
-        public String getGrossText() {
-            return this.grossText;
-        }
-        public void setGrossText(String grossText) {
-            this.grossText = grossText;
-        }
     }
 }
