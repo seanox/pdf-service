@@ -1,7 +1,8 @@
-4.0.4 2021xxxx
+4.1.0 2021xxxx
   BF: Maven: Update of dependencies
-  BF: Review: Optimization
+  BF: Review: Optimization (code + tests)
   CR: OpenHtmlToPdf: Update to version 1.0.9
+  CR: Java: Switch to version 11
 
 4.0.3 20200830
   BF: Service: Optimization of the code
@@ -43,7 +44,7 @@
   CR: Service Meta Static: Update to use Map<String, String> instead of Map<String, CharSequence>
   CR: Template Scan: Omission of final attribute in the access modifier
   CR: Template Render: Omission of final attribute in the access modifier
-      Enables the preparation/customization of the meta object before rendering.
+      Enables the preparation/customization of the meta-object before rendering.
       The rendering is done in three steps (content, header, footer) and so this can be done once for all steps.
   CR: Template Multiplex: Change from access modifier to public
   CR: Template Merge: Change from access modifier to public
