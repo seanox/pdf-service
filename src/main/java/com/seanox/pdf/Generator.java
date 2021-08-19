@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 /**
  * Generator, generates data by filling placeholders (tags) in a template/model.
  * A value list with keys is passed to the template. If the keys correspond to
- * the placeholders (case insensitive), the placeholders are replaced by the
+ * the placeholders (case-insensitive), the placeholders are replaced by the
  * values.<br>
  * <br>
  * The generator worked at byte level.<br>
@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
  * Placeholders can be used for values and segments.<br>
  * Segments are partial structures that can be nested up to a depth of 65535
  * levels. These substructures can be used and filled globally or by segment
- * name dedicted/partially.<br>
+ * name dedicated/partially.<br>
  * The placeholders of segments remain after filling and can be reused
  * iteratively.<br>
  * The data types {@link Collection} and {@link Map} are expected as values for
@@ -114,17 +114,17 @@ import java.util.stream.Collectors;
  * preserved for reuse.<br>
  * <br>
  * The methods {@link #extract(String)} and {@link #extract(String, Map)} use
- * exclusive segments (subtemplates), which are partially filled and prepared.
+ * exclusive segments (sub-templates), which are partially filled and prepared.
  * Both methods produce final results that correspond to the call of
  * {@link #set(Map)} in combination with {@link #extract()}, but focus on only
  * one segment.<br>
  * <br>
- * Generator 5.2.3 20210722<br>
+ * Generator 4.0.2 20210819<br>
  * Copyright (C) 2021 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 5.2.3 20210722
+ * @version 4.0.2 20210819
  */
 class Generator {
 
@@ -168,10 +168,10 @@ class Generator {
                 || cursor >= model.length)
             return -1;        
 
-        //Phase 0: Identification of a placeholder
-        //  - supported formats: #[...], #[...[[...]]]
-        //  - characteristic are the first two characters
-        //  - all placeholders begin with #[...
+        // Phase 0: Identification of a placeholder
+        //   - supported formats: #[...], #[...[[...]]]
+        //   - characteristic are the first two characters
+        //   - all placeholders begin with #[...
         if (cursor +1 >= model.length
                 || model[cursor] != '#'
                 || model[cursor +1] != '[')
@@ -183,19 +183,19 @@ class Generator {
         int[] stack = new int[65535];
         while (cursor < model.length) {
 
-            //The current level is determined.
+            // The current level is determined.
             int level = 0;
             if (deep > 0)
                 level = stack[deep];
 
-            //Phase 1: Recognition of the start of a placeholder
-            //  - supported formats: #[...], #[...[[...]]]
-            //  - characteristic are the first two characters
-            //  - all placeholders begin with #[...
-            //A placeholder can only begin if no stack and therefore no
-            //placeholder exists or if a segment placeholder has been determined
-            //before. In both cases the level is not equal to 1 and another
-            //stack with level 1 starts.
+            // Phase 1: Recognition of the start of a placeholder
+            //   - supported formats: #[...], #[...[[...]]]
+            //   - characteristic are the first two characters
+            //   - all placeholders begin with #[...
+            // A placeholder can only begin if no stack and therefore no
+            // placeholder exists or if a segment placeholder has been determined
+            // before. In both cases the level is not equal to 1 and another
+            // stack with level 1 starts.
             if (cursor +1 < model.length
                     && model[cursor] == '#'
                     && model[cursor +1] == '['
@@ -205,10 +205,10 @@ class Generator {
                 continue;
             }
             
-            //Phase 1A: Qualification of a segment placeholder
-            //  - active level 1 is expected
-            //  - character string [[ is found
-            //The current stack is set to level 2.
+            // Phase 1A: Qualification of a segment placeholder
+            //   - active level 1 is expected
+            //   - character string [[ is found
+            // The current stack is set to level 2.
             if (cursor +1 < model.length
                     && model[cursor] == '['
                     && model[cursor +1] == '['
@@ -218,10 +218,10 @@ class Generator {
                 continue;
             }
 
-            //Phase 2: Detecting the end of a detected placeholder
-            //The level must be 1 and the character [ must be found.
-            //Then the current stack is removed, because the search is finished
-            //here.
+            // Phase 2: Detecting the end of a detected placeholder
+            // The level must be 1 and the character [ must be found.
+            // Then the current stack is removed, because the search is finished
+            // here.
             if (model[cursor] == ']'
                     && level == 1) {
                 if (--deep  <= 0)
@@ -230,10 +230,10 @@ class Generator {
                 continue;
             }
 
-            //Phase 2A: Detecting the end of a detected placeholder
-            //The level must be 1 and the character [ must be found.
-            //Then the current stack is removed, because the search here is
-            //completed.
+            // Phase 2A: Detecting the end of a detected placeholder
+            // The level must be 1 and the character [ must be found.
+            // Then the current stack is removed, because the search here is
+            // completed.
             if (cursor +2 < model.length
                     && model[cursor +0] == ']'
                     && model[cursor +1] == ']'
@@ -249,17 +249,17 @@ class Generator {
             cursor++;
         }
         
-        //Case 1: The stack is not empty
-        //Thus, a placeholder was detected which is not completed.
-        //The scan is hungry and assumes an incomplete placeholder.
-        //Therefore the offset from start position to the end is from the model.
+        // Case 1: The stack is not empty
+        // Thus, a placeholder was detected which is not completed.
+        // The scan is hungry and assumes an incomplete placeholder.
+        // Therefore, the offset from start position to the end is from the model.
         if (deep > 0)
             return model.length -offset;
         
-        //Case 2: The stack is empty
-        //The placeholder was determined completely and the offset corresponds
-        //to the length of the complete placeholder with possibly contained
-        //segments.
+        // Case 2: The stack is empty
+        // The placeholder was determined completely and the offset corresponds
+        // to the length of the complete placeholder with possibly contained
+        // segments.
         return cursor -offset +1;
     }
 
@@ -292,20 +292,20 @@ class Generator {
             String fetch = new String(model, cursor, offset);
             if (fetch.matches("^(?si)#\\[[a-z]([\\w\\-]*\\w)?\\[\\[.*\\]\\]\\]$")) {
                 
-                //scope is determined from: #[scope[[segment]]
+                // scope is determined from: #[scope[[segment]]
                 String scope = fetch.substring(2);
                 scope = scope.substring(0, scope.indexOf('['));
                 scope = scope.toLowerCase();
                 
-                //segment is extracted from the model
+                // segment is extracted from the model
                 byte[] cache = new byte[offset -scope.length() -7];
                 System.arraycopy(model, cursor +scope.length() +4, cache, 0, cache.length);
                 
-                //scope is registered with the segment if scope does not exist
+                // scope is registered with the segment if scope does not exist
                 if (!this.scopes.containsKey(scope))
                     this.scopes.put(scope, this.scan(cache));
                 
-                //as new placeholder only the scope is used
+                // as new placeholder only the scope is used
                 patch = ("#[").concat(scope).concat("]").getBytes();
             } else if (fetch.matches("^(?i)#\\[[a-z]([\\w-]*\\w)?\\]$")) {
                 patch = fetch.toLowerCase().getBytes();
@@ -314,7 +314,7 @@ class Generator {
                 continue;
             }
             
-            //model is rebuilt with the patch
+            // model is rebuilt with the patch
             byte[] cache = new byte[model.length -offset +patch.length];
             System.arraycopy(model, 0, cache, 0, cursor);
             System.arraycopy(patch, 0, cache, cursor, patch.length);
@@ -351,7 +351,7 @@ class Generator {
         if (this.model == null)
             return new byte[0];
 
-        //Normalization of the values (lower case + smoothing of the keys)
+        // Normalization of the values (lower case + smoothing of the keys)
         if (values == null)
             values = new HashMap<>();
         values = values.entrySet().stream().collect(
@@ -360,16 +360,16 @@ class Generator {
                         (entry) -> entry.getValue(),
                         (existing, value) -> value));
         
-        //Optionally the scope is determined.
+        // Optionally the scope is determined.
         if (scope != null) {
             scope = scope.toLowerCase().trim();
 
-            //If one is specified that does not exist, nothing is to be done.
+            // If one is specified that does not exist, nothing is to be done.
             if (!this.scopes.containsKey(scope))
                 return this.model;
             
-            //Scopes are prepared independently and later processed like a
-            //simple but exclusive placeholder.
+            // Scopes are prepared independently and later processed like a
+            // simple but exclusive placeholder.
             patch = this.extract(scope, values);
             
             values.clear();
@@ -391,28 +391,28 @@ class Generator {
             if (fetch.matches("^(?i)#\\[[a-z]([\\w-]*\\w)?\\]$")) {
                 fetch = fetch.substring(2, fetch.length() -1);
                 
-                //the placeholders of not transmitted keys are ignored, with
-                //'clean' the placeholders are deleted
+                // the placeholders of not transmitted keys are ignored, with
+                // 'clean' the placeholders are deleted
                 if (!values.containsKey(fetch)
                         && !clean) {
                     cursor += fetch.length() +3 +1;
                     continue;
                 }
                 
-                //patch is determined by the key
+                // patch is determined by the key
                 object = values.get(fetch);
 
-                //If the key is a segment and the value is a map with values,
-                //the segment is filled recursively. To protect against infinite
-                //recursions, the current scope is removed from the value list.
-                //  e.g. #[A[[#[B[[#[A[[...]]...]]...]]
+                // If the key is a segment and the value is a map with values,
+                // the segment is filled recursively. To protect against infinite
+                // recursions, the current scope is removed from the value list.
+                //   e.g. #[A[[#[B[[#[A[[...]]...]]...]]
                 if (this.scopes.containsKey(fetch)
                         && object instanceof Map) {
                     patch = this.extract(fetch, (Map)object);
                 } else if (this.scopes.containsKey(fetch)
                         && object instanceof Collection) {
-                    //Collections generates complex structures/tables through
-                    //deep, repetitive recursive generation.
+                    // Collection generate complex structures/tables through
+                    // deep, repetitive recursive generation.
                     for (Object entry : ((Collection)object)) {
                         if (entry instanceof Map) {
                             model = this.extract(fetch, (Map)entry);
@@ -434,8 +434,8 @@ class Generator {
                 
                 if (!clean) {
                 
-                    //if necessary the # characters are encoded to protect the
-                    //placeholders and structure in the model
+                    // if necessary the # characters are encoded to protect the
+                    // placeholders and structure in the model
                     int index = 0;
                     while (index < patch.length) {
                         if (patch[index++] != '#')
@@ -458,22 +458,22 @@ class Generator {
                 
             } else if (fetch.matches("^(?i)#\\[0x([0-9a-f]{2})+\\]$")) {
                 
-                //Hexadecimal placeholders are only resolved with clean, because
-                //they can contain unwanted (control) characters, which hinders
-                //rendering.
+                // Hexadecimal placeholders are only resolved with clean, because
+                // they can contain unwanted (control) characters, which hinders
+                // rendering.
                 if (!clean) {
                     cursor += fetch.length() +1;
                     continue;            
                 }
                 
-                //hexadecimal code is converted into bytes
+                // hexadecimal code is converted into bytes
                 fetch = fetch.substring(4, fetch.length() -1); 
                 fetch = ("ff").concat(fetch);
                 patch = new BigInteger(fetch, 16).toByteArray();
                 patch = Arrays.copyOfRange(patch, 2, patch.length);                
             }
             
-            //model is rebuilt with the patch
+            // model is rebuilt with the patch
             cache = new byte[this.model.length -offset +patch.length];
             System.arraycopy(this.model, 0, cache, 0, cursor);
             System.arraycopy(patch, 0, cache, cursor, patch.length);
@@ -531,8 +531,8 @@ class Generator {
                 || !scope.matches("^[a-z]([\\w-]*\\w)*$"))
             return new byte[0];
         
-        //Internally, a copy of the generator is created for the segment
-        //(partial model) and thus partially filled.
+        // Internally, a copy of the generator is created for the segment
+        // (partial model) and thus partially filled.
         Generator generator = new Generator();
         generator.scopes = (HashMap)this.scopes.clone();
         generator.scopes.remove(scope);
