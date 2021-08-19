@@ -26,31 +26,31 @@ import java.io.PrintStream;
 /** 
  * Output of information on how to use the command line tools.<br>
  * <br>
- * Usage 3.8.1 20200803<br>
+ * Usage 4.1.0 20210819<br>
  * Copyright (C) 2021 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.8.1 20200803
+ * @version 4.1.0 20210819
  */
 public class Usage {
 
-    private static String catchToolInfos(Class<?> tool) {
+    private static String catchToolInfos(final Class<?> tool) {
         
-        PrintStream output = System.out;
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        final PrintStream output = System.out;
+        final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         try (PrintStream cache = new PrintStream(buffer)) {
             System.setOut(cache);
-            try {tool.getMethod("main", String[].class).invoke(null, new Object[] {null});
+            try {tool.getMethod("main", String[].class).invoke(null, new String[]{null});
             } catch (Exception exception) {
                 return String.valueOf(exception);
             }
         }
         System.setOut(output);
-        String summary = buffer.toString();
-        String version = summary.replaceAll("(?s)\\R.*$", "");
-        String usage = summary.replaceAll("(?s)^.*(?<=\\Rusage:)\\s*([^\r\n]+)\\s*.*$", "$1");
-        
+        final String summary = buffer.toString();
+        final String version = summary.replaceAll("(?s)\\R.*$", "");
+        final String usage = summary.replaceAll("(?s)(^.*\\R(?=usage:))|(\\s*$)", "");
+
         return version + System.lineSeparator() + usage;
     }
     
@@ -60,10 +60,10 @@ public class Usage {
      * @throws Exception
      *     In case of unexpected errors.
      */     
-    public static void main(String... options) throws Exception {
+    public static void main(final String... options) throws Exception {
         
-        System.out.println("Seanox PDF Tools Usage [Version 3.8.1 20200803]");
-        System.out.println("Copyright (C) 2021 Seanox Software Solutions");
+        System.out.println("Seanox PDF Tools Usage [Version 0.0.0 00000000]");
+        System.out.println("Copyright (C) 0000 Seanox Software Solutions");
         System.out.println();
         System.out.println("This java archive contains several command line tools.");
         System.out.println();
