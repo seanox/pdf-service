@@ -40,7 +40,7 @@ import java.util.logging.Level;
  * directory. The PDFs are output in the same directory as the template.<br>
  * <br>
  * Designer 4.1.0 20210818<br>
- * Copyright (C) 2020 Seanox Software Solutions<br>
+ * Copyright (C) 2021 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
