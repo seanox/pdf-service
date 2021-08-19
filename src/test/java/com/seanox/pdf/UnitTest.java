@@ -65,12 +65,12 @@ import java.util.logging.Level;
  *   <li>JUnit 5</li>
  * </ul>
  * <br>
- * UnitTest 4.1.0 20210817<br>
+ * UnitTest 4.1.0 20210819<br>
  * Copyright (C) 2021 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 4.1.0 20210817
+ * @version 4.1.0 20210819
  */
 @ExtendWith(UnitTest.Watcher.class)
 class UnitTest {
@@ -176,7 +176,7 @@ class UnitTest {
     void checkTemplateGeneration()
             throws Exception {
 
-        Preview.main("src/test/resources/pdf/*.html");
+        Preview.main("src/test/resources/pdf/*.html", "@resourceS");
 
         UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/report_preview.pdf"));
 
