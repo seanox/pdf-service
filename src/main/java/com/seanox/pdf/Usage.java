@@ -49,7 +49,7 @@ public class Usage {
         System.setOut(output);
         final String summary = buffer.toString();
         final String version = summary.replaceAll("(?s)\\R.*$", "");
-        final String usage = summary.replaceAll("(?s)(^.*\\R(?=usage:))|(\\s*$)", "");
+        final String usage = summary.replaceAll("(?s)(^.*\\R(?=usage:))|(\\s*$)", "").replaceFirst("\\R", "");
 
         return version + System.lineSeparator() + usage;
     }
