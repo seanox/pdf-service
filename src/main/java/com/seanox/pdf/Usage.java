@@ -41,7 +41,7 @@ public class Usage {
         final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         try (PrintStream cache = new PrintStream(buffer)) {
             System.setOut(cache);
-            try {tool.getMethod("main", String[].class).invoke(null, new String[]{null});
+            try {tool.getMethod("main", String[].class).invoke(null, new Object[]{null});
             } catch (Exception exception) {
                 return String.valueOf(exception);
             }
