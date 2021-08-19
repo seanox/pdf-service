@@ -4,7 +4,7 @@
  * Diese Software unterliegt der Version 2 der Apache License.
  *
  * PDF Service
- * Copyright (C) 2021 Seanox Software Solutions
+ * Copyright (C) 2020 Seanox Software Solutions
  *  
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -29,6 +29,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 
 import com.openhtmltopdf.util.XRLog;
@@ -37,12 +41,12 @@ import com.openhtmltopdf.util.XRLog;
  * Tool for the design process to create a test output of the rendered PDFs.
  * The PDFs are output in the same directory as the template.<br>
  * <br>
- * Preview 3.4.1 20200803<br>
+ * Preview 4.1.0 20210819<br>
  * Copyright (C) 2021 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.4.1 20200803
+ * @version 4.1.0 20210819
  */
 public class Preview {
     
@@ -62,11 +66,11 @@ public class Preview {
     }
 
     /**
-     *  Determines the output file for another file.
-     *  @param  file
-     *  @return determined output file
+     * Determines the output file for another file.
+     * @param  file
+     * @return determined output file
      */
-    static File locateOutput(File file) {
+    static File locateOutput(final File file) {
         
         String target = file.getAbsolutePath();
         target = target.replaceAll("\\.[^\\.]*$", ".pdf");
@@ -83,7 +87,7 @@ public class Preview {
     static void execute()
             throws Exception {
         
-        for (Class<Service.Template> template : Service.Template.scan()) {
+        for (final Class<Service.Template> template : Service.Template.scan()) {
             System.out.println("INFORMATION: " + template.getSimpleName() + " started");
             try {
                 Preview.execute(template);
@@ -96,40 +100,38 @@ public class Preview {
     }
 
     /**
-     * Creates test outputs of one PDFs to the working directory.
+     * Creates test outputs of one PDF to the working directory.
      * @param  template
      * @throws Exception
      *     In case of unexpected errors.
      */
-    static void execute(Class<Service.Template> template)
+    static void execute(final Class<Service.Template> template)
             throws Exception {
-
-        Template instance = (Template)template.getDeclaredConstructor().newInstance();
-        File output = Preview.locateOutput(new File(instance.getSource()));
+        final Template instance = (Template)Service.Template.instantiate(template);
+        final File output = Preview.locateOutput(new File(instance.getSource()));
         output.delete();
         Files.write(output.toPath(), instance.getPreview(), StandardOpenOption.CREATE);
     }
     
     /**
-     * Creates test outputs of one PDFs to the template directory.
+     * Creates test outputs of one PDF to the template directory.
      * The creation is based on markup without own template implementation.
      * @param  file
      * @throws Exception
      *     In case of unexpected errors.
      */    
-    static void execute(File file)
+    static void execute(final File file)
             throws Exception {
         
         if (!file.isFile()
                 || !file.exists())
             return;
-        
-        File canonical = file.getCanonicalFile();
-        
-        File output = Preview.locateOutput(canonical);
+
+        final File canonical = file.getCanonicalFile();
+        final File output = Preview.locateOutput(canonical);
         output.delete();
-        
-        Template template = new Template() {
+
+        final Template template = new Template() {
             
             @Override
             protected URI getBase() {
@@ -148,10 +150,10 @@ public class Preview {
             }
             
             @Override
-            protected URI getResource(String resource)
+            protected URI getResource(final String resource)
                     throws Exception {
-                
-                File target = new File(canonical.getParentFile(), resource).getCanonicalFile(); 
+
+                final File target = new File(canonical.getParentFile(), resource).getCanonicalFile();
                 if (!target.isFile()
                         || !target.exists())
                     throw new Template.TemplateResourceNotFoundException(target.toString());
@@ -159,10 +161,10 @@ public class Preview {
             }
             
             @Override
-            protected InputStream getResourceStream(String resource)
+            protected InputStream getResourceStream(final String resource)
                     throws Exception {
 
-                File target = new File(canonical.getParentFile(), resource).getCanonicalFile(); 
+                final File target = new File(canonical.getParentFile(), resource).getCanonicalFile();
                 if (!target.isFile()
                         || !target.exists())
                     throw new Template.TemplateResourceNotFoundException(target.toString());
@@ -185,45 +187,51 @@ public class Preview {
      * @throws Exception
      *     In case of unexpected errors.
      */    
-    public static void main(String... options)
+    public static void main(final String... options)
             throws Exception {
         
-        System.out.println("Seanox PDF Preview [Version 3.4.1 20200803]");
-        System.out.println("Copyright (C) 2021 Seanox Software Solutions");
+        System.out.println("Seanox PDF Preview [Version 0.0.0 00000000]");
+        System.out.println("Copyright (C) 0000 Seanox Software Solutions");
         System.out.println();
-        
-        if (options == null
-                || options.length <= 0) {
-            System.out.println("usage: java -cp seanox-pdf-tools.jar com.seanox.pdf.Preview <paths/filters/globs> ...");
+
+        if (Objects.isNull(options)
+                || Arrays.stream(options).anyMatch(option -> option.matches("(?i)^-h(elp)?$"))) {
+            System.out.println("usage: java -cp seanox-pdf-tools.jar com.seanox.pdf.Preview <path> ...");
+            System.out.println();
+            System.out.println("- Paths support glob patterns and @Resources to scan the classpath.");
+            System.out.println("- When using paths without @Resources, the classpath is not scanned.");
+            System.out.println("- Without arguments @Resources is used as default to scan the classpath.");
             return;
         }
         
-        //First the simple templates, which only use static preview data from
-        //the properties. However, these may also be used later by template
-        //implementation with dynamic preview data, in which case they are
-        //simply overwritten in the next step.
+        // First the simple templates, which only use static preview data from
+        // the properties. However, these may also be used later by template
+        // implementation with dynamic preview data, in which case they are
+        // simply overwritten in the next step.
 
-        if (options != null) {
-            for (String option : options) {
-                String path = option.replaceAll("^(?:(.*)[/\\\\])*(.*)$", "$1");
-                String glob = option.replaceAll("^(?:(.*)[/\\\\])*(.*)$", "$2");
-                try (DirectoryStream<Path> stream = Files.newDirectoryStream(
-                        Paths.get(path), glob)) {
-                    stream.forEach(file -> {
-                        try {
-                            file = file.toFile().getCanonicalFile().toPath();
-                            System.out.println("INFORMATION: " + file.toFile().getName() + " started");
-                            Preview.execute(file.toFile());
-                            System.out.println("INFORMATION: " + file.toFile().getName() + " done");
-                        } catch (Exception exception) {
-                            System.out.println("ERROR: " + file.toFile().getName() + " failed");
-                            exception.printStackTrace(System.err);
-                        }
-                    });
-                }                    
+        for (final String option : options) {
+            if (("@Resources").equalsIgnoreCase(option))
+                continue;
+            final String path = option.replaceAll("^(?:(.*)[/\\\\])*(.*)$", "$1");
+            final String glob = option.replaceAll("^(?:(.*)[/\\\\])*(.*)$", "$2");
+            try (final DirectoryStream<Path> stream = Files.newDirectoryStream(
+                    Paths.get(path), glob)) {
+                stream.forEach(file -> {
+                    try {
+                        file = file.toFile().getCanonicalFile().toPath();
+                        System.out.println("INFORMATION: " + file.toFile().getName() + " started");
+                        Preview.execute(file.toFile());
+                        System.out.println("INFORMATION: " + file.toFile().getName() + " done");
+                    } catch (Exception exception) {
+                        System.out.println("ERROR: " + file.toFile().getName() + " failed");
+                        exception.printStackTrace(System.err);
+                    }
+                });
             }
         }
 
-        Preview.execute();
+        if (options.length <= 0
+                || Arrays.stream(options).anyMatch(option -> option.matches("(?i)^@Resources$")))
+            Preview.execute();
     }
 }

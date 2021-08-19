@@ -20,31 +20,29 @@
  */
 package com.seanox.pdf;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.rendering.ImageType;
+import org.apache.pdfbox.rendering.PDFRenderer;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import javax.imageio.ImageIO;
-
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.rendering.ImageType;
-import org.apache.pdfbox.rendering.PDFRenderer;
+import java.util.Objects;
 
 /** 
  * Pixel-based comparison of PDF files.<br>
  * <br>
- * Compare 1.1.1 20200803<br>
+ * Compare 4.1.0 20210818<br>
  * Copyright (C) 2021 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 1.1.1 20200803
+ * @version 4.1.0 20210818
  */
 public class Compare {
     
@@ -55,19 +53,19 @@ public class Compare {
      * @throws Exception
      *     In case of unexpected errors.
      */    
-    public static void main(String... options)
+    public static void main(final String... options)
             throws Exception {
         
-        System.out.println("Seanox PDF Comparator [Version 1.1.1 20200803]");
-        System.out.println("Copyright (C) 2021 Seanox Software Solutions");
+        System.out.println("Seanox PDF Comparator [Version 0.0.0 00000000]");
+        System.out.println("Copyright (C) 0000 Seanox Software Solutions");
         System.out.println();
-        
-        if (options == null
+
+        if (Objects.isNull(options)
                 || options.length < 2) {
             System.out.println("usage: java -cp seanox-pdf-tools.jar com.seanox.pdf.Compare <master> <compare>");
             return;
         }
-        
+
         for (int loop = 0; loop <= 1; loop++)
             if (!new File(options[loop]).exists()
                     || !new File(options[loop]).isFile()) {
@@ -75,12 +73,12 @@ public class Compare {
                 return;
             }
         
-        File[] files = Compare.compare(new File(options[0]), new File(options[1]));
+        final File[] files = Compare.compare(new File(options[0]), new File(options[1]));
         if (files != null
                 && files.length > 0) {
             System.out.println("Following differences were found:");
             System.out.println("----");
-            for (File file : files)
+            for (final File file : files)
                 System.out.println(file.getName());
         } else System.out.println("No differences were found.");
     }
@@ -92,7 +90,7 @@ public class Compare {
      * @param  factor
      * @return the increased color tone
      */
-    private static int increaseColor(int color, int factor) {
+    private static int increaseColor(final int color, final int factor) {
         return Math.min(Math.max(color -factor, 0), 255);
     }
 
@@ -102,7 +100,7 @@ public class Compare {
      * @param  color
      * @return the increased delta color tone
      */    
-    private static int increaseColorDelta(int color) {
+    private static int increaseColorDelta(final int color) {
         return color < 127 ? 255 -color : color;
     }
     
@@ -114,13 +112,13 @@ public class Compare {
      * @param  factor
      * @return the calculated RGBA value
      */
-    private static int increaseColorTone(int rgba, Color tone, int factor) {
-        
+    private static int increaseColorTone(final int rgba, final Color tone, final int factor) {
+
         Color color = new Color(rgba, true);
-        int r = color.getRed();
-        int g = color.getGreen();
-        int b = color.getBlue();
-        int a = color.getAlpha();
+        final int r = color.getRed();
+        final int g = color.getGreen();
+        final int b = color.getBlue();
+        final int a = color.getAlpha();
         if (Color.RED.equals(tone))
             color = new Color(
                     Compare.increaseColorDelta(r),
@@ -153,19 +151,19 @@ public class Compare {
      * @return file list with delta images, otherwise {@code null}
      * @throws IOException
      */
-    public static File[] compare(File master, File compare)
+    public static File[] compare(final File master, final File compare)
             throws IOException {
-        
-        List<BufferedImage> masterImages = new ArrayList<>();
-        try (PDDocument document = PDDocument.load(master)) {
-            PDFRenderer pdfRenderer = new PDFRenderer(document);
+
+        final List<BufferedImage> masterImages = new ArrayList<>();
+        try (final PDDocument document = PDDocument.load(master)) {
+            final PDFRenderer pdfRenderer = new PDFRenderer(document);
             for (int page = 0; page < document.getNumberOfPages(); ++page)
                 masterImages.add(pdfRenderer.renderImageWithDPI(page, 300, ImageType.RGB));
         }
 
-        List<BufferedImage> compareImages = new ArrayList<>();
-        try (PDDocument document = PDDocument.load(compare)) {
-            PDFRenderer pdfRenderer = new PDFRenderer(document);
+        final List<BufferedImage> compareImages = new ArrayList<>();
+        try (final PDDocument document = PDDocument.load(compare)) {
+            final PDFRenderer pdfRenderer = new PDFRenderer(document);
             for (int page = 0; page < document.getNumberOfPages(); ++page)
                 compareImages.add(pdfRenderer.renderImageWithDPI(page, 300, ImageType.RGB));
         }
@@ -174,13 +172,13 @@ public class Compare {
             masterImages.add(new BufferedImage(1, 1, BufferedImage.TYPE_4BYTE_ABGR));
         while (masterImages.size() > compareImages.size())
             compareImages.add(new BufferedImage(1, 1, BufferedImage.TYPE_4BYTE_ABGR));
-        
-        String deltaTimestamp = String.format("%tY%<tm%<td%<tH%<tM%<tS", new Date()); 
-        List<File> deltas = new ArrayList<>();
+
+        final String deltaTimestamp = String.format("%tY%<tm%<td%<tH%<tM%<tS", new Date());
+        final List<File> deltas = new ArrayList<>();
         for (int page = 0; page < masterImages.size(); ++page) {
-            String deltaName = "_diffs_page_" + (page +1) + "_" + deltaTimestamp;
-            File deltaFile = new File(compare.getParentFile(), compare.getName().replaceAll("\\.\\w+$", deltaName + ".png"));
-            BufferedImage delta = Compare.compareImage(masterImages.get(page), compareImages.get(page));
+            final String deltaName = "_diffs_page_" + (page +1) + "_" + deltaTimestamp;
+            final File deltaFile = new File(compare.getParentFile(), compare.getName().replaceAll("\\.\\w+$", deltaName + ".png"));
+            final BufferedImage delta = Compare.compareImage(masterImages.get(page), compareImages.get(page));
             if (delta == null)
                 continue;
             deltas.add(deltaFile);
@@ -199,35 +197,34 @@ public class Compare {
      * @param  compare
      * @return delta as image, otherwise {@code null}
      */
-    private static BufferedImage compareImage(BufferedImage master, BufferedImage compare) {
+    private static BufferedImage compareImage(final BufferedImage master, final BufferedImage compare) {
 
-        Graphics graphics;
-        
-        Dimension dimension = new Dimension(
+        final Dimension dimension = new Dimension(
                 Math.max(master.getWidth(), compare.getWidth()),
                 Math.max(master.getHeight(), compare.getHeight()));
-        BufferedImage delta = new BufferedImage((int)dimension.getWidth(), (int)dimension.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
+        final BufferedImage delta = new BufferedImage((int)dimension.getWidth(), (int)dimension.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
 
-        BufferedImage masterGray = new BufferedImage(master.getWidth(), master.getHeight(), BufferedImage.TYPE_BYTE_GRAY);  
-        graphics = masterGray.getGraphics();  
-        graphics.drawImage(master, 0, 0, null);  
-        graphics.dispose(); 
-        
-        BufferedImage compareGray = new BufferedImage(compare.getWidth(), compare.getHeight(), BufferedImage.TYPE_BYTE_GRAY);  
-        graphics = compareGray.getGraphics();  
-        graphics.drawImage(compare, 0, 0, null);  
-        graphics.dispose(); 
-        
+        Graphics graphics;
+
+        final BufferedImage masterGray = new BufferedImage(master.getWidth(), master.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+        graphics = masterGray.getGraphics();
+        graphics.drawImage(master, 0, 0, null);
+        graphics.dispose();
+
+        final BufferedImage compareGray = new BufferedImage(compare.getWidth(), compare.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+        graphics = compareGray.getGraphics();
+        graphics.drawImage(compare, 0, 0, null);
+        graphics.dispose();
+
         graphics = delta.getGraphics();
         graphics.drawImage(masterGray, 0, 0, null);
         graphics.dispose();
 
         final int COLOR_TONE_FACTOR = 127;
-        
+
         boolean control = true;
         for (int y = 0; y < dimension.getHeight(); y++) {
             for (int x = 0; x < dimension.getWidth(); x++) {
-                
                 Integer pixelM = null;
                 if (x < master.getWidth()
                         && y < master.getHeight())
@@ -236,39 +233,38 @@ public class Compare {
                 if (x < compare.getWidth()
                         && y < compare.getHeight())
                     pixelC = Integer.valueOf(compare.getRGB(x, y));
-                
                 if (pixelM == null
                         && pixelC == null) {
-                    //case height or width mismatch without pixel
-                    //use a gray color value
+                    // case height or width mismatch without pixel
+                    // use a gray color value
                     control = false;
                     delta.setRGB(x, y, new Color(255, 255, COLOR_TONE_FACTOR).getRGB());
                 } else if (pixelC == null) {
-                    //case pixel differences with height or width mismatch
-                    //draw the grayscaled pixel
+                    // case pixel differences with height or width mismatch
+                    // draw the grayscale pixel
                     control = false;
-                    Color color = new Color(masterGray.getRGB(x, y));
+                    final Color color = new Color(masterGray.getRGB(x, y));
                     delta.setRGB(x, y, Compare.increaseColorTone(color.getRGB(), Color.GREEN, COLOR_TONE_FACTOR));                    
                 } else if (pixelM == null) {
-                    //case pixel differences with height or width mismatch
-                    //draw the grayscaled pixel
-                    Color color = new Color(compareGray.getRGB(x, y));
+                    // case pixel differences with height or width mismatch
+                    // draw the grayscale pixel
+                    final Color color = new Color(compareGray.getRGB(x, y));
                     delta.setRGB(x, y, Compare.increaseColorTone(color.getRGB(), Color.BLUE, COLOR_TONE_FACTOR));                    
                 } else if (pixelM.equals(pixelC)) {
-                    //case pixel matches without height or width mismatch 
-                    //the pixels already exist grayscale
+                    // case pixel matches without height or width mismatch
+                    // the pixels already exist grayscale
                 } else {
-                    //case pixel differences without height or width mismatch 
-                    //draw the grayscaled pixel
+                    // case pixel differences without height or width mismatch
+                    // draw the grayscale pixel
                     control = false;
-                    Color colorM = new Color(masterGray.getRGB(x, y));
-                    Color colorC = new Color(compareGray.getRGB(x, y));
-                    Color color = new Color(
+                    final Color colorM = new Color(masterGray.getRGB(x, y));
+                    final Color colorC = new Color(compareGray.getRGB(x, y));
+                    final Color colorD = new Color(
                             (colorM.getRed() +colorC.getRed()) /2,
                             (colorM.getGreen() +colorC.getGreen()) /2,
                             (colorM.getBlue() +colorC.getBlue()) /2,
                             (colorM.getAlpha() +colorC.getAlpha()) /2);
-                    delta.setRGB(x, y, Compare.increaseColorTone(color.getRGB(), Color.RED, COLOR_TONE_FACTOR));                    
+                    delta.setRGB(x, y, Compare.increaseColorTone(colorD.getRGB(), Color.RED, COLOR_TONE_FACTOR));
                 }
             }
         }

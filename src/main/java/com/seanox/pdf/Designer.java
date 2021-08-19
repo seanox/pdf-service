@@ -20,29 +20,31 @@
  */
 package com.seanox.pdf;
 
+import com.openhtmltopdf.util.XRLog;
+
 import java.io.File;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.logging.Level;
-
-import com.openhtmltopdf.util.XRLog;
 
 /**
  * Deamon for the design process, for the continuous creation of PDFs if the
- * templates change. The compilation is done by the IDE and the daemon is
+ * templates change. The compilation is done by the IDE and the daemon are
  * started directly in the IDE. The templates are edited in the source
  * directory. The PDFs are output in the same directory as the template.<br>
  * <br>
- * Designer 3.2.3 20200803<br>
- * Copyright (C) 2021 Seanox Software Solutions<br>
+ * Designer 4.1.0 20210818<br>
+ * Copyright (C) 2020 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 3.2.3 20200803
+ * @version 4.1.0 20210818
  */
 public class Designer {
     
@@ -67,64 +69,71 @@ public class Designer {
      * @throws Exception
      *     In case of unexpected errors.
      */
-    public static void main(String... options)
+    public static void main(final String... options)
             throws Exception {
         
-        System.out.println("Seanox PDF Design Deamon [Version 3.2.3 20200803]");
-        System.out.println("Copyright (C) 2021 Seanox Software Solutions");
+        System.out.println("Seanox PDF Design Deamon [Version 0.0.0 00000000]");
+        System.out.println("Copyright (C) 0000 Seanox Software Solutions");
         System.out.println();
-        
-        if (options == null
-                || options.length <= 0) {
-            System.out.println("usage: java -cp seanox-pdf-tools.jar com.seanox.pdf.Designer <paths/filters/globs> ...");
+
+        if (Objects.isNull(options)
+                || Arrays.stream(options).anyMatch(option -> option.matches("(?i)^-h(elp)?$"))) {
+            System.out.println("usage: java -cp seanox-pdf-tools.jar com.seanox.pdf.Designer <path> ...");
+            System.out.println();
+            System.out.println("- Paths support glob patterns and @Resources to scan the classpath.");
+            System.out.println("- When using paths without @Resources, the classpath is not scanned.");
+            System.out.println("- Without arguments @Resources is used as default to scan the classpath.");
             return;
         }
-        
-        System.out.println("Press Crtl+C to stop");
+
+        System.out.println("Press Ctrl+C to stop");
         System.out.println();
         
         Service.Template.scan();
         
-        HashMap<File, Date> fileMap = new HashMap<>(); 
+        final HashMap<File, Date> fileMap = new HashMap<>();
         while (true) {
             try {Thread.sleep(1000);
             } catch (InterruptedException exception) {
                 break;
             }
-            
-            for (Class<Service.Template> template : Service.Template.scan()) {
-                File file = new File(template.getDeclaredConstructor().newInstance().getSource());
-                Date lastModified = new Date(file.lastModified());
-                if (Preview.locateOutput(file).exists()
-                        && fileMap.containsKey(file)
-                        && fileMap.get(file).equals(lastModified))
-                    continue;
-                try {Preview.execute(template);
-                } catch (Exception exception) {
-                    continue;
+
+            if (options.length <= 0
+                    || Arrays.stream(options).anyMatch(option -> option.matches("(?i)^@Resources$"))) {
+                for (Class<Service.Template> template : Service.Template.scan()) {
+                    final File file = new File(template.getDeclaredConstructor().newInstance().getSource());
+                    final Date lastModified = new Date(file.lastModified());
+                    if (Preview.locateOutput(file).exists()
+                            && fileMap.containsKey(file)
+                            && fileMap.get(file).equals(lastModified))
+                        continue;
+                    try {Preview.execute(template);
+                    } catch (Exception exception) {
+                        continue;
+                    }
+                    fileMap.put(file, lastModified);
                 }
-                fileMap.put(file, lastModified);
             }
-            
-            if (options != null) {
-                for (String option : options) {
-                    String path = option.replaceAll("^(?:(.*)[/\\\\])*(.*)$", "$1");
-                    String glob = option.replaceAll("^(?:(.*)[/\\\\])*(.*)$", "$2");
-                    try (DirectoryStream<Path> stream = Files.newDirectoryStream(
-                            Paths.get(path), glob)) {
-                        stream.forEach(file -> {
-                            Date lastModified = new Date(file.toFile().lastModified());
-                            if (Preview.locateOutput(file.toFile()).exists()
-                                    && fileMap.containsKey(file.toFile())
-                                    && fileMap.get(file.toFile()).equals(lastModified))
-                                return;
-                            try {Preview.execute(file.toFile());
-                            } catch (Exception exception) {
-                                return;
-                            }
-                            fileMap.put(file.toFile(), lastModified);
-                        });
-                    }                    
+
+            for (String option : options) {
+                if (("@Resources").equalsIgnoreCase(option))
+                    continue;
+                final String path = option.replaceAll("^(?:(.*)[/\\\\])*(.*)$", "$1");
+                final String glob = option.replaceAll("^(?:(.*)[/\\\\])*(.*)$", "$2");
+                try (DirectoryStream<Path> stream = Files.newDirectoryStream(
+                        Paths.get(path), glob)) {
+                    stream.forEach(file -> {
+                        Date lastModified = new Date(file.toFile().lastModified());
+                        if (Preview.locateOutput(file.toFile()).exists()
+                                && fileMap.containsKey(file.toFile())
+                                && fileMap.get(file.toFile()).equals(lastModified))
+                            return;
+                        try {Preview.execute(file.toFile());
+                        } catch (Exception exception) {
+                            return;
+                        }
+                        fileMap.put(file.toFile(), lastModified);
+                    });
                 }
             }
         }
