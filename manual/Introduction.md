@@ -481,10 +481,8 @@ Map<String, Object> data = new HashMap<>() {{
 
 Data structure placeholders are retained for iterative use. The value is
 inserted before the placeholder. They are only removed when the generation is
-complete.
-
-Data structure placeholders work like independent segments and can contain
-markup and other placeholders. 
+complete. Data structure placeholders work like independent segments and can
+contain markup and other placeholders. 
 
 #### Escaped Placeholders
 

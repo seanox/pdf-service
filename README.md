@@ -17,10 +17,12 @@ Seanox PDF-Service for generating/rendering PDFs based on
 
 The static service contains an abstraction of templates, an API for templates,
 renderer and markup generators, a markup generator with preview function and
-mock-up data support.  
+mock-up data support.
+
 The templates supports includes and independent areas for header, content and
 footer, which are assembled by overlay for each page. Header and footer are
-borderless overlays and can therefore also use the border area of the content.  
+borderless overlays and can therefore also use the border area of the content.
+
 Locale dependent CSS and native page numbers and total page number are
 supported.
 
@@ -52,7 +54,7 @@ Folgenden Seanox Software Solutions oder kurz Seanox genannt.
  
 Diese Software unterliegt der Version 2 der Apache License.
 
-Copyright (C) 2020 Seanox Software Solutions
+Copyright (C) 2021 Seanox Software Solutions
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 this file except in compliance with the License. You may obtain a copy of the
