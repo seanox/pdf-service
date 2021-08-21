@@ -467,7 +467,7 @@ __templates for placeholders and these templates may contain other templates__
 __than placeholders. Therefore, the placeholders can also be defined at that__
 __location. They are simply used in the structure.__
 
-The example uses in the map the value of: `A -> B -> C'
+The example uses in the map the value of: `A -> B -> C`
 
 ```java
 Map<String, Object> data = new HashMap<>() {{
