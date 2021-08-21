@@ -8,10 +8,12 @@ Seanox PDF-Service for generating/rendering PDFs based on
 
 The static service contains an abstraction of templates, an API for templates,
 renderer and markup generators, a markup generator with preview function and
-mock-up data support.  
+mock-up data support.
+
 The templates supports includes and independent areas for header, content and
 footer, which are assembled by overlay for each page. Header and footer are
-borderless overlays and can therefore also use the border area of the content.  
+borderless overlays and can therefore also use the border area of the content.
+
 Locale dependent CSS and native page numbers and total page number are
 supported.
 
@@ -94,9 +96,9 @@ byte[] data = Service.render(..., ...);
 Files.write(Paths.get("example.pdf"), data, StandardOpenOption.CREATE);
 ```
 
-The data is passed to the renderer as a meta object.  
-The meta object provides various constructors, getters, and setters for this.  
-The data is divided into data structure and static texts.  
+The data is passed to the renderer as a meta-object. The meta-object provides
+various constructors, getters, and setters for this. The data is divided into
+data structure and static texts.
 
 Internationalization (i18n) can be set via the locale when using locale
 dependent resources like fonts. 
@@ -139,11 +141,11 @@ byte[] data = Service.render(..., meta);
 Files.write(Paths.get("example.pdf"), data, StandardOpenOption.CREATE);
 ```
 
-The data structure is a structured map for data objects (entities).  
-The keys are always of data type String.  
-The values can be of the data type Collection, Map, and Object.  
-Collections are used iteratively, maps recursively, and other objects as string
-values.  
+The data structure is a structured map for data objects (entities). The keys
+are always of data type String. The values can be of the data type Collection,
+Map, and Object. Collections are used iteratively, maps recursively, and other
+objects as string values.
+
 The creation of the data structure can be done manually, partially manually and
 with tools, e.g. with a ObjectMapper.
 
@@ -177,13 +179,14 @@ byte[] data = Service.render(..., meta);
 Files.write(Paths.get("example.pdf"), data, StandardOpenOption.CREATE);
 ```
 
-The render method needs an implemented template.  
-Why as a template implementation?  
+The render method needs an implemented template.
+
+Why as a template implementation?
+
 The implementation makes the template usage traceable for the compiler and
-protects against errors.  
-Another point is the Template API, whose implementation is defined by the
-templates. The service only uses the API and has no own template and markup
-generator.
+protects against errors. Another point is the Template API, whose
+implementation is defined by the templates. The service only uses the API and
+has no own template and markup generator.
 
 ```java
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -222,10 +225,10 @@ public static class ExampleTemplate extends Template {
 }
 ```
 
-Template need the annotation `@Resources`.  
-This annotation defines where in the ClassPath the resources (CSS, images,
-fonts, ...) for the template are located and, if necessary, defines the file
-name of the template if this cannot be derived from the Java class.
+Template need the annotation `@Resources`. This annotation defines where in the
+ClassPath the resources (CSS, images, fonts, ...) for the template are located
+and, if necessary, defines the file name of the template if this cannot be
+derived from the Java class.
 
 ```java
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -271,7 +274,7 @@ https://github.com/seanox/pdf-service/blob/master/src/test/java/com/seanox/pdf/e
 ### Markup
 
 The template is a pure (X)HTML document with CSS support and meta tags and
-placeholder for the generator.  
+placeholder for the generator.
 
 ```html
 <html>
@@ -289,12 +292,11 @@ placeholder for the generator.
 </html>
 ```
 
-The renderer recognizes three parts in the template: header, content and footer.  
-Content is what is not BODY > HEADER and not BODY > FOOTER.  
-Headers and footers are extracted as independent and borderless templates.  
-The CSS is completely taken over and the borderless layout is extended.  
-All documents are rendered separately and merged into one PDF file via page
-overlay. 
+The renderer recognizes three parts in the template: header, content and
+footer. Content is what is not BODY > HEADER and not BODY > FOOTER. Headers and
+footers are extracted as independent and borderless templates. The CSS is
+completely taken over and the borderless layout is extended. All documents are
+rendered separately and merged into one PDF file via page overlay. 
 
 ```html
 <html>
@@ -363,17 +365,15 @@ https://github.com/seanox/pdf-service/tree/master/src/test/resources/pdf
 
 ### Meta Tags
 
-Meta tags are not an HTML standard.  
-They are additional instructions for the generator.  
-Meta tags works exclusive, line-based and start with a hash.
-The description refers to the template generator which is integrated in Seanox
-PDF-Service.  
+Meta tags are not an HTML standard. They are additional instructions for the
+generator. Meta tags works exclusive, line-based and start with a hash. The
+description refers to the template generator which is integrated in Seanox
+PDF-Service.
 
 #### #include
 
-Inserts markup fragments from other resources.  
-The path of the resources is always relative to the ClassPath of the using
-resource.
+Inserts markup fragments from other resources. The path of the resources is
+always relative to the ClassPath of the using resource.
 
 ```html
 <html>
@@ -400,21 +400,19 @@ https://github.com/seanox/pdf-service/tree/master/src/test/resources/pdf
 
 ### Placeholder
 
-This section depends on the template generator used.  
-The description refers to the template generator which is integrated in Seanox
-PDF-Service.
+This section depends on the template generator used. The description refers to
+the template generator which is integrated in Seanox PDF-Service.
 
-Placeholders can be used for static texts, values and data structures.  
-The syntax of the placeholders is case-insensitive, must begin with a letter and
-is limited to the following characters:  
+Placeholders can be used for static texts, values and data structures. The
+syntax of the placeholders is case-insensitive, must begin with a letter and is
+limited to the following characters:  
 `a-z A-Z 0-9 _-`
 
 #### Static Placeholder
 
-For the output of static texts from Meta-Statics.  
-Meta-Statics is a strict string based key value map.  
-The placeholder is replaced by the value.  
-If no value exists, the placeholder is removed without replacement.
+For the output of static texts from Meta-Statics. Meta-Statics is a strict
+string based key value map. The placeholder is replaced by the value. If no
+value exists, the placeholder is removed without replacement.
 
 ```
 ![NAME]
@@ -422,42 +420,38 @@ If no value exists, the placeholder is removed without replacement.
  
 #### Data Value Placeholder
 
-For output of single values from Meta-Data.
-Meta-Data is a structured map like a tree.  
-The keys are always strings.  
-The values can be of the data type Collection, Map, and Object.
-Collections are used iteratively and maps recursively.
-For other objects, the string value is then used.  
+For output of single values from Meta-Data. Meta-Data is a structured map like
+a tree. The keys are always strings. The values can be of the data type
+Collection, Map, and Object. Collections are used iteratively and maps
+recursively. For other objects, the string value is then used.
 
 ```
 #[NAME]
 ```
 
-The name of the placeholder always refers to the current branch in the tree.  
-The placeholder syntax has no syntax for navigating the tree.  
-This is made using the nesting of the data structure placeholders.  
+The name of the placeholder always refers to the current branch in the tree.
+The placeholder syntax has no syntax for navigating the tree. This is made
+using the nesting of the data structure placeholders.
 
 #### Data Structure Placeholder
 
-For output of data structures from meta data.  
-Meta-Data is a structured map like a tree.  
-The keys are always strings.  
-The values can be of the data type Collection, Map, and Object.
-Collections are used iteratively and maps recursively.
-For other objects, the string value is then used.  
-The name of the placeholder always refers to the current branch in the tree.
+For output of data structures from meta-data. Meta-Data is a structured map
+like a tree. The keys are always strings. The values can be of the data type
+Collection, Map, and Object. Collections are used iteratively and maps
+recursively. For other objects, the string value is then used. The name of the
+placeholder always refers to the current branch in the tree.
 
 ```
 #[NAME[[...]]]
 ```
 
-__Structural placeholders are unique.__  
-__During parsing of the markup all placeholders are determined.__  
-__If structural placeholders are defined more than once, they overwrite those__
-__already determined.__
+- __Structural placeholders are unique.__
+- __During parsing of the markup all placeholders are determined.__
+- __If structural placeholders are defined more than once, they overwrite__
+  __those already determined.__
  
-The placeholder syntax has no syntax for navigating the tree.  
-This is made using the nesting of the data structure placeholders.  
+The placeholder syntax has no syntax for navigating the tree. This is made
+using the nesting of the data structure placeholders.
 
 ```
 #[A[[
@@ -485,17 +479,17 @@ Map<String, Object> data = new HashMap<>() {{
 }};
 ```
 
-Data structure placeholders are retained for iterative use.  
-The value is inserted before the placeholder.
-They are only removed when the generation is complete.
+Data structure placeholders are retained for iterative use. The value is
+inserted before the placeholder. They are only removed when the generation is
+complete.
 
 Data structure placeholders work like independent segments and can contain
 markup and other placeholders. 
 
 #### Escaped Placeholders
 
-For output of special and control characters.  
-These placeholders are only resolved when the generation is completed.
+For output of special and control characters. These placeholders are only
+resolved when the generation is completed.
 
 ```
 #[0x0A]
@@ -546,12 +540,12 @@ footer and contain the current page and total number of pages.
 </html>
 ```
 
-For each key and placeholder an exists-placeholder is provided.  
-This can be used in the markup and in combination with CSS to output/display
-markup depending on the existence of values in meta-data.  
-The Exists placeholder contains the value `exists` if the value is not `null`,
-not empty and not blank.
-    
+For each key and placeholder an exists-placeholder is provided. This can be
+used in the markup and in combination with CSS to output/display markup
+depending on the existence of values in meta-data. The Exists placeholder
+contains the value `exists` if the value is not `null`, not empty and not
+blank.
+
 ```html
 <html>
   <head>
@@ -586,10 +580,9 @@ https://github.com/seanox/pdf-service/tree/master/src/test/resources/pdf
 
 ## Test
 
-PDF Service is primarily optimized for the design process.  
-Therefore the test of PDFs is pixel- and color-based.
-For automated tests the Compare with the static method of the same name is
-available.
+PDF Service is primarily optimized for the design process. Therefore, the test
+of PDFs is pixel- and color-based. For automated tests the Compare with the
+static method of the same name is available.
 
 ```java
 import com.seanox.pdf.Compare;
@@ -597,44 +590,41 @@ import com.seanox.pdf.Compare;
 Compare.compare(new File("master.pdf"), new File("compare.pdf"));
 ```
 
-During the comparison, differences are searched for page by page, pixel by pixel
-and color by color.  
-If a difference is found between master and compare on the same page, a
-difference image in the path of compare is created.  
-The image is based on the grayscale image of the master.  
-The differences, which compare causes, are marked in red.  
-If there are discrepancies in resolution or image mass, overlaps occur, which
-are displayed in blue (only in compare) and green (only in master).
+During the comparison, differences are searched for page by page, pixel by
+pixel and color by color. If a difference is found between master and compare
+on the same page, a difference image in the path of compare is created. The
+image is based on the grayscale image of the master. The differences, which
+compare causes, are marked in red. If there are discrepancies in resolution or
+image mass, overlaps occur, which are displayed in blue (only in compare) and
+green (only in master).
 
 The return value of the compare method is an array with paths to any created
-difference images.  
-If no differences were found, the return value is `null`.
+difference images. If no differences were found, the return value is `null`.
 
 
 ## Mock-Up
 
 Mock-up is part of the preview and design process to design and test the markup
-of the PDFs independently of the project.  
-For this purpose, a property file with the same name can be provided parallel to
-the template file.
+of the PDFs independently of the project. For this purpose, a property file
+with the same name can be provided parallel to the template file.
 
 The properties creates a nested map structure for a data object, comparable to
-JSON.  
-The nesting is based on the dot as separator in the key.  
-The data structure supports the data types: Collection, Map, Markup, Text.  
-Collection and Map are only used for nesting.  
-Text is markup if it contains HTML sequences `<.../>` or `>...</`.  
-Markup indicates text where the escape of HTML symbols is not required.  
-At the end a key with a text value is always expected.  
+JSON. The nesting is based on the dot as separator in the key.
 
-Properties are used for data and statics.    
-Data uses all data as a structured map.  
-Statics used only non-structured keys, without dot and list index.  
+The data structure supports the data types: Collection, Map, Markup, Text.
+Collection and Map are only used for nesting. Text is markup if it contains
+HTML sequences `<.../>` or `>...</`. Markup indicates text where the escape of
+HTML symbols is not required.
 
-Key with dot is an indicator for structured data.  
-Each dot in the key creates/uses a sub-map for the structured data map.
+At the end a key with a text value is always expected.
 
-Keys and partial keys ending with [n] create/use a list with a (sub-)map.
+- Properties are used for data and statics.
+- Data uses all data as a structured map.
+- Statics used only non-structured keys, without dot and list index.
+
+Key with dot is an indicator for structured data. Each dot in the key
+creates/uses a sub-map for the structured data map. Keys and partial keys
+ending with `[n]` create/use a list with a (sub-)map.
 
 ```
 report.data[0].value = Value 1
@@ -650,27 +640,27 @@ https://github.com/seanox/pdf-service/tree/master/src/test/resources/pdf
 
 ### Template
 
-Abstract class for implementing templates.  
-The implementation defines the resource management, the preparation of markup,
-the generation of markup and can optionally also define the PDF rendering.  
-The service only uses the API and has no own template and markup generator.
+Abstract class for implementing templates. The implementation defines the
+resource management, the preparation of markup, the generation of markup and
+can optionally also define the PDF rendering. The service only uses the API and
+has no own template and markup generator.
 
 ### Resources
 
 Templates are based on an implementation of the [Template](#template) and the
-annoation [Resources](#resources), which with `base` and `template` contains
+annotation [Resources](#resources), which with `base` and `template` contains
 information about the base directory of the resources (CSS, images, fonts, ...),
 as well the path of the markup template with the same name.
 
 ### Multiplex
 
-The template can contain three fragments: header, content, footer.  
-The content can be generated in one step. Because the content is framed in a
-page and the page can contain margins in which headers and footers must be
-inserted. Header and footer must therefore be inserted later as an overlay.
-Header and footer can contain their own placeholders and are therefore generated
-separately. So the special placeholders `#[page]` (current page number) and
-`#[pages]` (total number) can also be used.
+The template can contain three fragments: header, content, footer. The content
+can be generated in one step. Because the content is framed in a page and the
+page can contain margins in which headers and footers must be inserted. Header
+and footer must therefore be inserted later as an overlay. Header and footer
+can contain their own placeholders and are therefore generated separately. So
+the special placeholders `#[page]` (current page number) and `#[pages]` (total
+number) can also be used.
 
 The multiplexer separates the markup for the fragments: header, content, footer
 into completely separate (X)HTML documents. This way, three templates can be
@@ -691,12 +681,11 @@ The complete (X)HTML document with `BODY > FOOTER` only.
 
 ### Type
 
-The template can contain three fragments: header, content, footer.  
-The rendering of the markup uses overlays.  
-During rendering, the type tells the generator which fragments of the markup is
-generated. The generator can thus react specifically to the fragments if it is
-necessary for the generator implementation.  
-Type provides the constants for the layers as enumeration.
+The template can contain three fragments: header, content, footer. The
+rendering of the markup uses overlays. During rendering, the type tells the
+generator which fragments of the markup is generated. The generator can thus
+react specifically to the fragments if it is necessary for the generator
+implementation. Type provides the constants for the layers as enumeration.
 
 ### TemplateException
 
@@ -735,14 +724,13 @@ Compares two PDFs pixel- and color-based with difference image generation.
 java -cp seanox-pdf-tools.jar com.seanox.pdf.Compare <master> <compare>
 ```
 
-During the comparison, differences are searched for page by page, pixel by pixel
-and color by color.  
-If a difference is found between master and compare on the same page, a
-difference image in the path of compare is created.  
-The image is based on the grayscale image of the master.  
-The differences, which compare causes, are marked in red.  
-If there are discrepancies in resolution or image mass, overlaps occur, which
-are displayed in blue (only in compare) and green (only in master).
+During the comparison, differences are searched for page by page, pixel by
+pixel and color by color. If a difference is found between master and compare
+on the same page, a difference image in the path of compare is created. The
+image is based on the grayscale image of the master. The differences, which
+compare causes, are marked in red. If there are discrepancies in resolution or
+image mass, overlaps occur, which are displayed in blue (only in compare) and
+green (only in master).
 
 ### Preview
 
@@ -753,19 +741,19 @@ ClassPath and of all files found for the specified paths, filters and globs.
 java -cp seanox-pdf-tools.jar com.seanox.pdf.Preview <paths/filters/globs> ...
 ```
 
-The preview is based on the mock-up datas in the properties files for the
+The preview is based on the mock-up data in the properties files for the
 templates.
 
 ### Designer
 
 Command line Deamon, which permanently searches for templates in the ClassPath
 for the annotation `@Resources` and in the file system for templates for paths,
-filters and globs and creates PDF previews like the preview tool.  
-The previews are updated if there are changes to the templates. 
+filters and globs and creates PDF previews like the preview tool. The previews
+are updated if there are changes to the templates. 
 
 ```
 java -cp seanox-pdf-tools.jar com.seanox.pdf.Designer <paths/filters/globs> ...
 ```
 
-The preview is based on the mock-up datas in the properties files for the
+The preview is based on the mock-up data in the properties files for the
 templates.
