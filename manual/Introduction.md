@@ -293,8 +293,8 @@ placeholder for the generator.
 ```
 
 The renderer recognizes three parts in the template: header, content and
-footer. Content is what is not BODY > HEADER and not BODY > FOOTER. Headers and
-footers are extracted as independent and borderless templates. The CSS is
+footer. Content is what is not `BODY > HEADER` and not `BODY > FOOTER`. Headers
+and footers are extracted as independent and borderless templates. The CSS is
 completely taken over and the borderless layout is extended. All documents are
 rendered separately and merged into one PDF file via page overlay. 
 
