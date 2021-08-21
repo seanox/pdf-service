@@ -48,27 +48,23 @@ class Datasource {
     
     private static class NaturalComparator implements Comparator<String> {
         
-        private static String normalize(String string) {
-            
-            String buffer = "";
-            string = StringUtils.trimToEmpty(string);
-            for (String fragment : string.split("(?:(?<=\\d)(?!\\d))|(?:(?<!\\d)(?=\\d))")) {
+        private static String normalize(final String string) {
+            final StringBuilder buffer = new StringBuilder();
+            for (String fragment : StringUtils.trimToEmpty(string).split("(?<=\\d)(?!\\d)|(?<!\\d)(?=\\d)")) {
                 try {
                     fragment = Long.valueOf(fragment).toString();
                     fragment = Long.toString(fragment.length(), 36).toUpperCase() + fragment;
                 } catch (NumberFormatException exception) {
                 }
-                buffer += fragment;
+                buffer.append(fragment);
             }
-            return buffer;
+            return buffer.toString();
         }
 
         @Override
-        public int compare(String string1, String string2) {
-
-            string1 = NaturalComparator.normalize(string1);
-            string2 = NaturalComparator.normalize(string2);
-            return string1.compareTo(string2);
+        public int compare(final String string1, final String string2) {
+            return NaturalComparator.normalize(string1)
+                    .compareTo(NaturalComparator.normalize(string2));
         }
     }  
     
@@ -76,7 +72,7 @@ class Datasource {
         
         private static final long serialVersionUID = 8942579089465571742L;
 
-        ParserException(String message) {
+        ParserException(final String message) {
             super(message);
         }
     }
@@ -85,26 +81,24 @@ class Datasource {
             throws ParserException {
         
         Objects.requireNonNull(map);
-        
-        if (!PATTERN_EXPRESSION.matcher(key).find())  
+        if (!PATTERN_EXPRESSION.matcher(key).find())
+            throw new ParserException("Invalid key: " + key);
+        if (!PATTERN_KEY.matcher(key).find())
             throw new ParserException("Invalid key: " + key);
         
-        if (!PATTERN_KEY.matcher(key).find())  
-            throw new ParserException("Invalid key: " + key);
-        
-        if (value == null)
+        if (Objects.isNull(value))
             value = "";
         
-        List<String> entries = new ArrayList<>(Arrays.asList(PATTERN_KEY_DELIMITER.split(key)));
+        final List<String> entries = new ArrayList<>(Arrays.asList(PATTERN_KEY_DELIMITER.split(key)));
         while (entries.size() > 0) {
             String entry = entries.remove(0);
             if (PATTERN_LIST_EXPRESSION.matcher(entry).find()) {
-                int index = Integer.valueOf(PATTERN_LIST_EXPRESSION.matcher(entry).replaceAll("$2")).intValue();
+                final int index = Integer.valueOf(PATTERN_LIST_EXPRESSION.matcher(entry).replaceAll("$2")).intValue();
                 entry = PATTERN_LIST_EXPRESSION.matcher(entry).replaceAll("$1").trim();
                 if (!map.containsKey(entry)
                         || !(map.get(entry) instanceof List))
                     map.put(entry, new ArrayList<>());
-                List list = (List)map.get(entry);
+                final List list = (List)map.get(entry);
                 if (list.size() < index)
                     throw new ParserException("Invalid key index: " + key);
                 if (entries.size() > 0) {
@@ -129,25 +123,25 @@ class Datasource {
         }
     }
     
-    static <T> List<T> collect(Class<T> type)
+    static <T> List<T> collect(final Class<T> type)
             throws Exception {
-        
-        Properties properties = new Properties();
+
+        final Properties properties = new Properties();
         properties.load(Datasource.class.getResourceAsStream("/data/" + Datasource.class.getSimpleName() + ".properties"));
 
-        Map<String, Object> map = new HashMap<>();
-        Set keySet = new TreeSet<>(new NaturalComparator());
+        final Map<String, Object> map = new HashMap<>();
+        final Set keySet = new TreeSet<>(new NaturalComparator());
         keySet.addAll(properties.keySet());
-        for (Object key : keySet) {
-            String source = ((String)key);
-            String target = source.replaceAll("(^\\.+)|(\\.+$)", "");
+        for (final Object key : keySet) {
+            final String source = ((String)key);
+            final String target = source.replaceAll("(^\\.+)|(\\.+$)", "");
             Datasource.collect(map, target, properties.getProperty(source));
         }
-        
-        String scope = StringUtils.uncapitalize(type.getSimpleName()) + "s";
-        List<T> collection = new ArrayList<>();
-        ObjectMapper mapper = new ObjectMapper();
-        for (Map<String, Object> entry : (List<Map<String, Object>>)map.get(scope))
+
+        final String scope = StringUtils.uncapitalize(type.getSimpleName()) + "s";
+        final List<T> collection = new ArrayList<>();
+        final ObjectMapper mapper = new ObjectMapper();
+        for (final Map<String, Object> entry : (List<Map<String, Object>>)map.get(scope))
             collection.add(mapper.convertValue(entry, type));
         
         return collection;
