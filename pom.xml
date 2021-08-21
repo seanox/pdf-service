@@ -7,13 +7,11 @@
   
   <groupId>com.seanox</groupId>
   <artifactId>seanox-pdf-service</artifactId>
-  <version>4.0.3</version>
+  <version>4.1.0</version>
   <packaging>jar</packaging>
-  
   <name>pdf-service</name>
   <description>PDF service for generating/rendering PDFs based on Open HTML to PDF</description>
   <url>https://github.com/seanox/pdf-service</url>
-  
   <licenses>
     <license>
       <name>Apache License, Version 2.0</name>
@@ -21,41 +19,33 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
-  
   <scm>
-    <url>https://github.com/seanox/pdf-service.git</url>
+    <connection>scm:git:git://github.com/seanox/pdf-service.git</connection>
+    <developerConnection>scm:git:git@github.com:seanox/pdf-service.git</developerConnection>
+    <url>https://github.com/seanox/pdf-service</url>
   </scm>
-  
+  <developers>
+    <developer>
+      <id>seanox</id>
+      <name>Seanox Software Solutions</name>
+      <email>service@seanox.com</email>
+    </developer>
+  </developers>
+
   <properties>
-    <java.version>8</java.version>
-    <apache.commons.version>3.12.0</apache.commons.version>
-    <apache.logging.version>1.2</apache.logging.version>
-    <com.openhtmltopdf.version>1.0.9</com.openhtmltopdf.version>
-    <spring.version>5.3.7</spring.version>
-    <jackson.databind.version>2.12.3</jackson.databind.version>
-    <junit.platform.version>1.6.2</junit.platform.version>
-    <junit.jupiter.version>5.7.2</junit.jupiter.version>
-    <junit.jupiter.version>5.7.2</junit.jupiter.version>
-    <junit.jupiter.platform.version>1.0.3</junit.jupiter.platform.version>
-    <sonatype.nexus.staging.version>1.6.8</sonatype.nexus.staging.version>
-    <maven.surefire.plugin.version>2.19.1</maven.surefire.plugin.version>
-    <maven.gpg.version>1.6</maven.gpg.version>
-    <maven.javadoc.version>3.0.1</maven.javadoc.version>
-    <maven.source.version>3.0.1</maven.source.version>
-    <maven.compiler.version>3.8.1</maven.compiler.version>
-    <maven.release.version>2.5.3</maven.release.version>
-    <maven.deploy.version>2.8.2</maven.deploy.version>
+    <java.version>11</java.version>
+    <encoding>UTF-8</encoding>
+    <maven.build.version>3.2.0</maven.build.version>
   </properties>
 
   <dependencies>
     <!--
       For scanning to find annotated PDF templates in the classpath encloses:
-          org.springframework: spring-core / spring-context / spring-beans / spring-expression
-    -->    
+          org.springframework: spring-core / spring-context / spring-beans / spring-expression -->
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
-      <version>${spring.version}</version>
+      <version>5.3.7</version>
       <exclusions>
         <exclusion>
           <groupId>org.springframework</groupId>
@@ -67,28 +57,27 @@
         </exclusion>
       </exclusions>
     </dependency>
-    
+
     <!-- Apache Commons spring-aop
           org.apache.commons / commons-lang3 / commons-logging -->
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
-      <version>${apache.commons.version}</version>
+      <version>3.12.0</version>
     </dependency>
     <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
-      <version>${apache.logging.version}</version>
+      <version>1.2</version>
     </dependency>
 
     <!--
       PDF library encloses:
-          com.openhtmltopdf / openhtmltopdf-core 1.0.0
-    -->
+          com.openhtmltopdf / openhtmltopdf-core 1.0.0 -->
     <dependency>
       <groupId>com.openhtmltopdf</groupId>
       <artifactId>openhtmltopdf-pdfbox</artifactId>
-      <version>${com.openhtmltopdf.version}</version>
+      <version>1.0.9</version>
       <exclusions>
         <exclusion>
           <groupId>commons-logging</groupId>
@@ -101,13 +90,19 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <version>${jackson.databind.version}</version>
+      <version>2.12.3</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.18.20</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
-      <version>${junit.jupiter.version}</version>
+      <version>5.7.2</version>
       <scope>test</scope>
       <exclusions>
         <exclusion>
@@ -119,7 +114,7 @@
     <dependency>
       <groupId>org.junit.platform</groupId>
       <artifactId>junit-platform-runner</artifactId>
-      <version>${junit.platform.version}</version>
+      <version>1.6.2</version>
       <scope>test</scope>
       <exclusions>
         <exclusion>
@@ -134,28 +129,21 @@
     </dependency>
   </dependencies>
   
-  <developers>
-    <developer>
-      <id>seanox</id>
-      <name>Seanox Software Solutions</name>
-      <email>service@seanox.com</email>
-    </developer>
-  </developers>
-  
   <build>
     <pluginManagement>
       <plugins>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-deploy-plugin</artifactId>
-          <version>${maven.deploy.version}</version>
+          <version>2.8.2</version>
         </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-release-plugin</artifactId>
-        <version>${maven.release.version}</version>
+        <version>2.5.3</version>
         <configuration>
           <useReleaseProfile>false</useReleaseProfile>
           <releaseProfiles>release</releaseProfiles>
@@ -163,17 +151,19 @@
         </configuration>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>${maven.compiler.version}</version>
+        <version>3.8.1</version>
         <configuration>
           <source>${java.version}</source>
           <target>${java.version}</target>
+          <encoding>${encoding}</encoding>
         </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
-        <version>${maven.source.version}</version>
+        <version>3.0.1</version>
         <executions>
           <execution>
             <id>attach-sources</id>
@@ -186,7 +176,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>${maven.javadoc.version}</version>
+        <version>${maven.build.version}</version>
         <configuration>
           <source>${java.version}</source>
           <doclint>none</doclint>
@@ -203,7 +193,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-gpg-plugin</artifactId>
-        <version>${maven.gpg.version}</version>
+        <version>1.6</version>
         <executions>
           <execution>
             <id>sign-artifacts</id>
@@ -217,7 +207,7 @@
       <plugin>
         <groupId>org.sonatype.plugins</groupId>
         <artifactId>nexus-staging-maven-plugin</artifactId>
-        <version>${sonatype.nexus.staging.version}</version>
+        <version>1.6.8</version>
         <extensions>true</extensions>
         <configuration>
            <serverId>ossrh</serverId>
@@ -227,20 +217,43 @@
       </plugin> 
       
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>${maven.surefire.plugin.version}</version>
+        <version>2.19.1</version>
         <dependencies>
           <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-surefire-provider</artifactId>
-            <version>${junit.jupiter.platform.version}</version>
+            <version>1.0.3</version>
           </dependency>
           <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>${junit.jupiter.version}</version>
+            <version>5.7.2</version>
           </dependency>
         </dependencies>
+      </plugin>
+
+      <!-- reporting only -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>3.9.1</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>3.1.2</version>
+      </plugin>
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+        <version>4.3.0</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>3.14.0</version>
       </plugin>
 
       <!-- 
@@ -248,6 +261,7 @@
             mvn clean compile assembly:single
       -->
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
           <archive>
@@ -272,5 +286,32 @@
       <id>ossrh</id>
       <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
     </repository>
-  </distributionManagement>  
+  </distributionManagement>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+        <configuration>
+          <xmlOutput>true</xmlOutput>
+          <xmlOutputDirectory>target/site</xmlOutputDirectory>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <configuration>
+          <targetJdk>${java.version}</targetJdk>
+          <sourceEncoding>${encoding}</sourceEncoding>
+          <minimumTokens>100</minimumTokens>
+          <linkXRef>false</linkXRef>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
 </project>
