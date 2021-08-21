@@ -25,7 +25,9 @@ import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -37,12 +39,12 @@ import java.util.Objects;
 /** 
  * Pixel-based comparison of PDF files.<br>
  * <br>
- * Compare 4.1.0 20210818<br>
+ * Compare 4.1.0 20210821<br>
  * Copyright (C) 2021 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 4.1.0 20210818
+ * @version 4.1.0 20210821
  */
 public class Compare {
     

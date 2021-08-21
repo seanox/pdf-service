@@ -20,6 +20,8 @@
  */
 package com.seanox.pdf;
 
+import com.openhtmltopdf.util.XRLog;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -29,24 +31,20 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
-
-import com.openhtmltopdf.util.XRLog;
 
 /**
  * Tool for the design process to create a test output of the rendered PDFs.
  * The PDFs are output in the same directory as the template.<br>
  * <br>
- * Preview 4.1.0 20210819<br>
+ * Preview 4.1.0 20210821<br>
  * Copyright (C) 2021 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 4.1.0 20210819
+ * @version 4.1.0 20210821
  */
 public class Preview {
     
