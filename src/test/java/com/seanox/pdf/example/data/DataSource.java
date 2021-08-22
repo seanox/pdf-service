@@ -20,6 +20,9 @@
  */
 package com.seanox.pdf.example.data;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -31,10 +34,6 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
-
-import org.apache.commons.lang3.StringUtils;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 class Datasource {
     
@@ -49,14 +48,15 @@ class Datasource {
     private static class NaturalComparator implements Comparator<String> {
         
         private static String normalize(final String string) {
+            if (StringUtils.isBlank(string))
+                return "";
             final StringBuilder buffer = new StringBuilder();
-            for (String fragment : StringUtils.trimToEmpty(string).split("(?<=\\d)(?!\\d)|(?<!\\d)(?=\\d)")) {
-                try {
-                    fragment = Long.valueOf(fragment).toString();
-                    fragment = Long.toString(fragment.length(), 36).toUpperCase() + fragment;
-                } catch (NumberFormatException exception) {
-                }
-                buffer.append(fragment);
+            for (final String fragment : string.trim().split("((?<=\\d)(?!\\d))|((?<!\\d)(?=\\d))")) {
+                if (fragment.matches("^\\d+$")) {
+                    final String patch = fragment.replaceAll("^0+", "");
+                    buffer.append(Long.toString(patch.length(), 36).toUpperCase());
+                    buffer.append(patch);
+                } else buffer.append(fragment);
             }
             return buffer.toString();
         }
@@ -95,8 +95,7 @@ class Datasource {
             if (PATTERN_LIST_EXPRESSION.matcher(entry).find()) {
                 final int index = Integer.valueOf(PATTERN_LIST_EXPRESSION.matcher(entry).replaceAll("$2")).intValue();
                 entry = PATTERN_LIST_EXPRESSION.matcher(entry).replaceAll("$1").trim();
-                if (!map.containsKey(entry)
-                        || !(map.get(entry) instanceof List))
+                if (!(map.get(entry) instanceof List))
                     map.put(entry, new ArrayList<>());
                 final List list = (List)map.get(entry);
                 if (list.size() < index)
@@ -114,8 +113,7 @@ class Datasource {
                 }
             } else {
                 if (entries.size() > 0) {
-                    if (!map.containsKey(entry)
-                            || !(map.get(entry) instanceof Map))
+                    if (!(map.get(entry) instanceof Map))
                         map.put(entry, new HashMap<>());
                     map = (Map)map.get(entry);
                 } else map.put(entry, value);
