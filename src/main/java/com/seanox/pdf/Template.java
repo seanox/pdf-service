@@ -79,17 +79,17 @@ import com.seanox.pdf.Service.Meta;
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer<br>
  * <br>
- * Template 4.0.3 20210722<br>
+ * Template 4.1.0 20210821<br>
  * Copyright (C) 2021 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 4.0.3 20210722
+ * @version 4.1.0 20210821
  */
 public abstract class Template extends Service.Template {
     
     /** Pattern for the detection of markup */
-    private final static Pattern PATTERN_MARKUP_DETECTION = Pattern.compile("(?si).*(((<|>).*(<\\s*/)|(/\\s*>))|(&#\\d+;)|(&#x[0-9a-f]+;)|(&[a-z]+;)).*");
+    private final static Pattern PATTERN_MARKUP_DETECTION = Pattern.compile("(?si).*(([<>].*(<\\s*/)|(/\\s*>))|(&#\\d+;)|(&#x[0-9a-f]+;)|(&[a-z]+;)).*");
     
     /** Pattern for the validation of expressions */
     private final static Pattern PATTERN_EXPRESSION = Pattern.compile("^(?i)([a-z](?:[\\w\\-]*\\w)?)((?:\\[\\s*\\d+\\s*\\])?)(\\.([a-z](?:[\\w\\-]*\\w)?)((?:\\[\\s*\\d+\\s*\\])?))*$");
@@ -119,17 +119,17 @@ public abstract class Template extends Service.Template {
          */
         private static String normalize(String string) {
             
-            String buffer = "";
+            StringBuilder buffer = new StringBuilder();
             string = StringUtils.trimToEmpty(string);
-            for (String fragment : string.split("(?:(?<=\\d)(?!\\d))|(?:(?<!\\d)(?=\\d))")) {
+            for (String fragment : string.split("(?<=\\d)(?!\\d)|(?<!\\d)(?=\\d)")) {
                 try {
                     fragment = Long.valueOf(fragment).toString();
                     fragment = Long.toString(fragment.length(), 36).toUpperCase() + fragment;
                 } catch (NumberFormatException exception) {
                 }
-                buffer += fragment;
+                buffer.append(fragment);
             }
-            return buffer;
+            return buffer.toString();
         }
 
         @Override
@@ -165,7 +165,7 @@ public abstract class Template extends Service.Template {
      */
     public static class Markup implements CharSequence {
         
-        private String string;
+        private final String string;
         
         /**
          * Constructor, creates a new Markup object.
@@ -371,7 +371,7 @@ public abstract class Template extends Service.Template {
             throws Exception {
         
         String markup = super.getMarkup();
-        markup = this.resolveInlcudes(this.getBasePath(), markup, new ArrayList<>());
+        markup = this.resolveIncludes(this.getBasePath(), markup, new ArrayList<>());
         return markup;
     }
     
@@ -466,8 +466,8 @@ public abstract class Template extends Service.Template {
     /**
      * Extends the contained maps by an exists-key for each key.
      * This hack is necessary because CSS :empty has no effect in OpenHtmlToPdf
-     * and empty elements cannot be smoothed out by CSS. Therefore the inverted
-     * exists solution.
+     * and empty elements cannot be smoothed out by CSS. Therefore, the
+     * inverted exists solution.
      * @param  collection
      * @return collection with additional exists keys
      */
@@ -487,8 +487,8 @@ public abstract class Template extends Service.Template {
      * Extends the maps by an exists-key for each key, whose value is not empty,
      * not blank and not {@code null} . The value is then {@code exists}.
      * This hack is necessary because CSS :empty has no effect in OpenHtmlToPdf
-     * and empty elements cannot be smoothed out by CSS. Therefore the inverted
-     * exists solution.
+     * and empty elements cannot be smoothed out by CSS. Therefore, the
+     * inverted exists solution.
      * @param  map
      * @return collection with additional exists keys
      */    
@@ -511,12 +511,10 @@ public abstract class Template extends Service.Template {
                         result.put(entry.getKey() + "-exists", (T)"exists");
                     result.put(entry.getKey(), (T)Template.indicateEmpty(value));
                 } else {
-                    if (entry.getValue() != null) {
-                        String value = String.valueOf(entry.getValue());
-                        if (!value.trim().isEmpty())
-                            result.put(entry.getKey() + "-exists", (T)"exists");
-                        result.put(entry.getKey(), (T)value);
-                    } else result.put(entry.getKey(), entry.getValue());
+                    String value = String.valueOf(entry.getValue());
+                    if (!value.trim().isEmpty())
+                        result.put(entry.getKey() + "-exists", (T)"exists");
+                    result.put(entry.getKey(), (T)value);
                 }
             }
         });
@@ -532,7 +530,7 @@ public abstract class Template extends Service.Template {
      * @throws Exception
      *     In case of unexpected errors.
      */
-    private String resolveInlcudes(String path, String markup, List<String> stack)
+    private String resolveIncludes(String path, String markup, List<String> stack)
             throws Exception {
         
         Pattern pattern = Pattern.compile("(?i)(?:^|(?<=[\r\n]))\\s*#include(?:(?:\\s+([^\r\n]*)\\s*((?=[\r\n])|$))|(?=\\s*$))");
@@ -541,7 +539,7 @@ public abstract class Template extends Service.Template {
             if (matcher.groupCount() < 1)
                 throw new TemplateException("Invalid include found");
             String patch = matcher.group(1);
-            patch = this.followInlcudes(path, patch, stack);
+            patch = this.followIncludes(path, patch, stack);
             markup = markup.replace(matcher.group(0), patch);
         }
         return markup;
@@ -556,7 +554,7 @@ public abstract class Template extends Service.Template {
      * @throws Exception
      *     In case of unexpected errors.
      */
-    private String followInlcudes(String path, String include, List<String> stack)
+    private String followIncludes(String path, String include, List<String> stack)
             throws Exception {
 
         if (include.startsWith("/")
@@ -570,7 +568,7 @@ public abstract class Template extends Service.Template {
         if (this.getResource(include) == null)
             throw new TemplateResourceNotFoundException(include);
         String markup = new String(IOUtils.toByteArray(this.getResourceStream(include)));
-        try {return this.resolveInlcudes(Service.Template.normalizePath(include + "/.."), markup, recursions);
+        try {return this.resolveIncludes(Service.Template.normalizePath(include + "/.."), markup, recursions);
         } catch (TemplateRecursionException exception) {
             throw new TemplateException("Recursion found in: " + this.getResource(include));
         }
@@ -579,12 +577,12 @@ public abstract class Template extends Service.Template {
     @Override
     protected String generate(String markup, Type type, Meta meta) {
         
-        //Comparable behaviour to the generator:
-        //  - Placeholders are case insensitive
-        //  - Placeholders are limited to the following characters: a-z A-Z 0-9 _-
-        //  - Placeholders must begin with a letter
-        //  - Placeholders cannot be inserted subsequently
-        //  - Placeholders without value are removed at the end
+        // Comparable behaviour to the generator:
+        // - Placeholders are case-insensitive
+        // - Placeholders are limited to the following characters: a-z A-Z 0-9 _-
+        // - Placeholders must begin with a letter
+        // - Placeholders cannot be inserted subsequently
+        // - Placeholders without value are removed at the end
 
         Map<String, String> statics = meta.getStatics();
         Pattern pattern = Pattern.compile("\\!\\[\\s*(.*?)\\s*\\]");
@@ -601,7 +599,7 @@ public abstract class Template extends Service.Template {
 
         Generator generator = Generator.parse(markup.getBytes());
         generator.set(meta.getData());
-        generator.set(new HashMap<String, Object>() {
+        generator.set(new HashMap<>() {
             private static final long serialVersionUID = 1L; {
             if (meta.getLocale() != null)
                 put("locale", meta.getLocale().getLanguage());
@@ -617,9 +615,9 @@ public abstract class Template extends Service.Template {
         if (meta == null)
             meta = new Meta();
         
-        //Preparation/customization of the meta object before rendering.
-        //The rendering is done in three steps (content, header, footer) and so
-        //this can be done once for all steps.
+        // Preparation/customization of the meta-object before rendering.
+        // The rendering is done in three steps (content, header, footer) and so
+        // this can be done once for all steps.
 
         Map<String, Object> data = meta.getData();
         data = Template.escapeHtml(data);

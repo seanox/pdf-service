@@ -20,41 +20,9 @@
  */
 package com.seanox.pdf;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.stream.Stream;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-
+import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
+import com.seanox.pdf.Service.Template.Resources;
+import com.seanox.pdf.Service.Template.TemplateException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.pdfbox.io.IOUtils;
 import org.apache.pdfbox.io.MemoryUsageSetting;
@@ -70,9 +38,41 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
-import com.seanox.pdf.Service.Template.Resources;
-import com.seanox.pdf.Service.Template.TemplateException;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.lang.reflect.Constructor;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 /**
  * Static service for creating PDF based on templates and meta-objects.
@@ -89,7 +89,7 @@ import com.seanox.pdf.Service.Template.TemplateException;
  * The creation of PDFs is based on an HTML-to-PDF converter (openhtmltopdf).
  * In the first step, an HTML is created that contains all data records.
  * The HTML is based on a markup template with placeholders. A generator or
- * renderer fills the placeholders in the template and creates an
+ * renderer fills the placeholders in the template and creates a
  * Single-Page-HTML as text.
  * The HTML-to-PDF converter creates the PDF from the HTML.
  * The pages are separated by CSS.
@@ -149,17 +149,17 @@ import com.seanox.pdf.Service.Template.TemplateException;
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer<br>
  * <br>
- * Service 4.0.3 20210722<br>
+ * Service 4.1.0 20210821<br>
  * Copyright (C) 2021 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 4.0.3 20210722
+ * @version 4.1.0 20210821
  */
 public class Service {
     
     /**
-     * Creates a PDF for a template and data as meta object.
+     * Creates a PDF for a template and data as meta-object.
      * @param  template {@link Template}
      * @param  meta     {@link Meta}
      * @return the created PDF as byte array
@@ -172,7 +172,7 @@ public class Service {
             throws ServiceException {
         
         Template instance;
-        try {instance = template.getDeclaredConstructor().newInstance();
+        try {instance = Service.Template.instantiate(template);
         } catch (Exception exception) {
             throw new Template.TemplateException(exception);
         }        
@@ -184,7 +184,7 @@ public class Service {
     }   
     
     /**
-     * Creates a PDF for a template and data as meta object.
+     * Creates a PDF for a template and data as meta-object.
      * @param  template {@link Template}
      * @param  meta     {@link Meta}
      * @return the created PDF as byte array
@@ -199,7 +199,7 @@ public class Service {
             throw new Template.TemplateException("Invalid base URI", exception);
         }
 
-        if (meta == null)
+        if (Objects.isNull(meta))
             meta = new Meta();
         try {return template.render(meta);
         } catch (Exception exception) {
@@ -208,11 +208,11 @@ public class Service {
     }
 
     /**
-     * Meta object for creating PDFs.
+     * Meta-object for creating PDFs.
      * The PDF creation is based on templates and is decoupled from the business
      * logic. The templates only know placeholders and structures.
      * Templates consist of the fragments: header, data and footer, which all
-     * use the data from the meta object.
+     * use the data from the meta-object.
      * The following data are supported: locale for internationalization (i18n),
      * structured data and static texts.<br>
      * <br>
@@ -354,7 +354,14 @@ public class Service {
      * markup generator.
      */
     public static abstract class Template {
-        
+
+        static Template instantiate(final Class<? extends Template> template)
+                throws Exception {
+            final Constructor constructor = template.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            return (Template)constructor.newInstance();
+        }
+
         /**
          * Templates are based on an implementation of the
          * {@link Template} and the annotation {@link Resources}, which with
@@ -399,7 +406,7 @@ public class Service {
         public static Class<Template>[] scan()
                 throws Exception {
 
-            if (Template.templates != null)
+            if (Objects.nonNull(Template.templates))
                 return Template.templates.clone();
             
             List<Class<Template>> templates = new ArrayList<>();
@@ -421,13 +428,13 @@ public class Service {
         }
 
         /**
-         * Returns the resources path (CSS, images, fonts, ...).
-         * @return the resources path
+         * Returns the path of resources (CSS, images, fonts, ...).
+         * @return the path of resources
          */
         protected String getBasePath() {
             
             Resources resource = this.getClass().getAnnotation(Resources.class);
-            if (resource == null
+            if (Objects.isNull(resource)
                     || resource.base().trim().isEmpty())
                 return "/";
             return resource.base().trim();
@@ -437,7 +444,7 @@ public class Service {
          * Returns the URI of resources path (CSS, images, fonts, ...).
          * @return the URI of resources path
          * @throws TemplateResourceNotFoundException
-         *     If the resources path cannot be found in the ClassPath.
+         *     If the path of resources cannot be found in the ClassPath.
          * @throws Exception
          *     In case of unexpected errors.
          */
@@ -451,8 +458,6 @@ public class Service {
          * @return the URI of the markup template
          * @throws TemplateResourceNotFoundException
          *     If the template cannot be found in the ClassPath.
-         * @throws Exception
-         *     In case of unexpected errors.
          */
         protected String getSourcePath() {
             
@@ -506,7 +511,7 @@ public class Service {
 
             if (StringUtils.isEmpty(resource))
                 throw new TemplateResourceNotFoundException();
-            if (Service.class.getResource(resource) == null)
+            if (Objects.isNull(Service.class.getResource(resource)))
                 throw new TemplateResourceNotFoundException(resource);
             return Service.class.getResource(resource).toURI();
         }
@@ -525,7 +530,7 @@ public class Service {
             
             if (StringUtils.isEmpty(resource))
                 throw new TemplateResourceNotFoundException();
-            if (Service.class.getResource(resource) == null)
+            if (Objects.isNull(Service.class.getResource(resource)))
                 throw new TemplateResourceNotFoundException(resource);
             return Service.class.getResourceAsStream(resource);
         }
@@ -595,7 +600,7 @@ public class Service {
         }
 
         /**
-         * Creates (X)HTML markup for the PDF based of data in a meta object.
+         * Creates (X)HTML markup for the PDF based of data in a meta-object.
          * @param  markup
          * @param  type
          * @param  meta
@@ -640,22 +645,22 @@ public class Service {
             
             int    cursor;
 
-            //path is changed to slash
+            // path is changed to slash
             string = path.replace('\\', '/').trim();
 
-            //multiple slashes are combined
+            // multiple slashes are combined
             while ((cursor = string.indexOf("//")) >= 0)
                 string = string.substring(0, cursor).concat(string.substring(cursor +1));
 
-            //path is balanced if necessary /abc/./def/../ghi -> /abc/ghi
-            //path is balanced by /.
+            // path is balanced if necessary /abc/./def/../ghi -> /abc/ghi
+            // path is balanced by /.
             if (string.endsWith("/."))
                 string = string.concat("/");
 
             while ((cursor = string.indexOf("/./")) >= 0)
                 string = string.substring(0, cursor).concat(string.substring(cursor +2));
 
-            //path is balanced by /..
+            // path is balanced by /..
             if (string.endsWith("/.."))
                 string = string.concat("/");
 
@@ -669,7 +674,7 @@ public class Service {
                 string = string.substring(0, cursor).concat(stream);
             }
 
-            //multiple slashes are combined
+            // multiple slashes are combined
             while ((cursor = string.indexOf("//")) >= 0)
                 string = string.substring(0, cursor).concat(string.substring(cursor +1));
             
@@ -677,7 +682,7 @@ public class Service {
         }
         
         /**
-         * Creates the PDF based on the data records as meta object.
+         * Creates the PDF based on the data records as meta-object.
          * @param  meta data records as map array
          * @return the created PDF as byte array
          * @throws Exception
@@ -686,23 +691,23 @@ public class Service {
         protected byte[] render(Meta meta)
                 throws Exception {
 
-            if (meta == null)
+            if (Objects.isNull(meta))
                 meta = new Meta();
 
-            //Data is copied because it is manipulated later for the header and
-            //footer by adding the keys and values for locale, page and pages.
-            if (meta.data == null)
+            // Data is copied because it is manipulated later for the header and
+            // footer by adding the keys and values for locale, page and pages.
+            if (Objects.isNull(meta.data))
                 meta.data = new HashMap<>();
             else meta.data = new HashMap<>(meta.data);
 
             URI base = this.getBase();
-            if (base.getScheme() == null) {
-                if (Service.class.getResource(base.toString()) == null)
+            if (Objects.isNull(base.getScheme())) {
+                if (Objects.isNull(Service.class.getResource(base.toString())))
                     throw new TemplateResourceNotFoundException(base.toString());
                 base = Service.class.getResource(base.toString()).toURI();
             }
             if (!base.toString().endsWith("/"))
-                base = new URI(base.toString() + "/");
+                base = new URI(base + "/");
 
             String markup = this.getMarkup();
             Multiplex multiplex = Multiplex.demux(markup);
@@ -720,11 +725,11 @@ public class Service {
                 builder.run();
                 artifacts.add(PDDocument.load(content.toByteArray()));
                 
-                //without header and footer no overlay and merging is necessary
-                //the byte array from the document can be returned
-                if ((multiplex.header == null
+                // without header and footer no overlay and merging is necessary
+                // the byte array from the document can be returned
+                if ((Objects.isNull(multiplex.header)
                                 || multiplex.header.trim().isEmpty())
-                        && (multiplex.footer == null
+                        && (Objects.isNull(multiplex.footer)
                                 || multiplex.footer.trim().isEmpty()))
                     return content.toByteArray();
                     
@@ -740,7 +745,7 @@ public class Service {
                         
                         meta.data.put("page", String.valueOf(offset +1));
                         
-                        if (multiplex.header != null
+                        if (Objects.nonNull(multiplex.header)
                                 && !multiplex.header.trim().isEmpty()) {
                             ByteArrayOutputStream header = new ByteArrayOutputStream();
                             builder = new PdfRendererBuilder();
@@ -758,7 +763,7 @@ public class Service {
                             }
                         }
 
-                        if (multiplex.footer != null
+                        if (Objects.nonNull(multiplex.footer)
                                 && !multiplex.footer.trim().isEmpty()) {
                             ByteArrayOutputStream footer = new ByteArrayOutputStream();
                             builder = new PdfRendererBuilder();
@@ -868,9 +873,9 @@ public class Service {
              */
             private static List<Node> convertNodeList(NodeList nodes) {
                 
-                if (nodes == null
+                if (Objects.isNull(nodes == null)
                         || nodes.getLength() == 0)
-                    return Collections.<Node>emptyList();
+                    return Collections.emptyList();
                 
                 List<Node> list = new ArrayList<>();
                 for (int loop = 0; loop < nodes.getLength(); loop++)
@@ -966,7 +971,7 @@ public class Service {
                 XPath xpath = XPathFactory.newInstance().newXPath();
                 XPathExpression expression = xpath.compile("/html/head");
                 Node node = (Node)expression.evaluate(document, XPathConstants.NODE);
-                if (node != null)
+                if (Objects.nonNull(node))
                     node.appendChild(style);
             }
 
@@ -995,7 +1000,7 @@ public class Service {
              * Separates the markup for the fragments: header, content, footer.
              * @param  markup
              * @return a multiplex instance with the extracted markup for
-             *     header, content an footer
+             *     header, content a footer
              * @throws Exception
              */
             public static Multiplex demux(String markup)
@@ -1014,7 +1019,7 @@ public class Service {
 
                 Document header = Multiplex.documentClone(document);
                 Node headerNode = Multiplex.documentFetchNode(document, "/html/body/header");
-                if (headerNode != null) {
+                if (Objects.nonNull(headerNode)) {
                     Multiplex.documentEmptyNode(header, "/html/body");
                     Node headerBody =  Multiplex.documentFetchNode(header, "/html/body");
                     headerNode = header.importNode(headerNode, true);
@@ -1025,7 +1030,7 @@ public class Service {
                 
                 Document footer = Multiplex.documentClone(document);
                 Node footerNode = Multiplex.documentFetchNode(document, "/html/body/footer");
-                if (footerNode != null) {
+                if (Objects.nonNull(footerNode)) {
                     footerNode = footerNode.cloneNode(true);
                     Multiplex.documentEmptyNode(footer, "/html/body");
                     Node footerBody =  Multiplex.documentFetchNode(footer, "/html/body");
