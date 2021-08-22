@@ -174,7 +174,7 @@ public abstract class Template extends Service.Template {
          */
         public Markup(CharSequence text) {
             
-            if (text == null)
+            if (Objects.isNull(text))
                 text = new String();
             this.string = String.valueOf(text);
         }
@@ -253,7 +253,7 @@ public abstract class Template extends Service.Template {
         if (!PATTERN_KEY.matcher(key).find())  
             throw new PreviewDataParserException("Invalid key: " + key);
         
-        if (value == null)
+        if (Objects.isNull(value))
             value = "";
         if (PATTERN_MARKUP_DETECTION.matcher(value).find())
             value = new Markup(value);           
@@ -396,7 +396,7 @@ public abstract class Template extends Service.Template {
      */
     static String escapeHtml(String text, boolean markup) {
         
-        if (text == null)
+        if (Objects.isNull(text))
             return "";
         StringBuilder build = new StringBuilder();
         for (char digit : text.toCharArray()) {
@@ -427,7 +427,7 @@ public abstract class Template extends Service.Template {
     @SuppressWarnings({"rawtypes", "unchecked"})
     private static Object escapeHtml(Object object) {
         
-        if (object == null)
+        if (Objects.isNull(object))
             return "";
         if (object instanceof Collection)
             return Template.escapeHtml((Collection)object);
@@ -443,7 +443,7 @@ public abstract class Template extends Service.Template {
      */
     private static Collection<Map<String, Object>> escapeHtml(Collection<Map<String, Object>> collection) {
         
-        if (collection == null)
+        if (Objects.isNull(collection))
             collection = new ArrayList<>();
         return collection.stream().map(Template::escapeHtml).collect(Collectors.toList());
     }
@@ -455,7 +455,7 @@ public abstract class Template extends Service.Template {
      */
     private static Map<String, Object> escapeHtml(Map<String, Object> map) {
         
-        if (map == null)
+        if (Objects.isNull(map))
             map = new HashMap<>();
         return map.entrySet().stream().collect(Collectors.toMap(
                 entry -> entry.getKey(),
@@ -474,7 +474,7 @@ public abstract class Template extends Service.Template {
     private static Collection<Map<String, Object>> indicateEmpty(Collection<Map<String, Object>> collection) {
         
         List<Map<String, Object>> result = new ArrayList<>();
-        if (collection == null)
+        if (Objects.isNull(collection))
             collection = new ArrayList<>();
         collection.forEach(entry -> {
             if (!entry.isEmpty())
@@ -496,10 +496,10 @@ public abstract class Template extends Service.Template {
     private static <T> Map<String, T> indicateEmpty(Map<String, T> map) {
         
         Map<String, T> result = new HashMap<>();
-        if (map == null)
+        if (Objects.isNull(map))
             map = new HashMap<>();
         map.entrySet().forEach(entry -> {
-            if (entry.getValue() != null) {
+            if (Objects.nonNull(entry.getValue())) {
                 if (entry.getValue() instanceof Collection) {
                     Collection value = (Collection)entry.getValue();
                     if (!value.isEmpty())
@@ -565,7 +565,7 @@ public abstract class Template extends Service.Template {
             throw new TemplateRecursionException();
         List<String> recursions = new ArrayList<>(stack);
         recursions.add(include);
-        if (this.getResource(include) == null)
+        if (Objects.isNull(this.getResource(include)))
             throw new TemplateResourceNotFoundException(include);
         String markup = new String(IOUtils.toByteArray(this.getResourceStream(include)));
         try {return this.resolveIncludes(Service.Template.normalizePath(include + "/.."), markup, recursions);
@@ -591,7 +591,7 @@ public abstract class Template extends Service.Template {
             String value = null;
             if (matcher.group(0).matches("^(?i)!\\[[a-z]([\\w-]*\\w)?\\]$"))
                 value = statics.get(matcher.group(1).toLowerCase());
-            if (value == null)
+            if (Objects.isNull(value))
                 value = "";
             value = value.replaceAll("#(?=\\[)", "#[0x23]");
             markup = markup.replace(matcher.group(0), value);
@@ -601,7 +601,7 @@ public abstract class Template extends Service.Template {
         generator.set(meta.getData());
         generator.set(new HashMap<>() {
             private static final long serialVersionUID = 1L; {
-            if (meta.getLocale() != null)
+            if (Objects.nonNull(meta.getLocale()))
                 put("locale", meta.getLocale().getLanguage());
         }});
         
@@ -612,7 +612,7 @@ public abstract class Template extends Service.Template {
     protected byte[] render(Meta meta)
             throws Exception {
         
-        if (meta == null)
+        if (Objects.isNull(meta))
             meta = new Meta();
         
         // Preparation/customization of the meta-object before rendering.
@@ -624,10 +624,10 @@ public abstract class Template extends Service.Template {
         data = Template.indicateEmpty(data);
 
         Map<String, String> statics = meta.getStatics();
-        if (statics == null)
+        if (Objects.isNull(statics))
             statics = new HashMap<>();
         statics = statics.entrySet().stream()
-                .filter(entry -> entry.getValue() != null)
+                .filter(entry -> Objects.nonNull(entry.getValue()))
                 .collect(Collectors.toMap(
                         (entry) -> entry.getKey().toLowerCase(),
                         (entry) -> Template.escapeHtml(entry.getValue(),
