@@ -3,6 +3,16 @@
   BF: Review: Optimization (code + tests)
   CR: OpenHtmlToPdf: Update to version 1.0.9
   CR: Java: Switch to version 11
+  CR: Preview: Added argument/option/keyword/... @Resources
+      In addition to paths/filters/globs, @Resources can also be used to scan the classpath.
+      Without arguments @Resources is used as default.
+      When using paths without @Resources, the classpath is not scanned.
+  CR: Designer: Added argument/option/keyword/... @Resources
+      In addition to paths/filters/globs, @Resources can also be used to scan the classpath.
+      Without arguments @Resources is used as default.
+      When using paths without @Resources, the classpath is not scanned.
+  CR: Maven: Added static code analysis
+  CR: Template: Optimization of @Resources, class need not be public
 
 4.0.3 20200830
   BF: Service: Optimization of the code
