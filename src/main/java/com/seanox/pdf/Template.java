@@ -20,6 +20,10 @@
  */
 package com.seanox.pdf;
 
+import com.seanox.pdf.Service.Meta;
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -35,11 +39,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.pdfbox.io.IOUtils;
-
-import com.seanox.pdf.Service.Meta;
 
 /** 
  * Abstract class for implementing of template implementations.
@@ -79,12 +78,12 @@ import com.seanox.pdf.Service.Meta;
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer<br>
  * <br>
- * Template 4.1.0 20210821<br>
+ * Template 4.1.0 20210822<br>
  * Copyright (C) 2021 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 4.1.0 20210821
+ * @version 4.1.0 20210822
  */
 public abstract class Template extends Service.Template {
     
@@ -110,34 +109,33 @@ public abstract class Template extends Service.Template {
     private final static Pattern PATTERN_KEY_DELIMITER = Pattern.compile("\\.");
     
     /** Naturally sort comparator */
-    private static class NaturalComparator implements Comparator<String> {
+    private static class NaturalComparator implements Comparator<String>, Serializable {
         
         /**
          * Normalizes the numeric fragments that they can be sorted.
-         * @param  string string to be escaped
+         * Normalize means to expand all numeric values by a prefix to their
+         * numeric size (e.g. 10 == 0010, 100 > 0010, 100 > 0050, 100 > 50).
+         * @param  string string to be normalized
          * @return the normalized string
          */
-        private static String normalize(String string) {
-            
-            StringBuilder buffer = new StringBuilder();
-            string = StringUtils.trimToEmpty(string);
-            for (String fragment : string.split("(?<=\\d)(?!\\d)|(?<!\\d)(?=\\d)")) {
-                try {
-                    fragment = Long.valueOf(fragment).toString();
-                    fragment = Long.toString(fragment.length(), 36).toUpperCase() + fragment;
-                } catch (NumberFormatException exception) {
-                }
-                buffer.append(fragment);
+        private static String normalize(final String string) {
+            if (StringUtils.isBlank(string))
+                return "";
+            final StringBuilder buffer = new StringBuilder();
+            for (final String fragment : string.trim().split("((?<=\\d)(?!\\d))|((?<!\\d)(?=\\d))")) {
+                if (fragment.matches("^\\d+$")) {
+                    final String patch = fragment.replaceAll("^0+", "");
+                    buffer.append(Long.toString(patch.length(), 36).toUpperCase());
+                    buffer.append(patch);
+                } else buffer.append(fragment);
             }
             return buffer.toString();
         }
 
         @Override
-        public int compare(String string1, String string2) {
-
-            string1 = NaturalComparator.normalize(string1);
-            string2 = NaturalComparator.normalize(string2);
-            return string1.compareTo(string2);
+        public int compare(final String string1, final String string2) {
+            return NaturalComparator.normalize(string1)
+                    .compareTo(NaturalComparator.normalize(string2));
         }
     }    
     
@@ -153,7 +151,7 @@ public abstract class Template extends Service.Template {
          * Constructor, creates a new PreviewDataParserException object.
          * @param message
          */
-        PreviewDataParserException(String message) {
+        PreviewDataParserException(final String message) {
             super(message);
         }
     }
@@ -172,11 +170,8 @@ public abstract class Template extends Service.Template {
          * The value {@code null} is interpreted like an empty text.
          * @param text
          */
-        public Markup(CharSequence text) {
-            
-            if (Objects.isNull(text))
-                text = new String();
-            this.string = String.valueOf(text);
+        public Markup(final CharSequence text) {
+            this.string = Objects.nonNull(text) ? String.valueOf(text) : "";
         }
         
         @Override
@@ -185,12 +180,12 @@ public abstract class Template extends Service.Template {
         }
 
         @Override
-        public char charAt(int index) {
+        public char charAt(final int index) {
             return this.string.charAt(index);
         }
 
         @Override
-        public CharSequence subSequence(int start, int end) {
+        public CharSequence subSequence(final int start, final int end) {
             return this.string.subSequence(start, start);
         }
 
@@ -246,11 +241,9 @@ public abstract class Template extends Service.Template {
             throws PreviewDataParserException {
         
         Objects.requireNonNull(map);
-        
-        if (!PATTERN_EXPRESSION.matcher(key).find())  
+        if (!PATTERN_EXPRESSION.matcher(key).find())
             throw new PreviewDataParserException("Invalid key: " + key);
-        
-        if (!PATTERN_KEY.matcher(key).find())  
+        if (!PATTERN_KEY.matcher(key).find())
             throw new PreviewDataParserException("Invalid key: " + key);
         
         if (Objects.isNull(value))
@@ -258,16 +251,15 @@ public abstract class Template extends Service.Template {
         if (PATTERN_MARKUP_DETECTION.matcher(value).find())
             value = new Markup(value);           
         
-        List<String> entries = new ArrayList<>(Arrays.asList(PATTERN_KEY_DELIMITER.split(key)));
+        final List<String> entries = new ArrayList<>(Arrays.asList(PATTERN_KEY_DELIMITER.split(key)));
         while (entries.size() > 0) {
             String entry = entries.remove(0);
             if (PATTERN_LIST_EXPRESSION.matcher(entry).find()) {
-                int index = Integer.valueOf(PATTERN_LIST_EXPRESSION.matcher(entry).replaceAll("$2")).intValue();
+                final int index = Integer.valueOf(PATTERN_LIST_EXPRESSION.matcher(entry).replaceAll("$2")).intValue();
                 entry = PATTERN_LIST_EXPRESSION.matcher(entry).replaceAll("$1").trim();
-                if (!map.containsKey(entry)
-                        || !(map.get(entry) instanceof List))
+                if (!(map.get(entry) instanceof List))
                     map.put(entry, new ArrayList<>());
-                List list = (List)map.get(entry);
+                final List list = (List)map.get(entry);
                 if (list.size() < index)
                     throw new PreviewDataParserException("Invalid key index: " + key);
                 if (entries.size() > 0) {
@@ -283,8 +275,7 @@ public abstract class Template extends Service.Template {
                 }
             } else {
                 if (entries.size() > 0) {
-                    if (!map.containsKey(entry)
-                            || !(map.get(entry) instanceof Map))
+                    if (!(map.get(entry) instanceof Map))
                         map.put(entry, new HashMap<>());
                     map = (Map)map.get(entry);
                 } else map.put(entry, value);
@@ -302,13 +293,10 @@ public abstract class Template extends Service.Template {
      */
     protected Properties getPreviewProperties()
             throws Exception {
-        
-        String resource = this.getSourcePath();
-        resource = resource.replaceAll("[^\\\\/\\.]+$", "") + "properties";
-        
+        final String resource = this.getSourcePath()
+                .replaceAll("[^\\\\/\\.]+$", "") + "properties";
         Properties properties = new Properties();
-        properties.load(this.getResourceStream(resource));        
-        
+        properties.load(this.getResourceStream(resource));
         return properties;
     }
 
@@ -324,18 +312,15 @@ public abstract class Template extends Service.Template {
     @Override
     protected Map<String, Object> getPreviewData()
             throws Exception {
-
-        Properties properties = this.getPreviewProperties();
-
-        Map<String, Object> map = new HashMap<>();
-        Set keySet = new TreeSet<>(new NaturalComparator());
+        final Properties properties = this.getPreviewProperties();
+        final Map<String, Object> map = new HashMap<>();
+        final Set keySet = new TreeSet<>(new NaturalComparator());
         keySet.addAll(properties.keySet());
-        for (Object key : keySet) {
-            String source = ((String)key);
-            String target = source.replaceAll("(^\\.+)|(\\.+$)", "");
+        for (final Object key : keySet) {
+            final String source = ((String)key);
+            final String target = source.replaceAll("(^\\.+)|(\\.+$)", "");
             Template.collectPreviewData(map, target, properties.getProperty(source));
         }
-        
         return map;
     }
     
@@ -369,10 +354,7 @@ public abstract class Template extends Service.Template {
     @Override
     protected String getMarkup()
             throws Exception {
-        
-        String markup = super.getMarkup();
-        markup = this.resolveIncludes(this.getBasePath(), markup, new ArrayList<>());
-        return markup;
+        return this.resolveIncludes(this.getBasePath(), super.getMarkup(), new ArrayList<>());
     }
     
     /**
@@ -381,7 +363,7 @@ public abstract class Template extends Service.Template {
      * @param  text text to escape
      * @return the possibly escaped text
      */
-    static String escapeHtml(String text) {
+    static String escapeHtml(final String text) {
         return Template.escapeHtml(text, false);
     }
 
@@ -394,29 +376,27 @@ public abstract class Template extends Service.Template {
      * @param  markup {@code true} specifies that the content contains markup
      * @return the possibly escaped text
      */
-    static String escapeHtml(String text, boolean markup) {
-        
+    static String escapeHtml(final String text, final boolean markup) {
         if (Objects.isNull(text))
             return "";
-        StringBuilder build = new StringBuilder();
-        for (char digit : text.toCharArray()) {
+        final StringBuilder buffer = new StringBuilder();
+        for (final char digit : text.toCharArray()) {
             if (digit > 0x7F)
-                build.append("&#").append((int)digit).append(";");
+                buffer.append("&#").append((int)digit).append(";");
             else if (!markup) {
                 if (digit == '&')
-                    build.append("&amp;");
+                    buffer.append("&amp;");
                 else if (digit == '<')
-                    build.append("&lt;");
+                    buffer.append("&lt;");
                 else if (digit == '>')
-                    build.append("&gt;");
-                else build.append(digit);
-            } else build.append(digit);
+                    buffer.append("&gt;");
+                else buffer.append(digit);
+            } else buffer.append(digit);
         }
-        text = build.toString();
-        text = PATTERN_AMPERSAND.matcher(text).replaceAll("&amp;");
+        final String result = PATTERN_AMPERSAND.matcher(buffer.toString()).replaceAll("&amp;");
         if (markup)
-            return text;
-        return PATTERN_LINE_BREAKS.matcher(text).replaceAll("<br/>");
+            return result;
+        return PATTERN_LINE_BREAKS.matcher(result).replaceAll("<br/>");
     }
     
     /**
@@ -425,8 +405,7 @@ public abstract class Template extends Service.Template {
      * @return the escaped object
      */   
     @SuppressWarnings({"rawtypes", "unchecked"})
-    private static Object escapeHtml(Object object) {
-        
+    private static Object escapeHtml(final Object object) {
         if (Objects.isNull(object))
             return "";
         if (object instanceof Collection)
@@ -441,10 +420,9 @@ public abstract class Template extends Service.Template {
      * @param  collection collection with text values to escape
      * @return the Collection with escaped text values
      */
-    private static Collection<Map<String, Object>> escapeHtml(Collection<Map<String, Object>> collection) {
-        
+    private static Collection<Map<String, Object>> escapeHtml(final Collection<Map<String, Object>> collection) {
         if (Objects.isNull(collection))
-            collection = new ArrayList<>();
+            return new ArrayList<>();
         return collection.stream().map(Template::escapeHtml).collect(Collectors.toList());
     }
     
@@ -453,10 +431,9 @@ public abstract class Template extends Service.Template {
      * @param  map map with text values to escape
      * @return the Map with escaped text values
      */
-    private static Map<String, Object> escapeHtml(Map<String, Object> map) {
-        
+    private static Map<String, Object> escapeHtml(final Map<String, Object> map) {
         if (Objects.isNull(map))
-            map = new HashMap<>();
+            return new HashMap<>();
         return map.entrySet().stream().collect(Collectors.toMap(
                 entry -> entry.getKey(),
                 entry -> Template.escapeHtml(entry.getValue())
@@ -471,11 +448,10 @@ public abstract class Template extends Service.Template {
      * @param  collection
      * @return collection with additional exists keys
      */
-    private static Collection<Map<String, Object>> indicateEmpty(Collection<Map<String, Object>> collection) {
-        
-        List<Map<String, Object>> result = new ArrayList<>();
+    private static Collection<Map<String, Object>> indicateEmpty(final Collection<Map<String, Object>> collection) {
         if (Objects.isNull(collection))
-            collection = new ArrayList<>();
+            return new ArrayList<>();
+        final List<Map<String, Object>> result = new ArrayList<>();
         collection.forEach(entry -> {
             if (!entry.isEmpty())
                 result.add(Template.indicateEmpty(entry));
@@ -493,25 +469,24 @@ public abstract class Template extends Service.Template {
      * @return collection with additional exists keys
      */    
     @SuppressWarnings({"rawtypes", "unchecked"})
-    private static <T> Map<String, T> indicateEmpty(Map<String, T> map) {
-        
-        Map<String, T> result = new HashMap<>();
+    private static <T> Map<String, T> indicateEmpty(final Map<String, T> map) {
         if (Objects.isNull(map))
-            map = new HashMap<>();
+            return new HashMap<>();
+        final Map<String, T> result = new HashMap<>();
         map.entrySet().forEach(entry -> {
             if (Objects.nonNull(entry.getValue())) {
                 if (entry.getValue() instanceof Collection) {
-                    Collection value = (Collection)entry.getValue();
+                    final Collection value = (Collection)entry.getValue();
                     if (!value.isEmpty())
                         result.put(entry.getKey() + "-exists", (T)"exists");
                     result.put(entry.getKey(), (T)Template.indicateEmpty(value));
                 } else if (entry.getValue() instanceof Map) {
-                    Map value = (Map)entry.getValue();
+                    final Map value = (Map)entry.getValue();
                     if (!value.isEmpty())
                         result.put(entry.getKey() + "-exists", (T)"exists");
                     result.put(entry.getKey(), (T)Template.indicateEmpty(value));
                 } else {
-                    String value = String.valueOf(entry.getValue());
+                    final String value = String.valueOf(entry.getValue());
                     if (!value.trim().isEmpty())
                         result.put(entry.getKey() + "-exists", (T)"exists");
                     result.put(entry.getKey(), (T)value);
@@ -532,9 +507,8 @@ public abstract class Template extends Service.Template {
      */
     private String resolveIncludes(String path, String markup, List<String> stack)
             throws Exception {
-        
-        Pattern pattern = Pattern.compile("(?i)(?:^|(?<=[\r\n]))\\s*#include(?:(?:\\s+([^\r\n]*)\\s*((?=[\r\n])|$))|(?=\\s*$))");
-        Matcher matcher = pattern.matcher(markup);
+        final Pattern pattern = Pattern.compile("(?i)(?:^|(?<=[\r\n]))\\s*#include(?:(?:\\s+([^\r\n]*)\\s*((?=[\r\n])|$))|(?=\\s*$))");
+        final Matcher matcher = pattern.matcher(markup);
         while (matcher.find()) {
             if (matcher.groupCount() < 1)
                 throw new TemplateException("Invalid include found");
@@ -556,24 +530,23 @@ public abstract class Template extends Service.Template {
      */
     private String followIncludes(String path, String include, List<String> stack)
             throws Exception {
-
         if (include.startsWith("/")
                 || include.startsWith("\\"))
             include = Service.Template.normalizePath(include);
         else include = Service.Template.normalizePath("/" + path + "/" + include);
         if (stack.contains(include))
             throw new TemplateRecursionException();
-        List<String> recursions = new ArrayList<>(stack);
+        final List<String> recursions = new ArrayList<>(stack);
         recursions.add(include);
         if (Objects.isNull(this.getResource(include)))
             throw new TemplateResourceNotFoundException(include);
-        String markup = new String(IOUtils.toByteArray(this.getResourceStream(include)));
+        final String markup = new String(this.getResourceStream(include).readAllBytes());
         try {return this.resolveIncludes(Service.Template.normalizePath(include + "/.."), markup, recursions);
         } catch (TemplateRecursionException exception) {
             throw new TemplateException("Recursion found in: " + this.getResource(include));
         }
     }    
-    
+
     @Override
     protected String generate(String markup, Type type, Meta meta) {
         
@@ -584,9 +557,9 @@ public abstract class Template extends Service.Template {
         // - Placeholders cannot be inserted subsequently
         // - Placeholders without value are removed at the end
 
-        Map<String, String> statics = meta.getStatics();
-        Pattern pattern = Pattern.compile("\\!\\[\\s*(.*?)\\s*\\]");
-        Matcher matcher = pattern.matcher(markup);
+        final Map<String, String> statics = meta.getStatics();
+        final Pattern pattern = Pattern.compile("!\\[\\s*(.*?)\\s*\\]");
+        final Matcher matcher = pattern.matcher(markup);
         while (matcher.find()) {
             String value = null;
             if (matcher.group(0).matches("^(?i)!\\[[a-z]([\\w-]*\\w)?\\]$"))
@@ -597,7 +570,7 @@ public abstract class Template extends Service.Template {
             markup = markup.replace(matcher.group(0), value);
         }
 
-        Generator generator = Generator.parse(markup.getBytes());
+        final Generator generator = Generator.parse(markup.getBytes());
         generator.set(meta.getData());
         generator.set(new HashMap<>() {
             private static final long serialVersionUID = 1L; {
@@ -607,7 +580,7 @@ public abstract class Template extends Service.Template {
         
         return new String(generator.extract());
     }
-    
+
     @Override
     protected byte[] render(Meta meta)
             throws Exception {
@@ -635,8 +608,6 @@ public abstract class Template extends Service.Template {
                         (existing, value) -> value));
         statics = Template.indicateEmpty(statics);
 
-        meta = new Meta(meta.getLocale(), data, statics);
-         
-        return super.render(meta);
+        return super.render(new Meta(meta.getLocale(), data, statics));
     }
 }
