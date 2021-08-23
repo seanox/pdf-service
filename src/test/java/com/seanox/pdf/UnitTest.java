@@ -57,7 +57,7 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 
 /** 
- * Unit test for the PDF Server and Tools.<br>
+ * Unit test for the PDF Service and Tools.<br>
  * <br>
  * Test-Runtime Configuration:
  * <ul>
@@ -163,7 +163,7 @@ class UnitTest {
         final Method method = Compare.class.getDeclaredMethod("compareImage", BufferedImage.class, BufferedImage.class);
         method.setAccessible(true);
         final BufferedImage deltaImage = (BufferedImage)method.invoke(null, masterImage, compareImage);
-        if (deltaImage == null)
+        if (Objects.isNull(deltaImage))
             return true;
         final String deltaTimestamp = String.format("%tY%<tm%<td%<tH%<tM%<tS", new Date());
         final String deltaName = "_diffs_" + deltaTimestamp;
