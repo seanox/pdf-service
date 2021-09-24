@@ -39,12 +39,12 @@ import java.util.Objects;
 /** 
  * Pixel-based comparison of PDF files.<br>
  * <br>
- * Compare 4.1.0 20210821<br>
+ * Compare 4.1.0 20210924<br>
  * Copyright (C) 2021 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 4.1.0 20210821
+ * @version 4.1.0 20210924
  */
 public class Compare {
     
@@ -181,7 +181,7 @@ public class Compare {
             final String deltaName = "_diffs_page_" + (page +1) + "_" + deltaTimestamp;
             final File deltaFile = new File(compare.getParentFile(), compare.getName().replaceAll("\\.\\w+$", deltaName + ".png"));
             final BufferedImage delta = Compare.compareImage(masterImages.get(page), compareImages.get(page));
-            if (delta == null)
+            if (Objects.isNull(delta))
                 continue;
             deltas.add(deltaFile);
             ImageIO.write(delta, "png", deltaFile);

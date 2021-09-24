@@ -43,47 +43,47 @@ import java.util.stream.IntStream;
 /** 
  * Abstract class for implementing of template implementations.
  * 
- * <dir><b>About the templates</b></dir>
+ * <h3>About the templates</h3>
  * As engine {@link Generator} is used, here you can find more details.
  * The most important in short form:
  *  
- * <dir><code>#[placeholder]</code></dir>
+ * <code>#[placeholder]</code><br>
  * Simple placeholder, global or in a section.
  *  
- * <dir><code>#[placeholder-exists]</code></dir>
+ * <code>#[placeholder-exists]</code><br>
  * Pendant to any placeholder, if the value is not {@code null}, not empty and
  * not blank. Then the placeholder contains the value {@code exists}.
  *  
- * <dir><code>#[section[[...]]]</code></dir>
+ * <code>#[section[[...]]]</code><br>
  * Section/Bock can contain more substructures.
  * Sections/blocks are only rendered if a corresponding map entry exists.
  *  
- * <dir><code>![static-text]</code></dir>
+ * <code>![static-text]</code><br>
  * Placeholder for static non-structured text e.g. from the ResourceBundle.
  * 
- * <dir><code>![static-text-exists]</code></dir>
+ * <code>![static-text-exists]</code><br>
  * Pendant to any placeholder of static non-structured text, if the value is not
  * {@code null}, not empty and not blank. Then the placeholder contains the
  * value {@code exists}.
  *  
- * <dir><code>#[locale]</code></dir>
+ * <code>#[locale]</code><br>
  * Placeholder provided by {@link Service} with the current language.
  * Available in all sections (header, content/data, footer).
  *  
- * <dir><code>#[page]</code></dir>
+ * <code>#[page]</code><br>
  * Placeholder provided by {@link Service} with the current page number.
  * Available in sections: header, footer
  *  
- * <dir><code>#[pages]</code></dir>
+ * <code>#[pages]</code><br>
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer<br>
  * <br>
- * Template 4.1.0 20210822<br>
+ * Template 4.1.0 20210924<br>
  * Copyright (C) 2021 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 4.1.0 20210822
+ * @version 4.1.0 20210924
  */
 public abstract class Template extends Service.Template {
     

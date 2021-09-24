@@ -189,16 +189,16 @@ class GeneratorTest {
     void testAcceptance_B()
             throws Exception {
         final Generator generator = Generator.parse(GeneratorTest.readTestContent("testAcceptance_B_1.txt").getBytes());
-        final Map values = new HashMap() {{
-            put("a", new Hashtable() {{
+        final Map<String, Object> values = new HashMap<>() {{
+            put("a", new Hashtable<>() {{
                 put("a1", "xa1");
                 put("a2", "xa2");
                 put("a3", "xa3");
-                put("b", new Hashtable() {{
+                put("b", new Hashtable<>() {{
                     put("b1", "xb1");
                     put("b2", "xb2");
                     put("b3", "xb3");
-                    put("c", new Hashtable() {{
+                    put("c", new Hashtable<>() {{
                         put("c1", "xc1");
                         put("c2", "xc2");
                         put("c3", "xc3");
@@ -214,35 +214,35 @@ class GeneratorTest {
     void testAcceptance_C()
             throws Exception {
         final Generator generator = Generator.parse(GeneratorTest.readTestContent("testAcceptance_C_1.txt").getBytes());
-        final Hashtable<String, Object> values = new Hashtable() {{
-            put("row", new ArrayList() {{
-                add(new HashMap() {{
-                    put("cell", new ArrayList() {{
+        final Hashtable<String, Object> values = new Hashtable<>() {{
+            put("row", new ArrayList<>() {{
+                add(new HashMap<>() {{
+                    put("cell", new ArrayList<>() {{
                         add("A1");
                         add("A2");
                         add("A3");
                     }});
                 }});
-                add(new HashMap() {{
-                    put("cell", new ArrayList() {{
+                add(new HashMap<>() {{
+                    put("cell", new ArrayList<>() {{
                         add("B1");
                         add("B2");
                         add("B3");
                     }});
                 }});
-                add(new HashMap() {{
-                    put("cell", new ArrayList() {{
+                add(new HashMap<>() {{
+                    put("cell", new ArrayList<>() {{
                         add("C1");
                         add("C2");
                     }});
                 }});
-                add(new HashMap() {{
-                    put("cell", new ArrayList() {{
+                add(new HashMap<>() {{
+                    put("cell", new ArrayList<>() {{
                         add("D1");
                     }});
                 }});
-                add(new HashMap() {{
-                    put("cell", new ArrayList() {{
+                add(new HashMap<>() {{
+                    put("cell", new ArrayList<>() {{
                     }});
                 }});
             }});
@@ -276,7 +276,7 @@ class GeneratorTest {
     void testAcceptance_G() {
         final String template = "#[x]#[X]";
         final Generator generator = Generator.parse(template.getBytes());
-        final Map values = new HashMap<>();
+        final Map<String, Object> values = new HashMap<>();
         values.put("X", "1");
         values.put("x", "2");
         generator.set(values);

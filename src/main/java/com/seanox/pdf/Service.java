@@ -23,8 +23,8 @@ package com.seanox.pdf;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import com.seanox.pdf.Service.Template.Resources;
 import com.seanox.pdf.Service.Template.TemplateException;
+import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.pdfbox.io.IOUtils;
 import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.multipdf.Overlay;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
@@ -77,7 +77,7 @@ import java.util.stream.Stream;
 /**
  * Static service for creating PDF based on templates and meta-objects.
  *
- * <dir><b>Examples of use:</b></dir>
+ * <h3>Examples of use:</h3>
  * <pre>
  *   Service.render(template, meta);
  *    
@@ -85,7 +85,7 @@ import java.util.stream.Stream;
  *         StandardOpenOption.CREATE);
  * </pre>
  *  
- * <dir><b>How it works:</b></dir>
+ * <h3>How it works:</h3>
  * The creation of PDFs is based on an HTML-to-PDF converter (openhtmltopdf).
  * In the first step, an HTML is created that contains all data records.
  * The HTML is based on a markup template with placeholders. A generator or
@@ -98,7 +98,7 @@ import java.util.stream.Stream;
  * Only the key value entries in the maps and the placeholders in the template
  * determine the content.
  *  
- * <dir><b>Useful information:</b></dir>
+ * <h3>Useful information:</h3>
  * Templates are based on an implementation of the {@link Template} and the
  * annotation {@link Resources}, which with {@link Resources#base()} and
  * {@link Resources#template()}) contains information about the base directory
@@ -112,49 +112,49 @@ import java.util.stream.Stream;
  * ClassPath of this class. The location in the ClassPath can be defined with
  * {@link Resources#base()}.
  *  
- * <dir><b>About the templates</b></dir>
+ * <h3>About the templates</h3>
  * The template implementation takes over the rendering of the templates.
  * The implementation decides which generator, renderer, engine, ... it uses.
  * As engine {@link Generator} is used, here you can find more details.
  * The most important in short form:
  *  
- * <dir><code>#[placeholder]</code></dir>
+ * <code>#[placeholder]</code><br>
  * Simple placeholder, global or in a section.
  *  
- * <dir><code>#[placeholder-exists]</code></dir>
+ * <code>#[placeholder-exists]</code><br>
  * Pendant to any placeholder, if the value is not {@code null}, not empty and
  * not blank. Then the placeholder contains the value {@code exists}.
  *  
- * <dir><code>#[section[[...]]]</code></dir>
+ * <code>#[section[[...]]]</code><br>
  * Section/Bock can contain more substructures.
  * Sections/blocks are only rendered if a corresponding map entry exists.
  *  
- * <dir><code>![static-text]</code></dir>
+ * <code>![static-text]</code><br>
  * Placeholder for static non-structured text e.g. from the ResourceBundle.
  * 
- * <dir><code>![static-text-exists]</code></dir>
+ * <code>![static-text-exists]</code><br>
  * Pendant to any placeholder of static non-structured text, if the value is not
  * {@code null}, not empty and not blank. Then the placeholder contains the
  * value {@code exists}.
  *  
- * <dir><code>#[locale]</code></dir>
+ * <code>#[locale]</code><br>
  * Placeholder provided by {@link Service} with the current language.
  * Available in all sections (header, content/data, footer).
  *  
- * <dir><code>#[page]</code></dir>
+ * <code>#[page]</code><br>
  * Placeholder provided by {@link Service} with the current page number.
  * Available in sections: header, footer
  *  
- * <dir><code>#[pages]</code></dir>
+ * <code>#[pages]</code><br>
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer<br>
  * <br>
- * Service 4.1.0 20210821<br>
+ * Service 4.1.0 20210924<br>
  * Copyright (C) 2021 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 4.1.0 20210821
+ * @version 4.1.0 20210924
  */
 public class Service {
     
@@ -170,7 +170,7 @@ public class Service {
      */
     public static byte[] render(Class<? extends Template> template, Meta meta)
             throws ServiceException {
-        
+
         Template instance;
         try {instance = Service.Template.instantiate(template);
         } catch (Exception exception) {
@@ -199,8 +199,6 @@ public class Service {
             throw new Template.TemplateException("Invalid base URI", exception);
         }
 
-        if (Objects.isNull(meta))
-            meta = new Meta();
         try {return template.render(meta);
         } catch (Exception exception) {
             throw new ServiceException(exception);
@@ -336,12 +334,14 @@ public class Service {
         }
 
         @Override
-        protected Object clone() {
-            
-            Meta meta = new Meta();
+        protected Meta clone() {
+            final Meta meta = new Meta();
             meta.locale = this.locale;
             meta.data = this.data;
-            meta.statics = this.statics;
+            if (Objects.nonNull(this.statics))
+                meta.statics = SerializationUtils.clone(new HashMap<>(this.statics));
+            if (Objects.nonNull(this.data))
+                meta.data = SerializationUtils.clone(new HashMap<>(this.data));
             return meta;
         }
     }
@@ -357,9 +357,9 @@ public class Service {
 
         static Template instantiate(final Class<? extends Template> template)
                 throws Exception {
-            final Constructor constructor = template.getDeclaredConstructor();
+            final Constructor<? extends Template> constructor = template.getDeclaredConstructor();
             constructor.setAccessible(true);
-            return (Template)constructor.newInstance();
+            return constructor.newInstance();
         }
 
         /**
@@ -543,7 +543,7 @@ public class Service {
          */
         protected String getMarkup()
                 throws Exception {
-            return new String(IOUtils.toByteArray(this.getSourceStream()));
+            return new String(this.getSourceStream().readAllBytes());
         }
 
         /**
@@ -693,6 +693,7 @@ public class Service {
 
             if (Objects.isNull(meta))
                 meta = new Meta();
+            else meta = meta.clone();
 
             // Data is copied because it is manipulated later for the header and
             // footer by adding the keys and values for locale, page and pages.
@@ -821,14 +822,14 @@ public class Service {
          * three templates can be created from one template and each fragment
          * can be rendered individually as a PDF.
          * 
-         * <dir><b>Header</b></dir>
+         * <h3>Header</h3>
          * The complete (X)HTML document with {@code BODY > HEADER} only.
          * 
-         * <dir><b>Content</b></dir>
+         * <h3>Content</h3>
          * The complete (X)HTMl document without {@code BODY > HEADER} and
          * without {@code BODY > FOOTER}.
          * 
-         * <dir><b>Footer</b></dir>
+         * <h3>Footer</h3>
          * The complete (X)HTML document with {@code BODY > FOOTER} only.
          */
         protected static class Multiplex {
@@ -873,7 +874,7 @@ public class Service {
              */
             private static List<Node> convertNodeList(NodeList nodes) {
                 
-                if (Objects.isNull(nodes == null)
+                if (Objects.isNull(nodes)
                         || nodes.getLength() == 0)
                     return Collections.emptyList();
                 

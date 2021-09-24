@@ -119,12 +119,12 @@ import java.util.stream.Collectors;
  * {@link #set(Map)} in combination with {@link #extract()}, but focus on only
  * one segment.<br>
  * <br>
- * Generator 4.0.2 20210819<br>
+ * Generator 4.0.2 20210924<br>
  * Copyright (C) 2021 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 4.0.2 20210819
+ * @version 4.0.2 20210924
  */
 class Generator {
 
@@ -169,9 +169,9 @@ class Generator {
             return -1;        
 
         // Phase 0: Identification of a placeholder
-        //   - supported formats: #[...], #[...[[...]]]
-        //   - characteristic are the first two characters
-        //   - all placeholders begin with #[...
+        // - supported formats: #[...], #[...[[...]]]
+        // - characteristic are the first two characters
+        // - all placeholders begin with #[...
         if (cursor +1 >= model.length
                 || model[cursor] != '#'
                 || model[cursor +1] != '[')
@@ -189,9 +189,9 @@ class Generator {
                 level = stack[deep];
 
             // Phase 1: Recognition of the start of a placeholder
-            //   - supported formats: #[...], #[...[[...]]]
-            //   - characteristic are the first two characters
-            //   - all placeholders begin with #[...
+            // - supported formats: #[...], #[...[[...]]]
+            // - characteristic are the first two characters
+            // - all placeholders begin with #[...
             // A placeholder can only begin if no stack and therefore no
             // placeholder exists or if a segment placeholder has been determined
             // before. In both cases the level is not equal to 1 and another
@@ -206,8 +206,8 @@ class Generator {
             }
             
             // Phase 1A: Qualification of a segment placeholder
-            //   - active level 1 is expected
-            //   - character string [[ is found
+            // - active level 1 is expected
+            // - character string [[ is found
             // The current stack is set to level 2.
             if (cursor +1 < model.length
                     && model[cursor] == '['
