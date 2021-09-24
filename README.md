@@ -68,7 +68,7 @@ specific language governing permissions and limitations under the License.
 
 
 # System Requirement
-Java 8 or higher
+Java 11 or higher
 
 
 # Downloads
