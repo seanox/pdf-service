@@ -77,11 +77,11 @@ https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
 <dependency>
     <groupId>com.seanox</groupId>
     <artifactId>seanox-pdf-service</artifactId>
-    <version>4.0.3</version>
+    <version>4.1.0</version>
 </dependency>
 ```
 
-[Seanox PDF-Tools 4.0.3](https://github.com/seanox/pdf-service/raw/master/releases/seanox-pdf-tools-4.0.3.jar)
+[Seanox PDF-Tools 4.1.0](https://github.com/seanox/pdf-service/raw/master/releases/seanox-pdf-tools-4.1.0.jar)
 
 
 # Manuals
@@ -89,12 +89,15 @@ https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
 
 
 # Changes (Change Log)
-## 4.0.3 20200830 (summary of the current version)  
-BF: Service: Optimization of the code  
-BF: Template: Correction/optimization of exists-placeholder  
-BF: Template Preview Properties: Correction of the logic during parsing  
-BF: JUnit: Cleanup of JUnit4  
-BF: Maven: Minimization and update dependencies  
+## 4.1.0 2021xxxx (summary of the next version)  
+BF: Maven: Update of dependencies  
+BF: Review: Optimization (code + tests)  
+CR: OpenHtmlToPdf: Update to version 1.0.9  
+CR: Java: Switch to version 11  
+CR: Preview: Added argument/option/keyword/... @Resources  
+CR: Designer: Added argument/option/keyword/... @Resources  
+CR: Maven: Added static code analysis  
+CR: Template: Optimization of @Resources, class need not be public  
 
 [Read more](https://raw.githubusercontent.com/seanox/pdf-service/master/CHANGES)
 
