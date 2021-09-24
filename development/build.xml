@@ -95,7 +95,7 @@
         replace="${now.year}"/>
 
     <replaceregexp file="${workspace}/pom.xml" flags="g" byline="false"
-        match="(?si)(&lt;artifactId&gt;seanox-pdf-service&lt;/artifactId&gt;\s*&lt;version&gt;)[\d\.]+(&lt;/version&gt;)"
+        match="(?si)(&lt;artifactId&gt;seanox-${ant.project.name}&lt;/artifactId&gt;\s*&lt;version&gt;)[\d\.]+(&lt;/version&gt;)"
         replace="\1${release.version}\2"/>
   </target>
 
@@ -108,7 +108,7 @@
     <sync-source-version file="${workspace}/src/main/java/com/seanox/pdf/Preview.java"/>
 
     <replaceregexp file="${workspace}/pom.xml" flags="g" byline="false"
-        match="(?si)(&lt;artifactId&gt;seanox-pdf-service&lt;/artifactId&gt;\s*&lt;version&gt;)[\d\.]+(&lt;/version&gt;)"
+        match="(?si)(&lt;artifactId&gt;seanox-${ant.project.name}&lt;/artifactId&gt;\s*&lt;version&gt;)[\d\.]+(&lt;/version&gt;)"
         replace="\1${release.version}\2"/>
 
     <delete dir="${workspace.target}" includes="*jar-with-dependencies.jar"/>
@@ -118,9 +118,9 @@
     </exec>
     <move todir="${workspace.releases}">
       <fileset dir="${workspace.target}">
-        <include name="seanox-pdf-service-*-jar-with-dependencies.jar"/>
+        <include name="seanox-${ant.project.name}-*-jar-with-dependencies.jar"/>
       </fileset>
-      <mapper type="glob" from="seanox-pdf-service-*-jar-with-dependencies.jar" to="seanox-pdf-tools-${release.version}.jar"/>
+      <mapper type="glob" from="seanox-${ant.project.name}-*-jar-with-dependencies.jar" to="seanox-pdf-tools-${release.version}.jar"/>
     </move>
     <touch datetime="${release.date}" pattern="yyyyMMdd" file="${workspace.releases}/seanox-pdf-tools-${release.version}.jar"/>
   </target>
