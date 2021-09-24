@@ -89,7 +89,7 @@ https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
 
 
 # Changes (Change Log)
-## 4.1.0 2021xxxx (summary of the next version)  
+## 4.1.0 20210924 (summary of the current version)  
 BF: Maven: Update of dependencies  
 BF: Review: Optimization (code + tests)  
 CR: OpenHtmlToPdf: Update to version 1.0.9  
