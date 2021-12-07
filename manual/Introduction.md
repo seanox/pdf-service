@@ -179,7 +179,9 @@ byte[] data = Service.render(..., meta);
 Files.write(Paths.get("example.pdf"), data, StandardOpenOption.CREATE);
 ```
 
-The render method needs an implemented template.
+The render method needs an implemented template, in the best case. But you can
+also implement a universal template, which uses simple strings for the paths to
+the templates.
 
 Why as a template implementation?
 
