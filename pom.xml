@@ -7,7 +7,7 @@
   
   <groupId>com.seanox</groupId>
   <artifactId>seanox-pdf-service</artifactId>
-  <version>4.1.0</version>
+  <version>4.1.1</version>
   <packaging>jar</packaging>
   <name>pdf-service</name>
   <description>PDF service for generating/rendering PDFs based on Open HTML to PDF</description>
@@ -35,7 +35,6 @@
   <properties>
     <java.version>11</java.version>
     <encoding>UTF-8</encoding>
-    <maven.build.version>3.2.0</maven.build.version>
   </properties>
 
   <dependencies>
@@ -45,7 +44,7 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
-      <version>5.3.10</version>
+      <version>5.3.16</version>
       <exclusions>
         <exclusion>
           <groupId>org.springframework</groupId>
@@ -77,7 +76,7 @@
     <dependency>
       <groupId>com.openhtmltopdf</groupId>
       <artifactId>openhtmltopdf-pdfbox</artifactId>
-      <version>1.0.9</version>
+      <version>1.0.10</version>
       <exclusions>
         <exclusion>
           <groupId>commons-logging</groupId>
@@ -90,13 +89,13 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <version>2.12.3</version>
+      <version>2.13.2.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <version>1.18.20</version>
+      <version>1.18.22</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -176,7 +175,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>${maven.build.version}</version>
+        <version>3.2.0</version>
         <configuration>
           <source>${java.version}</source>
           <doclint>none</doclint>
