@@ -82,7 +82,7 @@ https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
 </dependency>
 ```
 
-[Seanox PDF-Tools 4.1.1](https://github.com/seanox/pdf-service/releases/download/untagged-978f9134ac399f32d6a7/seanox-pdf-tools-4.1.1.jar)
+[Seanox PDF-Tools 4.1.1](https://github.com/seanox/pdf-service/releases/download/4.1.1/seanox-pdf-tools-4.1.1.jar)
 
 
 # Manuals
