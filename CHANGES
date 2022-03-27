@@ -1,6 +1,7 @@
-4.1.1 2022xxxx
+4.1.1 20220327
   BF: Maven: Update of dependencies
       CVE-2020-36518
+  BF: Build: Optimization of the release info process
   CR: OpenHtmlToPdf: Update to version 1.0.10
 
 4.1.0 20210924

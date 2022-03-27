@@ -54,7 +54,7 @@ Folgenden Seanox Software Solutions oder kurz Seanox genannt.
  
 Diese Software unterliegt der Version 2 der Apache License.
 
-Copyright (C) 2021 Seanox Software Solutions
+Copyright (C) 2022 Seanox Software Solutions
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 this file except in compliance with the License. You may obtain a copy of the
@@ -78,11 +78,11 @@ https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
 <dependency>
     <groupId>com.seanox</groupId>
     <artifactId>seanox-pdf-service</artifactId>
-    <version>4.1.0</version>
+    <version>4.1.1</version>
 </dependency>
 ```
 
-[Seanox PDF-Tools 4.1.0](https://github.com/seanox/pdf-service/raw/master/releases/seanox-pdf-tools-4.1.0.jar)
+[Seanox PDF-Tools 4.1.1](https://github.com/seanox/pdf-service/raw/master/releases/seanox-pdf-tools-4.1.1.jar)
 
 
 # Manuals
@@ -90,15 +90,9 @@ https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
 
 
 # Changes (Change Log)
-## 4.1.0 20210924 (summary of the current version)  
+## 4.1.1 20220327 (summary of the current version)  
 BF: Maven: Update of dependencies  
-BF: Review: Optimization (code + tests)  
-CR: OpenHtmlToPdf: Update to version 1.0.9  
-CR: Java: Switch to version 11  
-CR: Preview: Added argument/option/keyword/... @Resources  
-CR: Designer: Added argument/option/keyword/... @Resources  
-CR: Maven: Added static code analysis  
-CR: Template: Optimization of @Resources, class need not be public  
+CR: OpenHtmlToPdf: Update to version 1.0.10  
 
 [Read more](https://raw.githubusercontent.com/seanox/pdf-service/master/CHANGES)
 
