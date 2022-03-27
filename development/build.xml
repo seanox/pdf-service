@@ -16,7 +16,7 @@
 
   <property name="workspace" value="${basedir}"/>
   <property name="workspace.sources" value="${workspace}/src"/>
-  <property name="workspace.sources.filter" value="**/*.java,**/pom.xml"/>
+  <property name="workspace.sources.filter" value="**/*.java"/>
   <property name="workspace.development" value="${workspace}/development"/>
   <property name="workspace.target" value="${workspace}/target"/>
   <property name="workspace.releases" value="${workspace}/releases"/>
@@ -51,6 +51,7 @@
       <local name="release.info.year"/>
       <local name="release.info.date"/>
       <loadproperties srcfile="release-info.tmp"/>
+      <delete file="release-info.tmp"/>
       <replaceregexp match="(?&lt;!\*\s+)(Copyright\s+[^\s]+)\s+\d+" replace="\1 ${release.info.year}">
         <fileset dir="${workspace}" includes="${workspace.sources.filter}"/>
       </replaceregexp>
@@ -61,9 +62,6 @@
         <fileset dir="${workspace}" includes="${workspace.sources.filter}"/>
       </replaceregexp>
       <replaceregexp match="(&lt;assemblyIdentity version=&quot;)\d+(?:\.\d+)+(&quot;)" replace="\1${release.info.version}.0\2">
-        <fileset dir="${workspace}" includes="${workspace.sources.filter}"/>
-      </replaceregexp>
-      <replaceregexp match="(&lt;version&gt;)\d+(?:\.\d+)+(&lt;/version&gt;)" replace="\1${release.info.version}\2">
         <fileset dir="${workspace}" includes="${workspace.sources.filter}"/>
       </replaceregexp>
     </sequential>
@@ -131,6 +129,9 @@
 
   <target name="release" depends="changes,tools">
     <release-info-locate/>
+
+    <replaceregexp file="${workspace}/pom.xml"
+       match="(&lt;version&gt;)\d+(?:\.\d+)+(&lt;/version&gt;)" replace="\1${release.version}\2"/>
     <replaceregexp file="${workspace}/README.md"
         match="(?si)(&lt;version&gt;)[\.\d\s]+(&lt;/version&gt;)" flags="g" byline="true"
         replace="\1${release.version}\2"/>
@@ -140,5 +141,12 @@
     <replaceregexp file="${workspace}/README.md"
         match="(?si)(seanox-pdf-tools-)[\.\d\s]+(\.jar)" flags="g" byline="true"
         replace="\1${release.version}\2"/>
+  </target>
+
+  <target name="deploy" depends="release">
+    <exec executable="cmd">
+      <arg value="/c"/>
+      <arg value="mvn clean deploy"/>
+    </exec>
   </target>
 </project>
