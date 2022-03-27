@@ -1,5 +1,6 @@
 /.idea/
 /.settings/
+/releases/
 /target/
 /temp/
 .classpath

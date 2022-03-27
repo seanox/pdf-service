@@ -3,6 +3,8 @@
       CVE-2020-36518
   BF: Build: Optimization of the release info process
   CR: OpenHtmlToPdf: Update to version 1.0.10
+  CR: Releases only as attachments on the GitHub release page
+      Otherwise the download during cloning will be too large.
 
 4.1.0 20210924
   BF: Maven: Update of dependencies
