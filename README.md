@@ -82,7 +82,7 @@ https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
 </dependency>
 ```
 
-[Seanox PDF-Tools 4.1.1](https://github.com/seanox/pdf-service/raw/master/releases/seanox-pdf-tools-4.1.1.jar)
+[Seanox PDF-Tools 4.1.1](https://github.com/seanox/pdf-service/releases/download/untagged-978f9134ac399f32d6a7/seanox-pdf-tools-4.1.1.jar)
 
 
 # Manuals
@@ -94,6 +94,7 @@ https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
 BF: Maven: Update of dependencies  
 BF: Build: Optimization of the release info process  
 CR: OpenHtmlToPdf: Update to version 1.0.10  
+CR: Releases only as attachments on the GitHub release page  
 
 [Read more](https://raw.githubusercontent.com/seanox/pdf-service/master/CHANGES)
 
