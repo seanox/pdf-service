@@ -73,6 +73,7 @@ Java 11 or higher
 
 
 # Downloads
+https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service/4.1.1  
 https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
 ```xml
 <dependency>

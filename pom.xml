@@ -7,7 +7,7 @@
   
   <groupId>com.seanox</groupId>
   <artifactId>seanox-pdf-service</artifactId>
-  <version>4.1.1</version>
+  <version>0.0.0</version>
   <packaging>jar</packaging>
   <name>pdf-service</name>
   <description>PDF service for generating/rendering PDFs based on Open HTML to PDF</description>

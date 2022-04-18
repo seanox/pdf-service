@@ -16,7 +16,7 @@
 
   <property name="workspace" value="${basedir}"/>
   <property name="workspace.sources" value="${workspace}/src"/>
-  <property name="workspace.sources.filter" value="**/*.java"/>
+  <property name="workspace.sources.filter" value="**/*.java,**/pom.xml"/>
   <property name="workspace.development" value="${workspace}/development"/>
   <property name="workspace.target" value="${workspace}/target"/>
   <property name="workspace.releases" value="${workspace}/releases"/>
@@ -55,13 +55,11 @@
       <replaceregexp match="(?&lt;!\*\s+)(Copyright\s+[^\s]+)\s+\d+" replace="\1 ${release.info.year}">
         <fileset dir="${workspace}" includes="${workspace.sources.filter}"/>
       </replaceregexp>
-      <replaceregexp match="(Version)\(&quot;\d+(?:\.\d)+&quot;\)" replace="\1(&quot;${release.info.version}&quot;)">
-        <fileset dir="${workspace}" includes="${workspace.sources.filter}"/>
-      </replaceregexp>
       <replaceregexp match="(Version) \d+(?:\.\d+)+ \d+" replace="\1 ${release.info.version} ${release.info.date}">
         <fileset dir="${workspace}" includes="${workspace.sources.filter}"/>
       </replaceregexp>
-      <replaceregexp match="(&lt;assemblyIdentity version=&quot;)\d+(?:\.\d+)+(&quot;)" replace="\1${release.info.version}.0\2">
+      <replaceregexp match="(?si)(&lt;artifactId&gt;seanox-${ant.project.name}\b.*?&lt;version&gt;)\d[\d\.]+(&lt;/version&gt;)"
+          replace="\1${release.info.version}\2" flags="g" byline="false">
         <fileset dir="${workspace}" includes="${workspace.sources.filter}"/>
       </replaceregexp>
     </sequential>
@@ -106,6 +104,19 @@
     <replaceregexp file="${workspace}/README.md"
         match="(?si)(?&lt;=\(C\)\s)\d{4}\b" flags="g" byline="true"
         replace="${now.year}"/>
+
+    <replaceregexp file="${workspace}/README.md"
+        match="(?si)(&lt;artifactId&gt;seanox-${ant.project.name}\b.*?&lt;version&gt;)\d[\d\.]+(&lt;/version&gt;)"
+        replace="\1${release.version}\2" flags="g" byline="false"/>
+    <replaceregexp file="${workspace}/README.md"
+        match="(seanox-${ant.project.name}-)\d[\d\.]+(\.jar)"
+        replace="\1${release.version}\2" flags="g" byline="false"/>
+    <replaceregexp file="${workspace}/README.md"
+        match="(seanox-${ant.project.name}/)\d[\d\.]+"
+        replace="\1${release.version}" flags="g" byline="false"/>
+    <replaceregexp file="${workspace}/README.md"
+        match="(seanox/${ant.project.name}/releases/download/)\d[\d\.]+"
+        replace="\1${release.version}" flags="g" byline="false"/>
   </target>
 
   <target name="tools">
@@ -129,6 +140,7 @@
 
   <target name="release" depends="changes,tools">
     <release-info-locate/>
+    <release-info-insert/>
 
     <replaceregexp file="${workspace}/pom.xml"
        match="(&lt;version&gt;)\d+(?:\.\d+)+(&lt;/version&gt;)" replace="\1${release.version}\2"/>
@@ -141,12 +153,16 @@
     <replaceregexp file="${workspace}/README.md"
         match="(?si)(seanox-pdf-tools-)[\.\d\s]+(\.jar)" flags="g" byline="true"
         replace="\1${release.version}\2"/>
+    <release-info-reset/>
   </target>
 
   <target name="deploy" depends="release">
+    <release-info-locate/>
+    <release-info-insert/>
     <exec executable="cmd">
       <arg value="/c"/>
       <arg value="mvn clean deploy"/>
     </exec>
+    <release-info-reset/>
   </target>
 </project>
