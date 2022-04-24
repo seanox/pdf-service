@@ -31,21 +31,24 @@ supported.
 - Built-in markup generator   
 very simple syntax, supports placeholders, structures and includes
 - Built-in preview and designer with mock-up support  
-simplifies the design process by allowing previewing without the target application  
+simplifies the design process by allowing previewing without the target 
+application  
 - Independent header, data and footer areas in one template (without magic)  
-header, footer and data area are merged by overlaysand can therefore be formatted independently of the data area  
-e.g. margins of the document can be used by the header and footer
+header, footer and data area are merged by overlays and can therefore be
+formatted independently of the data area e.g. margins of the document can be
+used by the header and footer
 - Native support of page numbers
 - I18n support  
-language setting is also transferred to the template and thus fonts matching the language can be used
+language setting is also transferred to the template and thus fonts matching
+the language can be used
 - Creation of markup as preview e.g. for the frontend
-- API for templates and other renderer and markup generators 
+- API for templates and other renderer and markup generators  
 abstract templates for individual renderer and generators
 - PDF comparison for test automation  
 pixel- and color-based with difference image generation
 - PDF Tools as standalone Java applications  
-includes Compare, Designer, Preview as command line applications  
-designing and testing outside and independent of projects
+includes Compare, Designer, Preview as command line applications designing and
+testing outside and independent of projects
 
 
 # Licence Agreement
