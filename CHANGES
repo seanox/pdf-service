@@ -1,5 +1,8 @@
 4.1.2 2022xxxx
   BF: Build: Optimization of the release info process
+  BF: Maven: Update of dependencies
+  BF: Template: Correction for handling unexpected data type in data map
+      e.g. Collection with Integer caused errors
 
 4.1.1 20220327
   BF: Maven: Update of dependencies

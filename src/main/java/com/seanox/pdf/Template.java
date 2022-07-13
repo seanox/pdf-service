@@ -423,7 +423,10 @@ public abstract class Template extends Service.Template {
     private static Collection<Map<String, Object>> escapeHtml(final Collection<Map<String, Object>> collection) {
         if (Objects.isNull(collection))
             return new ArrayList<>();
-        return collection.stream().map(Template::escapeHtml).collect(Collectors.toList());
+        try {return collection.stream().map(Template::escapeHtml).collect(Collectors.toList());
+        } catch (ClassCastException exception) {
+            return new ArrayList<>();
+        }
     }
     
     /**
@@ -434,10 +437,14 @@ public abstract class Template extends Service.Template {
     private static Map<String, Object> escapeHtml(final Map<String, Object> map) {
         if (Objects.isNull(map))
             return new HashMap<>();
-        return map.entrySet().stream().collect(Collectors.toMap(
-                entry -> entry.getKey(),
-                entry -> Template.escapeHtml(entry.getValue())
-            ));        
+        try {
+            return map.entrySet().stream().collect(Collectors.toMap(
+                    entry -> entry.getKey(),
+                    entry -> Template.escapeHtml(entry.getValue())
+            ));
+        } catch (ClassCastException exception) {
+            return new HashMap<>();
+        }
     }
     
     /**
@@ -453,8 +460,9 @@ public abstract class Template extends Service.Template {
             return new ArrayList<>();
         final List<Map<String, Object>> result = new ArrayList<>();
         collection.forEach(entry -> {
-            if (!entry.isEmpty())
-                result.add(Template.indicateEmpty(entry));
+            if (entry.isEmpty())
+                return;
+            result.add(Template.indicateEmpty(entry));
         });
         return result;
     }
@@ -474,23 +482,29 @@ public abstract class Template extends Service.Template {
             return new HashMap<>();
         final Map<String, T> result = new HashMap<>();
         map.entrySet().forEach(entry -> {
-            if (Objects.nonNull(entry.getValue())) {
-                if (entry.getValue() instanceof Collection) {
-                    final Collection value = (Collection)entry.getValue();
-                    if (!value.isEmpty())
-                        result.put(entry.getKey() + "-exists", (T)"exists");
-                    result.put(entry.getKey(), (T)Template.indicateEmpty(value));
-                } else if (entry.getValue() instanceof Map) {
-                    final Map value = (Map)entry.getValue();
-                    if (!value.isEmpty())
-                        result.put(entry.getKey() + "-exists", (T)"exists");
-                    result.put(entry.getKey(), (T)Template.indicateEmpty(value));
-                } else {
-                    final String value = String.valueOf(entry.getValue());
-                    if (!value.trim().isEmpty())
-                        result.put(entry.getKey() + "-exists", (T)"exists");
-                    result.put(entry.getKey(), (T)value);
+            if (Objects.isNull(entry.getValue()))
+                return;
+            if (entry.getValue() instanceof Collection) {
+                final Collection value = (Collection)entry.getValue();
+                if (!value.isEmpty())
+                    result.put(entry.getKey() + "-exists", (T)"exists");
+                try {result.put(entry.getKey(), (T)Template.indicateEmpty(value));
+                } catch (ClassCastException exception) {
+                    result.put(entry.getKey(), (T)String.valueOf(entry.getValue()));
                 }
+            } else if (entry.getValue() instanceof Map) {
+                final Map value = (Map)entry.getValue();
+                if (!value.isEmpty())
+                    result.put(entry.getKey() + "-exists", (T)"exists");
+                try {result.put(entry.getKey(), (T)Template.indicateEmpty(value));
+                } catch (ClassCastException exception) {
+                    result.put(entry.getKey(), (T)String.valueOf(entry.getValue()));
+                }
+            } else {
+                final String value = String.valueOf(entry.getValue());
+                if (!value.trim().isEmpty())
+                    result.put(entry.getKey() + "-exists", (T)"exists");
+                result.put(entry.getKey(), (T)value);
             }
         });
         return result;
