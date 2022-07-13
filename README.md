@@ -76,17 +76,17 @@ Java 11 or higher
 
 
 # Downloads
-https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service/4.1.1  
+https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service/4.1.2  
 https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
 ```xml
 <dependency>
     <groupId>com.seanox</groupId>
     <artifactId>seanox-pdf-service</artifactId>
-    <version>4.1.1</version>
+    <version>4.1.2</version>
 </dependency>
 ```
 
-[Seanox PDF-Tools 4.1.1](https://github.com/seanox/pdf-service/releases/download/4.1.1/seanox-pdf-tools-4.1.1.jar)
+[Seanox PDF-Tools 4.1.2](https://github.com/seanox/pdf-service/releases/download/4.1.2/seanox-pdf-tools-4.1.2.jar)
 
 
 # Manuals
@@ -94,11 +94,10 @@ https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
 
 
 # Changes (Change Log)
-## 4.1.1 20220327 (summary of the current version)  
-BF: Maven: Update of dependencies  
+## 4.1.2 20220713 (summary of the current version)  
 BF: Build: Optimization of the release info process  
-CR: OpenHtmlToPdf: Update to version 1.0.10  
-CR: Releases only as attachments on the GitHub release page  
+BF: Maven: Update of dependencies  
+BF: Template: Correction for handling unexpected data type in data map  
 
 [Read more](https://raw.githubusercontent.com/seanox/pdf-service/master/CHANGES)
 

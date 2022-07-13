@@ -188,8 +188,8 @@ public class Preview {
     public static void main(final String... options)
             throws Exception {
         
-        System.out.println("Seanox PDF Preview [Version 0.0.0 00000000]");
-        System.out.println("Copyright (C) 0000 Seanox Software Solutions");
+        System.out.println("Seanox PDF Preview [Version 4.1.2 20220713]");
+        System.out.println("Copyright (C) 2022 Seanox Software Solutions");
         System.out.println();
 
         if (Objects.isNull(options)
