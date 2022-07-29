@@ -1,3 +1,9 @@
+4.2.0 2022xxxx
+  CR: Generator: Added placeholder syntax for structures
+      Structures are bound to their place and, unlike a segment/scope, can be
+      defined differently multiple times, but they cannot be reused and cannot
+      be generated or extracted based on names.
+
 4.1.2 20220713
   BF: Build: Optimization of the release info process
   BF: Maven: Update of dependencies

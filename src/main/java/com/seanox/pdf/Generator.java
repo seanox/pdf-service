@@ -75,7 +75,21 @@ import java.util.stream.Collectors;
  *     <td valign="top">
  *       Defines a segment/scope. The nesting and use of further segments is
  *       possible. Since the placeholders for inserting segments are preserved,
- *       they can be used to build lists.
+ *       they can be used to build lists. Segments are comparable to templates
+ *       and can be reused via the simple placeholder of the same name.
+ *     </td>
+ *   </tr>
+ *   <tr>
+ *     <td valign="top" nowrap="nowrap">
+ *       {@code #[scope&#123;&#123;...&#125;&#125;]}
+ *     </td>
+ *     <td valign="top">
+ *       Defines a structure. The nesting and use of further segments is
+ *       possible. Since the placeholders for inserting segments are preserved,
+ *       they can be used to build lists. Structures are bound to their place
+ *       and, unlike a segment/scope, can be defined differently multiple
+ *       times, but they cannot be reused and cannot be generated or extracted
+ *       based on names.
  *     </td>
  *   </tr>
  *   <tr>
@@ -119,12 +133,12 @@ import java.util.stream.Collectors;
  * {@link #set(Map)} in combination with {@link #extract()}, but focus on only
  * one segment.<br>
  * <br>
- * Generator 4.0.2 20210924<br>
+ * Generator 4.1.0 20220729<br>
  * Copyright (C) 2021 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 4.0.2 20210924
+ * @version 4.1.0 20220729
  */
 class Generator {
 
@@ -169,7 +183,7 @@ class Generator {
             return -1;        
 
         // Phase 0: Identification of a placeholder
-        // - supported formats: #[...], #[...[[...]]]
+        // - supported formats: #[...], #[...[[...]]], #[...{{...}}]
         // - characteristic are the first two characters
         // - all placeholders begin with #[...
         if (cursor +1 >= model.length
@@ -179,6 +193,7 @@ class Generator {
             
         int offset = cursor;
         int deep   = 0;
+        int type   = 0;
 
         int[] stack = new int[65535];
         while (cursor < model.length) {
@@ -187,9 +202,10 @@ class Generator {
             int level = 0;
             if (deep > 0)
                 level = stack[deep];
+            else type = 0;
 
             // Phase 1: Recognition of the start of a placeholder
-            // - supported formats: #[...], #[...[[...]]]
+            // - supported formats: #[...], #[...[[...]]], #[...{{...}}]
             // - characteristic are the first two characters
             // - all placeholders begin with #[...
             // A placeholder can only begin if no stack and therefore no
@@ -207,15 +223,20 @@ class Generator {
             
             // Phase 1A: Qualification of a segment placeholder
             // - active level 1 is expected
-            // - character string [[ is found
+            // - character string [[ or {{ is found
             // The current stack is set to level 2.
             if (cursor +1 < model.length
-                    && model[cursor] == '['
-                    && model[cursor +1] == '['
                     && level == 1) {
-                stack[deep] = 2;
-                cursor += 2;
-                continue;
+                if ((model[cursor] == '[' && model[cursor +1] == '[')
+                        || (model[cursor] == '{' && model[cursor +1] == '{')) {
+                    if (model[cursor] == '[')
+                        type = 1;
+                    else if (model[cursor] == '{')
+                        type = 2;
+                    stack[deep] = 2;
+                    cursor += 2;
+                    continue;
+                }
             }
 
             // Phase 2: Detecting the end of a detected placeholder
@@ -224,7 +245,7 @@ class Generator {
             // here.
             if (model[cursor] == ']'
                     && level == 1) {
-                if (--deep  <= 0)
+                if (--deep <= 0)
                     break;
                 cursor += 1;
                 continue;
@@ -234,18 +255,21 @@ class Generator {
             // The level must be 1 and the character [ must be found.
             // Then the current stack is removed, because the search here is
             // completed.
+
             if (cursor +2 < model.length
-                    && model[cursor +0] == ']'
-                    && model[cursor +1] == ']'
-                    && model[cursor +2] == ']'
                     && level == 2) {
-                cursor += 2;
-                if (--deep <= 0)
-                    break;
-                cursor += 1;
-                continue;
+                int character = type == 2 ? '}' : ']';
+                if (model[cursor] == character
+                        && model[cursor +1] == character
+                        && model[cursor +2] == character) {
+                    cursor += 2;
+                    if (--deep <= 0)
+                        break;
+                    cursor += 1;
+                    continue;
+                }
             }
-            
+
             cursor++;
         }
         
