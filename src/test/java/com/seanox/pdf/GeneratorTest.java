@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -65,6 +66,9 @@ class GeneratorTest {
             throws Exception {
         final Generator generator = Generator.parse(GeneratorTest.readTestContent("testAcceptance_1_1.txt").getBytes());
         Assertions.assertEquals(GeneratorTest.readTestContent("testAcceptance_1_2.txt"), new String(generator.extract()));
+
+        String scopes = Collections.list(generator.scopes()).toString();
+        Assertions.assertEquals("[]", scopes);
     }
 
     @Test
@@ -72,6 +76,9 @@ class GeneratorTest {
             throws Exception {
         final Generator generator = Generator.parse(GeneratorTest.readTestContent("testAcceptance_2_1.txt").getBytes());
         Assertions.assertEquals(GeneratorTest.readTestContent("testAcceptance_2_2.txt"), new String(generator.extract()));
+
+        String scopes = Collections.list(generator.scopes()).toString();
+        Assertions.assertEquals("[]", scopes);
     }
 
     @Test
@@ -79,6 +86,9 @@ class GeneratorTest {
             throws Exception {
         final Generator generator = Generator.parse(GeneratorTest.readTestContent("testAcceptance_0_1.txt").getBytes());
         Assertions.assertEquals(GeneratorTest.readTestContent("testAcceptance_3_2.txt"), new String(generator.extract()));
+
+        String scopes = Collections.list(generator.scopes()).toString();
+        Assertions.assertEquals("[path, file]", scopes);
     }
 
     @Test
@@ -94,6 +104,9 @@ class GeneratorTest {
             generator.set("path", values);
         }
         Assertions.assertEquals(GeneratorTest.readTestContent("testAcceptance_4_2.txt"), new String(generator.extract()));
+
+        String scopes = Collections.list(generator.scopes()).toString();
+        Assertions.assertEquals("[path, file]", scopes);
     }
 
     @Test
@@ -115,6 +128,9 @@ class GeneratorTest {
         values.put("file", buffer.toByteArray());
         generator.set(values);
         Assertions.assertEquals(GeneratorTest.readTestContent("testAcceptance_5_2.txt"), new String(generator.extract()));
+
+        String scopes = Collections.list(generator.scopes()).toString();
+        Assertions.assertEquals("[path, file]", scopes);
     }
 
     @Test
@@ -130,6 +146,9 @@ class GeneratorTest {
             generator.set("path", values);
         }
         Assertions.assertEquals(GeneratorTest.readTestContent("testAcceptance_6_2.txt"), new String(generator.extract()));
+
+        String scopes = Collections.list(generator.scopes()).toString();
+        Assertions.assertEquals("[file]", scopes);
     }
 
     @Test
@@ -145,6 +164,9 @@ class GeneratorTest {
             generator.set("path", values);
         }
         Assertions.assertEquals(GeneratorTest.readTestContent("testAcceptance_7_2.txt"), new String(generator.extract()));
+
+        String scopes = Collections.list(generator.scopes()).toString();
+        Assertions.assertEquals("[file]", scopes);
     }
 
     @Test
@@ -160,11 +182,18 @@ class GeneratorTest {
             generator.set("path", values);
         }
         Assertions.assertEquals(GeneratorTest.readTestContent("testAcceptance_8_2.txt"), new String(generator.extract()));
+
+        String scopes = Collections.list(generator.scopes()).toString();
+        Assertions.assertEquals("[file]", scopes);
     }
 
     @Test
     void testAcceptance_9() {
-        Assertions.assertEquals("A\00\00\07\00\00B", new String(Generator.parse(("A#[0x0000070000]B").getBytes()).extract()));
+        final Generator generator = Generator.parse(("A#[0x0000070000]B").getBytes());
+        Assertions.assertEquals("A\00\00\07\00\00B", new String(generator.extract()));
+
+        String scopes = Collections.list(generator.scopes()).toString();
+        Assertions.assertEquals("[]", scopes);
     }
 
     @Test
@@ -183,6 +212,9 @@ class GeneratorTest {
             generator.set("file", values);
         }
         Assertions.assertEquals(GeneratorTest.readTestContent("testAcceptance_A_2.txt"), new String(generator.extract()));
+
+        String scopes = Collections.list(generator.scopes()).toString();
+        Assertions.assertEquals("[path, file]", scopes);
     }
 
     @Test
@@ -208,6 +240,9 @@ class GeneratorTest {
         }};
         generator.set(values);
         Assertions.assertEquals(GeneratorTest.readTestContent("testAcceptance_B_2.txt"), new String(generator.extract()).replaceAll("\\s+", ""));
+
+        String scopes = Collections.list(generator.scopes()).toString();
+        Assertions.assertEquals("[a, b, c]", scopes);
     }
 
     @Test
@@ -249,6 +284,9 @@ class GeneratorTest {
         }};
         generator.set("table", values);
         Assertions.assertEquals(GeneratorTest.readTestContent("testAcceptance_C_2.txt"), new String(generator.extract()));
+
+        String scopes = Collections.list(generator.scopes()).toString();
+        Assertions.assertEquals("[row, cell, table]", scopes);
     }
 
     @Test
@@ -256,6 +294,9 @@ class GeneratorTest {
         final String template = "#[0x5065746572]#[0x7c756e64]#[0x7c646572]#[0x7c576f6c66]";
         final Generator generator = Generator.parse(template.getBytes());
         Assertions.assertEquals("Peter|und|der|Wolf", new String(generator.extract()));
+
+        String scopes = Collections.list(generator.scopes()).toString();
+        Assertions.assertEquals("[]", scopes);
     }
 
     @Test
@@ -263,6 +304,9 @@ class GeneratorTest {
         final String template = "#[0x5065746572]#[0x7C756E64]#[0x7C646572]#[0x7C576F6C66]";
         final Generator generator = Generator.parse(template.getBytes());
         Assertions.assertEquals("Peter|und|der|Wolf", new String(generator.extract()));
+
+        String scopes = Collections.list(generator.scopes()).toString();
+        Assertions.assertEquals("[]", scopes);
     }
 
     @Test
@@ -270,6 +314,9 @@ class GeneratorTest {
         final String template = "#[0X5065746572]#[0X7C756E64]#[0X7C646572]#[0X7C576F6C66]";
         final Generator generator = Generator.parse(template.getBytes());
         Assertions.assertEquals("Peter|und|der|Wolf", new String(generator.extract()));
+
+        String scopes = Collections.list(generator.scopes()).toString();
+        Assertions.assertEquals("[]", scopes);
     }
 
     @Test
@@ -281,6 +328,9 @@ class GeneratorTest {
         values.put("x", "2");
         generator.set(values);
         Assertions.assertEquals("22", new String(generator.extract()));
+
+        String scopes = Collections.list(generator.scopes()).toString();
+        Assertions.assertEquals("[]", scopes);
     }
     @Test
     void testRecursion_1()
