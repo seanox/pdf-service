@@ -142,11 +142,14 @@ import java.util.stream.Collectors;
  */
 class Generator {
 
-    /** Segments of the template */
+    /** Segments and structures of the template */
     private HashMap<String, Object> scopes;
 
     /** Model, data buffer of the template */
     private byte[] model;
+
+    /** Internal incremental counter used for serials */
+    private long serial;
 
     /** Constructor, create an empty generator. */
     private Generator() {
@@ -516,7 +519,9 @@ class Generator {
      * @return all scopes of the segments as enumeration
      */
     Enumeration<String> scopes() {
-        return Collections.enumeration(this.scopes.keySet());
+        return Collections.enumeration(this.scopes.keySet().stream()
+                .filter(key -> !key.contains(":"))
+                .collect(Collectors.toList()));
     }
 
     /**
