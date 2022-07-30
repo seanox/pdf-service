@@ -317,21 +317,21 @@ class Generator {
 
             byte[] patch = new byte[0];
             String fetch = new String(model, cursor, offset);
-            if (fetch.matches("^(?si)#\\[[a-z]([\\w\\-]*\\w)?\\[\\[.*\\]\\]\\]$")) {
-                
+            if (fetch.matches("^(?si)#\\[[a-z]([\\w\\-]*\\w)?\\[\\[.*\\]{3}$")) {
+
                 // scope is determined from: #[scope[[segment]]
                 String scope = fetch.substring(2);
                 scope = scope.substring(0, scope.indexOf('['));
                 scope = scope.toLowerCase();
-                
+
                 // segment is extracted from the model
                 byte[] cache = new byte[offset -scope.length() -7];
                 System.arraycopy(model, cursor +scope.length() +4, cache, 0, cache.length);
-                
+
                 // scope is registered with the segment if scope does not exist
                 if (!this.scopes.containsKey(scope))
                     this.scopes.put(scope, this.scan(cache));
-                
+
                 // as new placeholder only the scope is used
                 patch = ("#[").concat(scope).concat("]").getBytes();
             } else if (fetch.matches("^(?i)#\\[[a-z]([\\w-]*\\w)?\\]$")) {
@@ -388,7 +388,8 @@ class Generator {
                         (existing, value) -> value));
         
         // Optionally the scope is determined.
-        if (scope != null) {
+        if (scope != null
+                && !scope.contains(":")) {
             scope = scope.toLowerCase().trim();
 
             // If one is specified that does not exist, nothing is to be done.
@@ -429,9 +430,10 @@ class Generator {
                 // patch is determined by the key
                 object = values.get(fetch);
 
-                // If the key is a segment and the value is a map with values,
-                // the segment is filled recursively. To protect against infinite
-                // recursions, the current scope is removed from the value list.
+                // If the key is a segment or structure and the value is a map
+                // with values, then is filled recursively. To protect against
+                // infinite recursions, the current scope is removed from the
+                // value list.
                 //   e.g. #[A[[#[B[[#[A[[...]]...]]...]]
                 if (this.scopes.containsKey(fetch)
                         && object instanceof Map) {
