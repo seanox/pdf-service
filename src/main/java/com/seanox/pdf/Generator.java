@@ -336,6 +336,16 @@ class Generator {
                 patch = ("#[").concat(scope).concat("]").getBytes();
             } else if (fetch.matches("^(?i)#\\[[a-z]([\\w-]*\\w)?\\]$")) {
                 patch = fetch.toLowerCase().getBytes();
+            } else if (fetch.matches("^(?i)#\\[[a-z]([\\w-]*\\w)?(:\\d+)\\]$")) {
+
+                // The internal syntax #[scope:id] for scanned placeholders of
+                // structures must be escaped, because this must not be used
+                // directly in the template, because the impact and outcome is
+                // not predictable.
+
+                fetch = fetch.substring(2, fetch.indexOf(']'));
+                fetch = new BigInteger(fetch.getBytes()).toString(16);
+                patch = ("#[").concat(fetch).concat("]").getBytes();
             } else if (fetch.matches("^(?i)#\\[0x([0-9a-f]{2})+\\]$")) {
                 cursor += fetch.length() +1;
                 continue;
