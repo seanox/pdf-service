@@ -20,6 +20,7 @@
  */
 package com.seanox.pdf;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -49,7 +50,7 @@ import java.util.Map;
  */
 class GeneratorTest {
 
-    private static String readTestContent(final String name)
+    private static String readTestContent(final String source)
             throws Exception {
         final StackTraceElement stackTraceElements = new Throwable().getStackTrace()[1];
         final String resourcePath = stackTraceElements.getClassName()
@@ -58,7 +59,12 @@ class GeneratorTest {
         final String className = StringUtils.uncapitalize(stackTraceElements.getClassName()
                 .replaceAll("(^.*\\.)|(Test$)", ""));
         final ClassLoader classLoader = Class.forName(stackTraceElements.getClassName()).getClassLoader();
-        return new String(classLoader.getResourceAsStream(resourcePath + "/" + className + "/" + name).readAllBytes());
+        return new String(classLoader.getResourceAsStream(resourcePath + "/" + className + "/" + source).readAllBytes());
+    }
+
+    private static Map<String, Object> readTestData(final String source)
+            throws Exception {
+        return new ObjectMapper().readValue(GeneratorTest.readTestContent(source), HashMap.class);
     }
 
     @Test
@@ -332,6 +338,7 @@ class GeneratorTest {
         String scopes = Collections.list(generator.scopes()).toString();
         Assertions.assertEquals("[]", scopes);
     }
+
     @Test
     void testRecursion_1()
             throws Exception {
@@ -513,7 +520,7 @@ class GeneratorTest {
         generator.set("file", values);
         generator.extract();
         final long timeTotal = System.currentTimeMillis() -timing;
-        Assertions.assertTrue(timeTotal < 3750, "Expected less than 3750 but was: " + timeTotal);
+        Assertions.assertTrue(timeTotal < 3500, "Expected less than 3500 but was: " + timeTotal);
     }
 
     @Test
