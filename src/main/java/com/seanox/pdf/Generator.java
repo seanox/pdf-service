@@ -207,7 +207,7 @@ class Generator {
                 level = stack[deep];
             else type = 0;
 
-            // Phase 1: Recognition of the start of a placeholder
+            // Phase 1-1: Recognition of the start of a placeholder
             // - supported formats: #[...], #[...[[...]]], #[...{{...}}]
             // - characteristic are the first two characters
             // - all placeholders begin with #[...
@@ -224,7 +224,7 @@ class Generator {
                 continue;
             }
             
-            // Phase 1A: Qualification of a segment placeholder
+            // Phase 1-2: Qualification of a segment placeholder
             // - active level 1 is expected
             // - character string [[ or {{ is found
             // The current stack is set to level 2.
@@ -242,8 +242,8 @@ class Generator {
                 }
             }
 
-            // Phase 2: Detecting the end of a detected placeholder
-            // The level must be 1 and the character [ must be found.
+            // Phase 2-1: Detecting the end of a detected placeholder
+            // The level must be 1 and characters ] must be found.
             // Then the current stack is removed, because the search is finished
             // here.
             if (model[cursor] == ']'
@@ -254,17 +254,16 @@ class Generator {
                 continue;
             }
 
-            // Phase 2A: Detecting the end of a detected placeholder
-            // The level must be 1 and the character [ must be found.
+            // Phase 2-2: Detecting the end of a detected placeholder
+            // The level must be 2 and the sequence ]]] or }}] must be found.
             // Then the current stack is removed, because the search here is
             // completed.
-
             if (cursor +2 < model.length
                     && level == 2) {
                 int character = type == 2 ? '}' : ']';
                 if (model[cursor] == character
                         && model[cursor +1] == character
-                        && model[cursor +2] == character) {
+                        && model[cursor +2] == ']') {
                     cursor += 2;
                     if (--deep <= 0)
                         break;
@@ -334,8 +333,29 @@ class Generator {
 
                 // as new placeholder only the scope is used
                 patch = ("#[").concat(scope).concat("]").getBytes();
+
+            } else if (fetch.matches("^(?si)#\\[[a-z]([\\w\\-]*\\w)?\\{\\{.*\\}{2}\\]$")) {
+
+                // scope is determined from: #[scope{{structure}}]
+                String scope = fetch.substring(2);
+                scope = scope.substring(0, scope.indexOf('{'));
+                scope = scope.toLowerCase();
+
+                // structure is extracted from the model
+                byte[] cache = new byte[offset - scope.length() - 7];
+                System.arraycopy(model, cursor + scope.length() + 4, cache, 0, cache.length);
+
+                // unique scope is registered with the structure
+                scope = String.format("%s:%d", scope, ++this.serial);
+                this.scopes.put(scope, this.scan(cache));
+
+                // as new placeholder only the unique scope is used
+                patch = ("#[").concat(scope).concat("]").getBytes();
+
             } else if (fetch.matches("^(?i)#\\[[a-z]([\\w-]*\\w)?\\]$")) {
+
                 patch = fetch.toLowerCase().getBytes();
+
             } else if (fetch.matches("^(?i)#\\[[a-z]([\\w-]*\\w)?(:\\d+)\\]$")) {
 
                 // The internal syntax #[scope:id] for scanned placeholders of
@@ -346,7 +366,9 @@ class Generator {
                 fetch = fetch.substring(2, fetch.indexOf(']'));
                 fetch = new BigInteger(fetch.getBytes()).toString(16);
                 patch = ("#[").concat(fetch).concat("]").getBytes();
+
             } else if (fetch.matches("^(?i)#\\[0x([0-9a-f]{2})+\\]$")) {
+
                 cursor += fetch.length() +1;
                 continue;
             }
@@ -363,7 +385,37 @@ class Generator {
         
         return model;
     }
-    
+
+    /**
+     * Extracts and fills a specified segment and sets the data there.
+     * The data of the template are not affected by this.
+     * In difference to {@link #extract(String, Map)}, the only internally use
+     * method also supports structures as scope.
+     * @param  scope  Segment
+     * @param  values List of values
+     * @return the filled segment, if this cannot be determined, an empty byte
+     *         array is returned
+     */
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private byte[] assemble(String scope, Map<String, Object> values) {
+
+        if (scope == null)
+            return new byte[0];
+        scope = scope.toLowerCase().trim();
+        if (!scope.matches("^[a-z]([\\w-]*\\w)?(:\\d+)?$"))
+            return new byte[0];
+
+        // Internally, a copy of the generator is created for the segment
+        // (partial model) and thus partially filled.
+        Generator generator = new Generator();
+        generator.scopes = (HashMap)this.scopes.clone();
+        generator.scopes.remove(scope);
+        generator.model = (byte[])this.scopes.get(scope);
+        if (generator.model == null)
+            generator.model = new byte[0];
+        return generator.assemble(null, values, true);
+    }
+
     /**
      * Fills the current model with the transferred values.
      * Optionally, the filling can be limited to one segment by specifying a
@@ -374,7 +426,7 @@ class Generator {
      * @param  values Values
      * @param  clean  {@code true} for final cleanup
      * @return the filled model (segment)
-     */    
+     */
     @SuppressWarnings({"unchecked", "rawtypes"})
     private byte[] assemble(String scope, Map<String, Object> values, boolean clean) {
         
@@ -398,8 +450,7 @@ class Generator {
                         (existing, value) -> value));
         
         // Optionally the scope is determined.
-        if (scope != null
-                && !scope.contains(":")) {
+        if (scope != null) {
             scope = scope.toLowerCase().trim();
 
             // If one is specified that does not exist, nothing is to be done.
@@ -408,7 +459,7 @@ class Generator {
             
             // Scopes are prepared independently and later processed like a
             // simple but exclusive placeholder.
-            patch = this.extract(scope, values);
+            patch = this.assemble(scope, values);
             
             values.clear();
             values.put(scope, patch);
@@ -426,35 +477,37 @@ class Generator {
 
             patch = new byte[0];
             fetch = new String(this.model, cursor, offset);
-            if (fetch.matches("^(?i)#\\[[a-z]([\\w-]*\\w)?\\]$")) {
+            if (fetch.matches("^(?i)#\\[[a-z]([\\w-]*\\w)?(:\\d+)?\\]$")) {
                 fetch = fetch.substring(2, fetch.length() -1);
                 
                 // the placeholders of not transmitted keys are ignored, with
                 // 'clean' the placeholders are deleted
-                if (!values.containsKey(fetch)
+                String key = fetch.replaceAll(":\\d+$", "");
+                if (!values.containsKey(key)
                         && !clean) {
                     cursor += fetch.length() +3 +1;
                     continue;
                 }
                 
                 // patch is determined by the key
-                object = values.get(fetch);
+                object = values.get(key);
 
                 // If the key is a segment or structure and the value is a map
                 // with values, then is filled recursively. To protect against
                 // infinite recursions, the current scope is removed from the
                 // value list.
                 //   e.g. #[A[[#[B[[#[A[[...]]...]]...]]
+                // Alternatively, structures are also supported.
                 if (this.scopes.containsKey(fetch)
                         && object instanceof Map) {
-                    patch = this.extract(fetch, (Map)object);
+                    patch = this.assemble(fetch, (Map)object);
                 } else if (this.scopes.containsKey(fetch)
                         && object instanceof Collection) {
                     // Collection generate complex structures/tables through
                     // deep, repetitive recursive generation.
                     for (Object entry : ((Collection)object)) {
                         if (entry instanceof Map) {
-                            model = this.extract(fetch, (Map)entry);
+                            model = this.assemble(fetch, (Map)entry);
                         } else if (entry instanceof byte[]) {
                             model = (byte[])entry;
                         } else if (entry != null) {
@@ -554,7 +607,7 @@ class Generator {
     byte[] extract(String scope) {
         return this.extract(scope, null);
     }
-    
+
     /**
      * Extracts a specified segment and sets the data there.
      * The data of the template are not affected by this.
@@ -563,24 +616,11 @@ class Generator {
      * @return the filled segment, if this cannot be determined, an empty byte
      *         array is returned
      */
-    @SuppressWarnings({"unchecked", "rawtypes"})
     byte[] extract(String scope, Map<String, Object> values) {
-        
-        if (scope != null)
-            scope = scope.toLowerCase().trim();
-        if (scope == null
-                || !scope.matches("^[a-z]([\\w-]*\\w)*$"))
+        if (scope != null
+                && !scope.matches("(?i)^[a-z]([\\w-]*\\w)?$"))
             return new byte[0];
-        
-        // Internally, a copy of the generator is created for the segment
-        // (partial model) and thus partially filled.
-        Generator generator = new Generator();
-        generator.scopes = (HashMap)this.scopes.clone();
-        generator.scopes.remove(scope);
-        generator.model = (byte[])this.scopes.get(scope);
-        if (generator.model == null)
-            generator.model = new byte[0];
-        return generator.assemble(null, values, true);
+        return this.assemble(scope, values);
     }
 
     /**
@@ -601,7 +641,7 @@ class Generator {
         if (scope != null)
             scope = scope.toLowerCase().trim();
         if (scope != null
-                && !scope.matches("^[a-z]([\\w-]*\\w)*$"))
+                && !scope.matches("^[a-z]([\\w-]*\\w)?$"))
             return;
         this.model = this.assemble(scope, values, false);
     }
