@@ -26,7 +26,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -62,7 +61,7 @@ class GeneratorTest {
         return new String(classLoader.getResourceAsStream(resourcePath + "/" + className + "/" + source).readAllBytes());
     }
 
-    private static Map<String, Object> readTestData(final String source)
+    private static Map<String, Object> readTestDataMap(final String source)
             throws Exception {
         return new ObjectMapper().readValue(GeneratorTest.readTestContent(source), HashMap.class);
     }
@@ -226,24 +225,8 @@ class GeneratorTest {
     @Test
     void testAcceptance_B()
             throws Exception {
+        final Map<String, Object> values = GeneratorTest.readTestDataMap("testAcceptance_B.json");
         final Generator generator = Generator.parse(GeneratorTest.readTestContent("testAcceptance_B_1.txt").getBytes());
-        final Map<String, Object> values = new HashMap<>() {{
-            put("a", new Hashtable<>() {{
-                put("a1", "xa1");
-                put("a2", "xa2");
-                put("a3", "xa3");
-                put("b", new Hashtable<>() {{
-                    put("b1", "xb1");
-                    put("b2", "xb2");
-                    put("b3", "xb3");
-                    put("c", new Hashtable<>() {{
-                        put("c1", "xc1");
-                        put("c2", "xc2");
-                        put("c3", "xc3");
-                    }});
-                }});
-            }});
-        }};
         generator.set(values);
         Assertions.assertEquals(GeneratorTest.readTestContent("testAcceptance_B_2.txt"), new String(generator.extract()).replaceAll("\\s+", ""));
 
@@ -254,40 +237,8 @@ class GeneratorTest {
     @Test
     void testAcceptance_C()
             throws Exception {
+        final Map<String, Object> values = GeneratorTest.readTestDataMap("testAcceptance_C.json");
         final Generator generator = Generator.parse(GeneratorTest.readTestContent("testAcceptance_C_1.txt").getBytes());
-        final Hashtable<String, Object> values = new Hashtable<>() {{
-            put("row", new ArrayList<>() {{
-                add(new HashMap<>() {{
-                    put("cell", new ArrayList<>() {{
-                        add("A1");
-                        add("A2");
-                        add("A3");
-                    }});
-                }});
-                add(new HashMap<>() {{
-                    put("cell", new ArrayList<>() {{
-                        add("B1");
-                        add("B2");
-                        add("B3");
-                    }});
-                }});
-                add(new HashMap<>() {{
-                    put("cell", new ArrayList<>() {{
-                        add("C1");
-                        add("C2");
-                    }});
-                }});
-                add(new HashMap<>() {{
-                    put("cell", new ArrayList<>() {{
-                        add("D1");
-                    }});
-                }});
-                add(new HashMap<>() {{
-                    put("cell", new ArrayList<>() {{
-                    }});
-                }});
-            }});
-        }};
         generator.set("table", values);
         Assertions.assertEquals(GeneratorTest.readTestContent("testAcceptance_C_2.txt"), new String(generator.extract()));
 
@@ -326,12 +277,11 @@ class GeneratorTest {
     }
 
     @Test
-    void testAcceptance_G() {
+    void testAcceptance_G()
+            throws Exception {
         final String template = "#[x]#[X]";
         final Generator generator = Generator.parse(template.getBytes());
-        final Map<String, Object> values = new HashMap<>();
-        values.put("X", "1");
-        values.put("x", "2");
+        final Map<String, Object> values = GeneratorTest.readTestDataMap("testAcceptance_G.json");
         generator.set(values);
         Assertions.assertEquals("22", new String(generator.extract()));
 
