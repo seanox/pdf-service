@@ -1,8 +1,12 @@
 4.2.0 2022xxxx
-  CR: Generator: Added placeholder syntax for structures
-      Structures are bound to their place and, unlike a segment/scope, can be
-      defined differently multiple times, but they cannot be reused and cannot
-      be generated or extracted based on names.
+  CR: Change from wording segment, which is now called structure
+  CR: Generator: Added placeholder syntax for disposable structures
+      Disposable structures are bound to their place and, unlike a normal
+      structure/scope, can be defined differently multiple times, but cannot be
+      reused or created or extracted based on their name.
+      TODO: Add in Introduction.md
+  CR: Generator: Added structures for single values
+      TODO: Implementation
 
 4.1.2 20220713
   BF: Build: Optimization of the release info process

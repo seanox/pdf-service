@@ -39,16 +39,16 @@ import java.util.stream.Collectors;
  * Values are therefore expected to be prim&auml;r as byte arrays. All other
  * data types are converted using {@code String.valueOf(value).getBytes()}.<br>
  * <br>
- * Placeholders can be used for values and segments.<br>
- * Segments are partial structures that can be nested up to a depth of 65535
- * levels. These substructures can be used and filled globally or by segment
+ * Placeholders can be used for values and structures.<br>
+ * Structures are partial structures that can be nested up to a depth of 65535
+ * levels. These substructures can be used and filled globally or by structure
  * name dedicated/partially.<br>
- * The placeholders of segments remain after filling and can be reused
+ * The placeholders of structures remain after filling and can be reused
  * iteratively.<br>
  * The data types {@link Collection} and {@link Map} are expected as values for
- * segments. A {@link Map} then contains the values for the placeholders within
- * the segment. A {@link Collection} causes to an iteration over a set of
- * {@link Map} and is comparable to the iterative call of the method
+ * structures. A {@link Map} then contains the values for the placeholders
+ * within the structure. A {@link Collection} causes to an iteration over a set
+ * of {@link Map} and is comparable to the iterative call of the method
  * {@link #set(String, Map)}.<br>
  * Both {@link Map} and {@link Collection} create deep, complex, possibly
  * repetitive and recursive structures.
@@ -73,10 +73,11 @@ import java.util.stream.Collectors;
  *       {@code #[scope[[...]]]}
  *     </td>
  *     <td valign="top">
- *       Defines a segment/scope. The nesting and use of further segments is
- *       possible. Since the placeholders for inserting segments are preserved,
- *       they can be used to build lists. Segments are comparable to templates
- *       and can be reused via the simple placeholder of the same name.
+ *       Defines a structure/scope. The nesting and use of further structures is
+ *       possible. Since the placeholders for inserting structures are
+ *       preserved, they can be used to build lists. Structures are comparable
+ *       to templates and can be reused via the simple placeholder of the same
+ *       name.
  *     </td>
  *   </tr>
  *   <tr>
@@ -84,12 +85,12 @@ import java.util.stream.Collectors;
  *       {@code #[scope&#123;&#123;...&#125;&#125;]}
  *     </td>
  *     <td valign="top">
- *       Defines a structure. The nesting and use of further segments is
- *       possible. Since the placeholders for inserting segments are preserved,
- *       they can be used to build lists. Structures are bound to their place
- *       and, unlike a segment/scope, can be defined differently multiple
- *       times, but they cannot be reused and cannot be generated or extracted
- *       based on names.
+ *       Defines a disposable structure. The nesting and use of further
+ *       structures is possible. Since the placeholders for inserting
+ *       structures are preserved, they can be used to build lists.
+ *       Disposable structures are bound to their place and, unlike a normal
+ *       structure/scope, can be defined differently multiple times, but cannot
+ *       be reused or created or extracted based on their name.
  *     </td>
  *   </tr>
  *   <tr>
@@ -109,29 +110,29 @@ import java.util.stream.Collectors;
  * The model (byte array) is parsed initially.
  * All placeholders are checked for syntactic correctness.
  * If necessary, invalid placeholders are removed. In addition, the scopes with
- * the segments (partial templates) are determined and replaced by a simple
+ * the structures (partial templates) are determined and replaced by a simple
  * placeholder. After parsing, a final model with optimized placeholders and
- * extracted segments is created, which cannot be changed at runtime.<br>
+ * extracted structures is created, which cannot be changed at runtime.<br>
  * <br>
  * For the use of the model different possibilities are then available.<br>
  * <br>
  * With {@link #set(Map)} the placeholders in the model are replaced with the
  * values passed over. Placeholders for which no values exist are retained.
- * Placeholders that represent a segment/scope are also replaced if a
- * corresponding key exists in the values. For segments/scopes, the placeholder
- * is retained for reuse and directly follows the inserted value.<br>
+ * Placeholders that represent a structure/scope are also replaced if a
+ * corresponding key exists in the values. For structures/scopes, the
+ * placeholder is retained for reuse and follows the inserted value.<br>
  * <br>
  * With {@link #set(String, Map)} only the specified scope is filled. For this,
- * a copy of the segment (sub-template) is created and filled with the values
+ * a copy of the structure (sub-template) is created and filled with the values
  * passed, all placeholders are removed and the content is inserted as a value
- * before the placeholder. Thus, this segment/scope placeholder is also
+ * before the placeholder. Thus, this structure/scope placeholder is also
  * preserved for reuse.<br>
  * <br>
  * The methods {@link #extract(String)} and {@link #extract(String, Map)} use
- * exclusive segments (sub-templates), which are partially filled and prepared.
- * Both methods produce final results that correspond to the call of
+ * exclusive structures (sub-templates), which are partially filled and
+ * prepared. Both methods produce final results that correspond to the call of
  * {@link #set(Map)} in combination with {@link #extract()}, but focus on only
- * one segment.<br>
+ * one structure.<br>
  * <br>
  * Generator 4.1.0 20220729<br>
  * Copyright (C) 2022 Seanox Software Solutions<br>
@@ -142,7 +143,7 @@ import java.util.stream.Collectors;
  */
 class Generator {
 
-    /** Segments and structures of the template */
+    /** Structures and structures of the template */
     private HashMap<String, Object> scopes;
 
     /** Model, data buffer of the template */
@@ -170,13 +171,13 @@ class Generator {
     
     /**
      * Determines whether a valid placeholder starts at the specified position
-     * in a model (segment). In this case the length of the complete placeholder
-     * is returned. If no placeholder can be determined, the return value is 0.
-     * If no further data is available in the model for analysis (end of data is
-     * reached) a negative value is returned.
+     * in a model (structure). In this case the length of the complete
+     * placeholder is returned. If no placeholder can be determined, the return
+     * value is 0. If no further data is available in the model for analysis,
+     * end of data is reached, a negative value is returned.
      * @param  model  Model(Fragment)
      * @param  cursor Position
-     * @return the position of the next placeholder or segment, otherwise a
+     * @return the position of the next placeholder or structure, otherwise a
      *         negative value
      */
     private static int scan(byte[] model, int cursor) {
@@ -208,9 +209,9 @@ class Generator {
             // - characteristic are the first two characters
             // - all placeholders begin with #[...
             // A placeholder can only begin if no stack and therefore no
-            // placeholder exists or if a segment placeholder has been determined
-            // before. In both cases the mode is not equal to 1 and another
-            // stack with mode 1 starts.
+            // placeholder exists or if a structure placeholder has been
+            // determined before. In both cases the mode is not equal to 1 and
+            // another stack with mode 1 starts.
             if (cursor +1 < model.length
                     && mode != 1) {
                 if (model[cursor] == '#'
@@ -221,7 +222,7 @@ class Generator {
                 }
             }
             
-            // Phase 1-2: Qualification of a segment placeholder
+            // Phase 1-2: Qualification of a structure placeholder
             // - active mode 1 is expected
             // - character string [[ or {{ is found
             // The current stack is set to mode 2.
@@ -270,15 +271,15 @@ class Generator {
         
         // Case 1: The stack is not empty
         // Thus, a placeholder was detected which is not completed.
-        // The scan is hungry and assumes an incomplete placeholder.
-        // Therefore, the offset from start position to the end is from the model.
+        // The scan is hungry and assumes an incomplete placeholder and so the
+        // offset is from the start position to the end of the model.
         if (deep > 0)
             return model.length -offset;
         
         // Case 2: The stack is empty
         // The placeholder was determined completely and the offset corresponds
         // to the length of the complete placeholder with possibly contained
-        // segments.
+        // structures.
         return cursor -offset +1;
     }
 
@@ -286,9 +287,9 @@ class Generator {
      * Analyzes the model and prepares it for final processing.
      * All placeholders are checked for syntactic correctness. Invalid
      * placeholders are removed if necessary. In addition, the scopes with the
-     * segments (partial templates) are determined and replaced by a simple
+     * structures (partial templates) are determined and replaced by a simple
      * placeholder. After parsing, a final model with optimized placeholders and
-     * extracted segments is created, which cannot be changed at runtime.
+     * extracted structures is created, which cannot be changed at runtime.
      * @param  model Model
      * @return the final prepared model
      */
@@ -311,16 +312,16 @@ class Generator {
             String fetch = new String(model, cursor, offset);
             if (fetch.matches("^(?si)#\\[[a-z]([\\w\\-]*\\w)?\\[\\[.*\\]{3}$")) {
 
-                // scope is determined from: #[scope[[segment]]
+                // scope is determined from: #[scope[[structure]]
                 String scope = fetch.substring(2);
                 scope = scope.substring(0, scope.indexOf('['));
                 scope = scope.toLowerCase();
 
-                // segment is extracted from the model
+                // structure is extracted from the model
                 byte[] cache = new byte[offset -scope.length() -7];
                 System.arraycopy(model, cursor +scope.length() +4, cache, 0, cache.length);
 
-                // scope is registered with the segment if scope does not exist
+                // scope and structure are registered if scope does not exist
                 if (!this.scopes.containsKey(scope))
                     this.scopes.put(scope, this.scan(cache));
 
@@ -380,13 +381,13 @@ class Generator {
     }
 
     /**
-     * Extracts and fills a specified segment and sets the data there.
+     * Extracts and fills a specified structure and sets the data there.
      * The data of the template are not affected by this.
      * In difference to {@link #extract(String, Map)}, the only internally use
      * method also supports structures as scope.
-     * @param  scope  Segment
+     * @param  scope  Structure
      * @param  values List of values
-     * @return the filled segment, if this cannot be determined, an empty byte
+     * @return the filled structure, if this cannot be determined, an empty byte
      *         array is returned
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -398,7 +399,7 @@ class Generator {
         if (!scope.matches("^[a-z]([\\w-]*\\w)?(:\\d+)?$"))
             return new byte[0];
 
-        // Internally, a copy of the generator is created for the segment
+        // Internally, a copy of the generator is created for the structure
         // (partial model) and thus partially filled.
         Generator generator = new Generator();
         generator.scopes = (HashMap)this.scopes.clone();
@@ -411,14 +412,14 @@ class Generator {
 
     /**
      * Fills the current model with the transferred values.
-     * Optionally, the filling can be limited to one segment by specifying a
+     * Optionally, the filling can be limited to one structure by specifying a
      * scope and/or {@code clean} can be used to specify whether the return
      * value should be finalized and all outstanding placeholders removed or
      * resolved.
-     * @param  scope  Scope or segment
+     * @param  scope  Scope or structure
      * @param  values Values
      * @param  clean  {@code true} for final cleanup
-     * @return the filled model (segment)
+     * @return the filled model (structure)
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
     private byte[] assemble(String scope, Map<String, Object> values, boolean clean) {
@@ -485,7 +486,7 @@ class Generator {
                 // patch is determined by the key
                 object = values.get(key);
 
-                // If the key is a segment or structure and the value is a map
+                // If the key is a structure or structure and the value is a map
                 // with values, then is filled recursively. To protect against
                 // infinite recursions, the current scope is removed from the
                 // value list.
@@ -572,9 +573,9 @@ class Generator {
     }
 
     /**
-     * Return all scopes of the segments as enumeration.
-     * Free scopes (without segment) are not included.
-     * @return all scopes of the segments as enumeration
+     * Return all scopes of the structures as enumeration.
+     * Free scopes (without structure) are not included.
+     * @return all scopes of the structures as enumeration
      */
     Enumeration<String> scopes() {
         return Collections.enumeration(this.scopes.keySet().stream()
@@ -591,10 +592,10 @@ class Generator {
     }
     
     /**
-     * Extracts a specified segment and sets the data there.
+     * Extracts a specified structure and sets the data there.
      * The data of the template are not affected by this.
-     * @param  scope Segment
-     * @return the filled segment, if this cannot be determined, an empty byte
+     * @param  scope Structure
+     * @return the filled structure, if this cannot be determined, an empty byte
      *         array is returned
      */
     byte[] extract(String scope) {
@@ -602,11 +603,11 @@ class Generator {
     }
 
     /**
-     * Extracts a specified segment and sets the data there.
+     * Extracts a specified structure and sets the data there.
      * The data of the template are not affected by this.
-     * @param  scope  Segment
+     * @param  scope  Structure
      * @param  values List of values
-     * @return the filled segment, if this cannot be determined, an empty byte
+     * @return the filled structure, if this cannot be determined, an empty byte
      *         array is returned
      */
     byte[] extract(String scope, Map<String, Object> values) {
@@ -617,7 +618,7 @@ class Generator {
     }
 
     /**
-     * Sets the data for a scope or a segment.
+     * Sets the data for a scope or a structure.
      * @param values Values
      */
     void set(Map<String, Object> values) {
@@ -625,8 +626,8 @@ class Generator {
     }
 
     /**
-     * Sets the data for a scope or a segment.
-     * @param scope  Scope or segment
+     * Sets the data for a scope or a structure.
+     * @param scope  Scope or structure
      * @param values Values
      */
     void set(String scope, Map<String, Object> values) {
