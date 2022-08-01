@@ -1,4 +1,5 @@
 4.2.0 2022xxxx
+  BF: Review: Optimizations
   CR: Change from wording segment, which is now called structure
   CR: Generator: Added placeholder syntax for disposable structures
       Disposable structures are bound to their place and, unlike a normal
@@ -172,7 +173,7 @@
 
 3.4.1 20200308
   CR: Test: Update of test cases
-  CR: Maven: Preparation for sonatype.org + mvnrepository.com
+  CR: Maven: Preparation for sonatype.org + mvn repository.com
 
 3.4.0 20200301
   BF: Service: Optimization of the overlay technique for header and footer

@@ -281,7 +281,7 @@ placeholder for the generator.
 ```html
 <html>
   <head>
-    <style type="text/css">
+    <style>
       @page {
         margin: 36mm 18mm 40mm 18mm;
         size: A4 portrait;
@@ -303,7 +303,7 @@ rendered separately and merged into one PDF file via page overlay.
 ```html
 <html>
   <head>
-    <style type="text/css">
+    <style>
       @page {
         margin: 36mm 18mm 40mm 18mm;
         size: A4 portrait;
@@ -332,7 +332,7 @@ because they have been implemented alternatively in the PDF service.
 ```html
 <html>
   <head>
-    <style type="text/css">
+    <style>
       @page {
         margin: 36mm 18mm 40mm 18mm;
         size: A4 portrait;
