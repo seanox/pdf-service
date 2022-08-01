@@ -4,7 +4,7 @@
  * Diese Software unterliegt der Version 2 der Apache License.
  *
  * PDF Service
- * Copyright (C) 2021 Seanox Software Solutions
+ * Copyright (C) 2022 Seanox Software Solutions
  *  
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -134,7 +134,7 @@ import java.util.stream.Collectors;
  * one segment.<br>
  * <br>
  * Generator 4.1.0 20220729<br>
- * Copyright (C) 2021 Seanox Software Solutions<br>
+ * Copyright (C) 2022 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
@@ -196,73 +196,66 @@ class Generator {
             
         int offset = cursor;
         int deep   = 0;
-        int type   = 0;
 
         int[] stack = new int[65535];
         while (cursor < model.length) {
 
-            // The current level is determined.
-            int level = 0;
-            if (deep > 0)
-                level = stack[deep];
-            else type = 0;
+            // The current mode is determined.
+            int mode = deep > 0 ? Math.abs(stack[deep]) : 0;
 
-            // Phase 1-1: Recognition of the start of a placeholder
+            // Phase 0-1: Recognition of the start of a placeholder
             // - supported formats: #[...], #[...[[...]]], #[...{{...}}]
             // - characteristic are the first two characters
             // - all placeholders begin with #[...
             // A placeholder can only begin if no stack and therefore no
             // placeholder exists or if a segment placeholder has been determined
-            // before. In both cases the level is not equal to 1 and another
-            // stack with level 1 starts.
+            // before. In both cases the mode is not equal to 1 and another
+            // stack with mode 1 starts.
             if (cursor +1 < model.length
-                    && model[cursor] == '#'
-                    && model[cursor +1] == '['
-                    && level != 1) {
-                stack[++deep] = 1;
-                cursor += 2;
-                continue;
+                    && mode != 1) {
+                if (model[cursor] == '#'
+                        && model[cursor +1] == '[') {
+                    stack[++deep] = 1;
+                    cursor += 2;
+                    continue;
+                }
             }
             
             // Phase 1-2: Qualification of a segment placeholder
-            // - active level 1 is expected
+            // - active mode 1 is expected
             // - character string [[ or {{ is found
-            // The current stack is set to level 2.
+            // The current stack is set to mode 2.
             if (cursor +1 < model.length
-                    && level == 1) {
+                    && mode == 1) {
                 if ((model[cursor] == '[' && model[cursor +1] == '[')
                         || (model[cursor] == '{' && model[cursor +1] == '{')) {
-                    if (model[cursor] == '[')
-                        type = 1;
-                    else if (model[cursor] == '{')
-                        type = 2;
-                    stack[deep] = 2;
+                    stack[deep] = model[cursor] == '{' ? -2 : 2;
                     cursor += 2;
                     continue;
                 }
             }
 
-            // Phase 2-1: Detecting the end of a detected placeholder
-            // The level must be 1 and characters ] must be found.
+            // Phase 1-0: Detecting the end of a detected placeholder
+            // The mode must be 1 and characters ] must be found.
             // Then the current stack is removed, because the search is finished
             // here.
             if (model[cursor] == ']'
-                    && level == 1) {
+                    && mode == 1) {
                 if (--deep <= 0)
                     break;
                 cursor += 1;
                 continue;
             }
 
-            // Phase 2-2: Detecting the end of a detected placeholder
-            // The level must be 2 and the sequence ]]] or }}] must be found.
+            // Phase 2-0: Detecting the end of a detected placeholder
+            // The mode must be 2 and the sequence ]]] or }}] must be found.
             // Then the current stack is removed, because the search here is
             // completed.
             if (cursor +2 < model.length
-                    && level == 2) {
-                int character = type == 2 ? '}' : ']';
-                if (model[cursor] == character
-                        && model[cursor +1] == character
+                    && mode == 2) {
+                int symbol = mode == 2 ? stack[deep] > 0 ? ']' : '}' : 0;
+                if (model[cursor +0] == symbol
+                        && model[cursor +1] == symbol
                         && model[cursor +2] == ']') {
                     cursor += 2;
                     if (--deep <= 0)
