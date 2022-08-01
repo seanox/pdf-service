@@ -6,7 +6,7 @@
   <a href="https://github.com/seanox/pdf-service/issues">
     <img src="https://img.shields.io/badge/maintenance-active-green?style=for-the-badge">
   </a>
-  <a href="http://seanox.de/contact">
+  <a href="https://seanox.de/contact">
     <img src="https://img.shields.io/badge/support-active-green?style=for-the-badge">
   </a>
 </p>
