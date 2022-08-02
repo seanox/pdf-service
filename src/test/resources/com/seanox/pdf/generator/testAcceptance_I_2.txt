@@ -1,0 +1,133 @@
+A---
+
+AT: Article A
+AI: 1
+AP: a-100 AAA
+
+AT: Article B
+AI: 2
+AP: a-200 AAA
+
+AT: Article C
+AI: 3
+AP: a-300 AAA
+
+AT: Article D
+AI: 4
+AP: a-400 AAA
+
+AT: Article E
+AI: 5
+AP: a-500 AAA
+
+B---
+
+BT: Article A
+BI: 1
+BP: a-100 AAA
+
+BT: Article B
+BI: 2
+BP: a-200 AAA
+
+BT: Article C
+BI: 3
+BP: a-300 AAA
+
+BT: Article D
+BI: 4
+BP: a-400 AAA
+
+BT: Article E
+BI: 5
+BP: a-500 AAA
+
+C---
+
+CT: Article A
+CI: 1
+CP: c-100 CCC
+
+CT: Article B
+CI: 2
+CP: c-200 CCC
+
+CT: Article C
+CI: 3
+CP: c-300 CCC
+
+CT: Article D
+CI: 4
+CP: c-400 CCC
+
+CT: Article E
+CI: 5
+CP: c-500 CCC
+
+D---
+
+DI: 1
+DT: Article A
+DP: 100
+
+DI: 2
+DT: Article B
+DP: 200
+
+DI: 3
+DT: Article C
+DP: 300
+
+DI: 4
+DT: Article D
+DP: 400
+
+DI: 5
+DT: Article E
+DP: 500
+
+E---
+
+AT: Article A
+AI: 1
+AP: a-100 AAA
+
+AT: Article B
+AI: 2
+AP: a-200 AAA
+
+AT: Article C
+AI: 3
+AP: a-300 AAA
+
+AT: Article D
+AI: 4
+AP: a-400 AAA
+
+AT: Article E
+AI: 5
+AP: a-500 AAA
+
+F---
+
+FT: Article A
+FI: 1
+FP: a-100 AAA
+
+FT: Article B
+FI: 2
+FP: a-200 AAA
+
+FT: Article C
+FI: 3
+FP: a-300 AAA
+
+FT: Article D
+FI: 4
+FP: a-400 AAA
+
+FT: Article E
+FI: 5
+FP: a-500 AAA
+
+X----

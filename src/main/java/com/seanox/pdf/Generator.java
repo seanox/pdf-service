@@ -130,17 +130,17 @@ import java.util.stream.Collectors;
  * produce final results that correspond to the call of {@link #set(Map)} in
  * combination with {@link #extract()}, but focus on only one structure.<br>
  * <br>
- * Generator 4.1.0 20220729<br>
+ * Generator 4.1.0 20220822<br>
  * Copyright (C) 2022 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 4.1.0 20220729
+ * @version 4.1.0 20220802
  */
 class Generator {
 
     /** Scopes with structures of the template */
-    private HashMap<String, Object> scopes;
+    private HashMap<String, Structure> scopes;
 
     /** Model, data buffer of the template */
     private byte[] model;
@@ -320,7 +320,7 @@ class Generator {
 
                 // scope and structure are registered if scope does not exist
                 if (!this.scopes.containsKey(scope))
-                    this.scopes.put(scope, this.scan(cache));
+                    this.scopes.put(scope, new Structure(this.scan(cache)));
 
                 // as new placeholder only the scope is used
                 patch = ("#[").concat(scope).concat("]").getBytes();
@@ -338,7 +338,7 @@ class Generator {
 
                 // unique scope is registered with the structure
                 scope = String.format("%s:%d", scope, ++this.serial);
-                this.scopes.put(scope, this.scan(cache));
+                this.scopes.put(scope, new Structure(this.scan(cache)));
 
                 // as new placeholder only the unique scope is used
                 patch = ("#[").concat(scope).concat("]").getBytes();
@@ -357,6 +357,11 @@ class Generator {
                 fetch = fetch.substring(2, fetch.indexOf(']'));
                 fetch = new BigInteger(fetch.getBytes()).toString(16);
                 patch = ("#[").concat(fetch).concat("]").getBytes();
+
+            } else if (fetch.matches("^(?i)#\\[#\\]$")) {
+
+                cursor += fetch.length() +1;
+                continue;
 
             } else if (fetch.matches("^(?i)#\\[0x([0-9a-f]{2})+\\]$")) {
 
@@ -401,7 +406,7 @@ class Generator {
         Generator generator = new Generator();
         generator.scopes = (HashMap)this.scopes.clone();
         generator.scopes.remove(scope);
-        generator.model = (byte[])this.scopes.get(scope);
+        generator.model = this.scopes.get(scope).data;
         if (generator.model == null)
             generator.model = new byte[0];
         return generator.assemble(null, values, true);
@@ -422,8 +427,7 @@ class Generator {
     private byte[] assemble(String scope, Map<String, Object> values, boolean clean) {
         
         Object object;
-        String fetch;
-        
+
         byte[] cache;
         byte[] model;
         byte[] patch;
@@ -434,11 +438,12 @@ class Generator {
         // Normalization of the values (lower case + smoothing of the keys)
         if (values == null)
             values = new HashMap<>();
-        values = values.entrySet().stream().collect(
-                Collectors.toMap(
-                        (entry) -> entry.getKey().toLowerCase().trim(),
-                        (entry) -> entry.getValue(),
-                        (existing, value) -> value));
+        if (!(values instanceof StructureValue))
+            values = values.entrySet().stream().collect(
+                    Collectors.toMap(
+                            (entry) -> entry.getKey().toLowerCase().trim(),
+                            (entry) -> entry.getValue(),
+                            (existing, value) -> value));
         
         // Optionally the scope is determined.
         if (scope != null) {
@@ -467,16 +472,18 @@ class Generator {
             cursor--;
 
             patch = new byte[0];
-            fetch = new String(this.model, cursor, offset);
-            if (fetch.matches("^(?i)#\\[[a-z]([\\w-]*\\w)?(:\\d+)?\\]$")) {
-                fetch = fetch.substring(2, fetch.length() -1);
+            scope = new String(this.model, cursor, offset);
+            if (scope.matches("^(?i)#\\[[a-z]([\\w-]*\\w)?(:\\d+)?\\]$")
+                    || (("#[#]").equals(scope)
+                            && (values instanceof StructureValue))) {
+                scope = scope.substring(2, scope.length() -1);
 
                 // the placeholders of not transmitted keys are ignored, with
                 // 'clean' the placeholders are deleted
-                String key = fetch.replaceAll(":\\d+$", "");
+                String key = scope.replaceAll(":\\d+$", "");
                 if (!values.containsKey(key)
                         && !clean) {
-                    cursor += fetch.length() +3 +1;
+                    cursor += scope.length() +3 +1;
                     continue;
                 }
                 
@@ -488,16 +495,16 @@ class Generator {
                 // infinite recursions, the current scope is removed from the
                 // value list.
                 //   e.g. #[A[[#[B[[#[A[[...]]...]]...]]
-                if (this.scopes.containsKey(fetch)
+                if (this.scopes.containsKey(scope)
                         && object instanceof Map) {
-                    patch = this.assemble(fetch, (Map)object);
-                } else if (this.scopes.containsKey(fetch)
+                    patch = this.assemble(scope, (Map)object);
+                } else if (this.scopes.containsKey(scope)
                         && object instanceof Collection) {
                     // Collection generate complex structures/tables through
                     // deep, repetitive recursive generation.
                     for (Object entry : ((Collection)object)) {
                         if (entry instanceof Map) {
-                            model = this.assemble(fetch, (Map)entry);
+                            model = this.assemble(scope, (Map)entry);
                         } else if (entry instanceof byte[]) {
                             model = (byte[])entry;
                         } else if (entry != null) {
@@ -508,6 +515,10 @@ class Generator {
                         System.arraycopy(model, 0, cache, patch.length, model.length);
                         patch = cache; 
                     }
+                } else if (this.scopes.containsKey(scope)
+                        && Structure.Type.VALUE.equals(this.scopes.get(scope).type)
+                        && object != null) {
+                    patch = this.assemble(scope, new StructureValue(object));
                 } else if (object instanceof byte[]) {
                     patch = (byte[])object;
                 } else if (object != null) {
@@ -529,29 +540,29 @@ class Generator {
                         patch = cache;
                     }
                     
-                    if (this.scopes.containsKey(fetch)) {
-                        fetch = ("#[").concat(fetch).concat("]");
-                        cache = new byte[patch.length +fetch.length()];
+                    if (this.scopes.containsKey(scope)) {
+                        scope = ("#[").concat(scope).concat("]");
+                        cache = new byte[patch.length +scope.length()];
                         System.arraycopy(patch, 0, cache, 0, patch.length);
-                        System.arraycopy(fetch.getBytes(), 0, cache, patch.length, fetch.length());
+                        System.arraycopy(scope.getBytes(), 0, cache, patch.length, scope.length());
                         patch = cache;
                     }
                 }
                 
-            } else if (fetch.matches("^(?i)#\\[0x([0-9a-f]{2})+\\]$")) {
+            } else if (scope.matches("^(?i)#\\[0x([0-9a-f]{2})+\\]$")) {
                 
                 // Hexadecimal placeholders are only resolved with clean, because
                 // they can contain unwanted (control) characters, which hinders
                 // rendering.
                 if (!clean) {
-                    cursor += fetch.length() +1;
+                    cursor += scope.length() +1;
                     continue;            
                 }
                 
                 // hexadecimal code is converted into bytes
-                fetch = fetch.substring(4, fetch.length() -1); 
-                fetch = ("ff").concat(fetch);
-                patch = new BigInteger(fetch, 16).toByteArray();
+                scope = scope.substring(4, scope.length() -1);
+                scope = ("ff").concat(scope);
+                patch = new BigInteger(scope, 16).toByteArray();
                 patch = Arrays.copyOfRange(patch, 2, patch.length);                
             }
             
@@ -634,5 +645,48 @@ class Generator {
                 && !scope.matches("^[a-z]([\\w-]*\\w)?$"))
             return;
         this.model = this.assemble(scope, values, false);
+    }
+
+    private static class StructureValue extends HashMap<String, Object> {
+        private StructureValue(Object value) {
+            super();
+            this.put("#", value);
+        }
+    }
+
+    private static class Structure {
+
+        private final byte[] data;
+
+        private final Type type;
+
+        private Structure(byte[] data) {
+
+            this.data = data;
+
+            int cursor = 0;
+            while (true) {
+                int offset = Generator.scan(data, cursor++);
+                if (offset < 0)
+                    break;
+                if (offset == 0)
+                    continue;
+                cursor--;
+                String fetch = new String(data, cursor, offset);
+                if (!fetch.matches("^(?si)#\\[[a-z]([\\w\\-]*\\w)?\\[\\[.*\\]{3}$")
+                        && !fetch.matches("^(?si)#\\[[a-z]([\\w\\-]*\\w)?\\{\\{.*\\}{2}\\]$")
+                        && !fetch.matches("^(?i)#\\[[a-z]([\\w-]*\\w)?\\]$")) {
+                    cursor += fetch.length() +1;
+                    continue;
+                }
+                this.type = Type.OBJECT;
+                return;
+            }
+            this.type = Type.VALUE;
+        }
+
+        private enum Type {
+            OBJECT, VALUE
+        }
     }
 }

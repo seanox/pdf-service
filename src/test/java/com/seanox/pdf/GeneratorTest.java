@@ -40,12 +40,12 @@ import java.util.Map;
  *   <li>JUnit 5</li>
  * </ul>
  * <br>
- * GeneratorTest 4.1.0 20210823<br>
+ * GeneratorTest 4.1.0 20220802<br>
  * Copyright (C) 2021 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 4.1.0 20210823
+ * @version 4.1.0 20220802
  */
 class GeneratorTest {
 
@@ -280,13 +280,31 @@ class GeneratorTest {
     void testAcceptance_G()
             throws Exception {
         final String template = "#[x]#[X]";
-        final Generator generator = Generator.parse(template.getBytes());
         final Map<String, Object> values = GeneratorTest.readTestDataMap("testAcceptance_G.json");
+        final Generator generator = Generator.parse(template.getBytes());
         generator.set(values);
         Assertions.assertEquals("22", new String(generator.extract()));
 
         String scopes = Collections.list(generator.scopes()).toString();
         Assertions.assertEquals("[]", scopes);
+    }
+
+    @Test
+    void testAcceptance_H()
+            throws Exception {
+        // TODO:
+    }
+
+    @Test
+    void testAcceptance_I()
+            throws Exception {
+        final Map<String, Object> values = GeneratorTest.readTestDataMap("testAcceptance_I.json");
+        final Generator generator = Generator.parse(GeneratorTest.readTestContent("testAcceptance_I_1.txt").getBytes());
+        generator.set(values);
+        Assertions.assertEquals(GeneratorTest.readTestContent("testAcceptance_I_2.txt"), new String(generator.extract()));
+
+        String scopes = Collections.list(generator.scopes()).toString();
+        Assertions.assertEquals("[price, articles]", scopes);
     }
 
     @Test
@@ -490,7 +508,7 @@ class GeneratorTest {
         }
         generator.extract();
         final long timeTotal = System.currentTimeMillis() -timing;
-        Assertions.assertTrue(timeTotal < 3500, "Expected less than 3500 but was: " + timeTotal);
+        Assertions.assertTrue(timeTotal < 2500, "Expected less than 2500 but was: " + timeTotal);
     }
 
     @Test

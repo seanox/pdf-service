@@ -7,7 +7,11 @@
       reused or created or extracted based on their name.
       TODO: Add in Introduction.md
   CR: Generator: Added structures for single values
-      TODO: Implementation
+      Previously, the value of simple data was output directly.
+      Now a structure can be used here as well.
+      The actual value can then be set with the new syntax #[#].
+      e.g. #[value[[prefix #[#] suffix]]]
+      TODO: Add in Introduction.md
 
 4.1.2 20220713
   BF: Build: Optimization of the release info process

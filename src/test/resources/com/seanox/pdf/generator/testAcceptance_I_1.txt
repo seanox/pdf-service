@@ -1,0 +1,37 @@
+A---
+#[articles[[
+AT: #[title]
+AI: #[id]
+AP: #[price[[a-#[#] AAA]]]
+]]]
+B---
+#[articles{{
+BT: #[title]
+BI: #[id]
+BP: #[price[[b-#[#] BBB]]]
+}}]
+C---
+#[articles{{
+CT: #[title]
+CI: #[id]
+CP: #[price{{c-#[#] CCC}}]
+}}]
+D---
+#[articles{{
+DI: #[id]
+DT: #[title]
+DP: #[price{{#[#]}}]
+}}]
+E---
+#[articles[[
+ET: #[title]
+EI: #[id]
+EP: #[price[[#[#]]]]
+]]]
+F---
+#[articles{{
+FT: #[title]
+FI: #[id]
+FP: #[price[[#[#]]]]
+}}]
+X----

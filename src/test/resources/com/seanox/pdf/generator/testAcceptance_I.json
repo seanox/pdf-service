@@ -1,0 +1,29 @@
+{
+  "articles": [
+    {
+      "id": "1",
+      "title": "Article A",
+      "price": 100
+    },
+    {
+      "id": "2",
+      "title": "Article B",
+      "price": 200
+    },
+    {
+      "id": "3",
+      "title": "Article C",
+      "price": 300
+    },
+    {
+      "id": "4",
+      "title": "Article D",
+      "price": 400
+    },
+    {
+      "id": "5",
+      "title": "Article E",
+      "price": 500
+    }
+  ]
+}
