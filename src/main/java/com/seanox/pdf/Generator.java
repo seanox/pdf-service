@@ -40,11 +40,10 @@ import java.util.stream.Collectors;
  * data types are converted using {@code String.valueOf(value).getBytes()}.<br>
  * <br>
  * Placeholders can be used for values and structures.<br>
- * Structures are partial structures that can be nested up to a depth of 65535
- * levels. These substructures can be used and filled globally or by structure
- * name dedicated/partially.<br>
- * The placeholders of structures remain after filling and can be reused
- * iteratively.<br>
+ * Structures can be nested up to a depth of 65535 levels. These sub-structures
+ * can be used and filled globally or by the name of a scope dedicated/partial.
+ * Because the placeholders of structures are preserved after filling, they can
+ * be reused iteratively.<br>
  * The data types {@link Collection} and {@link Map} are expected as values for
  * structures. A {@link Map} then contains the values for the placeholders
  * within the structure. A {@link Collection} causes to an iteration over a set
@@ -285,9 +284,9 @@ class Generator {
      * All placeholders are checked for syntactic correctness. Invalid
      * placeholders are removed if necessary. In addition, all structures
      * (sub-templates) are determined, which then also define the scopes and
-     * are then replaced by a simple placeholder.
-     * After parsing, a final model with optimized placeholders and extracted
-     * structures is created, which cannot be changed at runtime.
+     * are then replaced by a simple placeholder. After parsing, a final model
+     * with optimized placeholders and extracted structures is created, which
+     * cannot be changed at runtime.
      * @param  model Model
      * @return the final prepared model
      */
@@ -383,7 +382,7 @@ class Generator {
      * The data of the template are not affected by this. In difference to
      * {@link #extract(String, Map)}, the only internally use method also
      * supports structures as scope.
-     * @param  scope  Structure
+     * @param  scope  Scope
      * @param  values List of values
      * @return the filled structure, if this cannot be determined, an empty byte
      *         array is returned
@@ -414,7 +413,7 @@ class Generator {
      * scope and/or {@code clean} can be used to specify whether the return
      * value should be finalized and all outstanding placeholders removed or
      * resolved.
-     * @param  scope  Structure
+     * @param  scope  Scope
      * @param  values Values
      * @param  clean  {@code true} for final cleanup
      * @return the filled model (structure)
@@ -471,7 +470,7 @@ class Generator {
             fetch = new String(this.model, cursor, offset);
             if (fetch.matches("^(?i)#\\[[a-z]([\\w-]*\\w)?(:\\d+)?\\]$")) {
                 fetch = fetch.substring(2, fetch.length() -1);
-                
+
                 // the placeholders of not transmitted keys are ignored, with
                 // 'clean' the placeholders are deleted
                 String key = fetch.replaceAll(":\\d+$", "");
@@ -484,12 +483,11 @@ class Generator {
                 // patch is determined by the key
                 object = values.get(key);
 
-                // If the key is a structure or structure and the value is a map
-                // with values, then is filled recursively. To protect against
+                // If the key is a structure and the value is a map with
+                // values, then is filled recursively. To protect against
                 // infinite recursions, the current scope is removed from the
                 // value list.
                 //   e.g. #[A[[#[B[[#[A[[...]]...]]...]]
-                // Alternatively, structures are also supported.
                 if (this.scopes.containsKey(fetch)
                         && object instanceof Map) {
                     patch = this.assemble(fetch, (Map)object);
@@ -592,7 +590,7 @@ class Generator {
     /**
      * Extracts a specified structure and sets the data there.
      * The data of the template are not affected by this.
-     * @param  scope Structure
+     * @param  scope Scope
      * @return the filled structure, if this cannot be determined, an empty byte
      *         array is returned
      */
@@ -603,7 +601,7 @@ class Generator {
     /**
      * Extracts a specified structure and sets the data there.
      * The data of the template are not affected by this.
-     * @param  scope  Structure
+     * @param  scope  Scope
      * @param  values List of values
      * @return the filled structure, if this cannot be determined, an empty byte
      *         array is returned
@@ -625,7 +623,7 @@ class Generator {
 
     /**
      * Sets the data for a specific scope.
-     * @param scope  Structure
+     * @param scope  Scope
      * @param values Values
      */
     void set(String scope, Map<String, Object> values) {
