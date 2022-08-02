@@ -36,7 +36,7 @@ language can be used
 - Creation of markup as preview e.g. for the frontend
 - API for templates and other renderer and markup generators 
 abstract templates for individual renderer and generators
-- PDF comparison for test automation  
+- PDF and image comparison for test automation (e.g. Junit)  
 pixel- and color-based with difference image generation
 - PDF Tools as standalone Java applications  
 includes Compare, Designer, Preview as command line applications  
