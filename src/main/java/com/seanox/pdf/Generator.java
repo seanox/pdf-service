@@ -73,11 +73,10 @@ import java.util.stream.Collectors;
  *       {@code #[scope[[...]]]}
  *     </td>
  *     <td valign="top">
- *       Defines a structure/scope. The nesting and use of further structures is
- *       possible. Since the placeholders for inserting structures are
- *       preserved, they can be used to build lists. Structures are comparable
- *       to templates and can be reused via the simple placeholder of the same
- *       name.
+ *       Defines a structure with possible nesting and further sub-structures.
+ *       Structures are comparable to templates and can be reused via the
+ *       simple placeholder of the same name. Because the placeholders for
+ *       inserting structures are preserved, they can be used to build lists.
  *     </td>
  *   </tr>
  *   <tr>
@@ -85,12 +84,12 @@ import java.util.stream.Collectors;
  *       {@code #[scope&#123;&#123;...&#125;&#125;]}
  *     </td>
  *     <td valign="top">
- *       Defines a disposable structure. The nesting and use of further
- *       structures is possible. Since the placeholders for inserting
- *       structures are preserved, they can be used to build lists.
- *       Disposable structures are bound to their place and, unlike a normal
- *       structure/scope, can be defined differently multiple times, but cannot
- *       be reused or created or extracted based on their name.
+ *       Defines a disposable structure with possible nesting and further
+ *       sub-structures. Disposable structures are bound to their place and,
+ *       unlike a normal structure, can be defined differently multiple times,
+ *       but cannot be reused or created or extracted based on their name.
+ *       Because the placeholders for inserting structures are preserved, they
+ *       can be used to build lists.
  *     </td>
  *   </tr>
  *   <tr>
@@ -107,10 +106,9 @@ import java.util.stream.Collectors;
  * </table>
  *  
  * <h3>Functionality</h3>
- * The model (byte array) is parsed initially.
- * All placeholders are checked for syntactic correctness.
- * If necessary, invalid placeholders are removed. In addition, the scopes with
- * the structures (partial templates) are determined and replaced by a simple
+ * The model (byte array) is parsed initially. All placeholders are checked for
+ * syntactic correctness. If necessary, invalid placeholders are removed.
+ * Structures (partial templates) are determined and replaced by a simple
  * placeholder. After parsing, a final model with optimized placeholders and
  * extracted structures is created, which cannot be changed at runtime.<br>
  * <br>
@@ -118,21 +116,20 @@ import java.util.stream.Collectors;
  * <br>
  * With {@link #set(Map)} the placeholders in the model are replaced with the
  * values passed over. Placeholders for which no values exist are retained.
- * Placeholders that represent a structure/scope are also replaced if a
- * corresponding key exists in the values. For structures/scopes, the
- * placeholder is retained for reuse and follows the inserted value.<br>
+ * Placeholders that represent a structure are also replaced if a corresponding
+ * key exists in the values. For structures, the placeholder is retained for
+ * reuse and follows the inserted value.<br>
  * <br>
- * With {@link #set(String, Map)} only the specified scope is filled. For this,
- * a copy of the structure (sub-template) is created and filled with the values
- * passed, all placeholders are removed and the content is inserted as a value
- * before the placeholder. Thus, this structure/scope placeholder is also
- * preserved for reuse.<br>
+ * With {@link #set(String, Map)} only the specified scope, means a
+ * corresponding structure with the same name. For this,  copy of the structure
+ * is created and filled with the passed values, all placeholders are removed
+ * and the content is inserted as a value before the placeholder. Thus, this
+ * structure placeholder is also preserved for reuse.<br>
  * <br>
  * The methods {@link #extract(String)} and {@link #extract(String, Map)} use
- * exclusive structures (sub-templates), which are partially filled and
- * prepared. Both methods produce final results that correspond to the call of
- * {@link #set(Map)} in combination with {@link #extract()}, but focus on only
- * one structure.<br>
+ * exclusive structures, which are partially filled and prepared. Both methods
+ * produce final results that correspond to the call of {@link #set(Map)} in
+ * combination with {@link #extract()}, but focus on only one structure.<br>
  * <br>
  * Generator 4.1.0 20220729<br>
  * Copyright (C) 2022 Seanox Software Solutions<br>
@@ -143,7 +140,7 @@ import java.util.stream.Collectors;
  */
 class Generator {
 
-    /** Structures and structures of the template */
+    /** Scopes with structures of the template */
     private HashMap<String, Object> scopes;
 
     /** Model, data buffer of the template */
@@ -286,10 +283,11 @@ class Generator {
     /**
      * Analyzes the model and prepares it for final processing.
      * All placeholders are checked for syntactic correctness. Invalid
-     * placeholders are removed if necessary. In addition, the scopes with the
-     * structures (partial templates) are determined and replaced by a simple
-     * placeholder. After parsing, a final model with optimized placeholders and
-     * extracted structures is created, which cannot be changed at runtime.
+     * placeholders are removed if necessary. In addition, all structures
+     * (sub-templates) are determined, which then also define the scopes and
+     * are then replaced by a simple placeholder.
+     * After parsing, a final model with optimized placeholders and extracted
+     * structures is created, which cannot be changed at runtime.
      * @param  model Model
      * @return the final prepared model
      */
@@ -382,9 +380,9 @@ class Generator {
 
     /**
      * Extracts and fills a specified structure and sets the data there.
-     * The data of the template are not affected by this.
-     * In difference to {@link #extract(String, Map)}, the only internally use
-     * method also supports structures as scope.
+     * The data of the template are not affected by this. In difference to
+     * {@link #extract(String, Map)}, the only internally use method also
+     * supports structures as scope.
      * @param  scope  Structure
      * @param  values List of values
      * @return the filled structure, if this cannot be determined, an empty byte
@@ -416,7 +414,7 @@ class Generator {
      * scope and/or {@code clean} can be used to specify whether the return
      * value should be finalized and all outstanding placeholders removed or
      * resolved.
-     * @param  scope  Scope or structure
+     * @param  scope  Structure
      * @param  values Values
      * @param  clean  {@code true} for final cleanup
      * @return the filled model (structure)
@@ -574,7 +572,7 @@ class Generator {
 
     /**
      * Return all scopes of the structures as enumeration.
-     * Free scopes (without structure) are not included.
+     * The scopes of disposable structure are not included.
      * @return all scopes of the structures as enumeration
      */
     Enumeration<String> scopes() {
@@ -618,7 +616,7 @@ class Generator {
     }
 
     /**
-     * Sets the data for a scope or a structure.
+     * Sets the data in the complete model.
      * @param values Values
      */
     void set(Map<String, Object> values) {
@@ -626,8 +624,8 @@ class Generator {
     }
 
     /**
-     * Sets the data for a scope or a structure.
-     * @param scope  Scope or structure
+     * Sets the data for a specific scope.
+     * @param scope  Structure
      * @param values Values
      */
     void set(String scope, Map<String, Object> values) {
