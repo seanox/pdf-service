@@ -1,7 +1,14 @@
-111
+---1
 #[table[[TA_#[row[[RA_#[cell[[CA__CE]]]_RE]]]_TE]]]
-222
+---2
 #[table]
-333
+---3
 #[table]
-444
+---4
+The next test only knows #[table] as a single-value, since this is set at
+runtime, and will insert the content between TA>...<TA and TE>...<TE.
+ROW and CELL do exist, but since in the map table is set as Key, the value is
+used like a Value and not as an object.
+
+#[table{{TA>#[#]<TA_#[row{{RA_RA>#[#]<RA_#[cell{{CA_CA>#[#]<CA_CE}}]_RE>#[#]<RE_RE}}]_TE>#[#]<TE_TE}}]
+---5

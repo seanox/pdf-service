@@ -298,7 +298,7 @@ class GeneratorTest {
         Assertions.assertEquals(GeneratorTest.readTestContent("testAcceptance_H_2.txt"), new String(generator.extract()));
 
         String scopes = Collections.list(generator.scopes()).toString();
-        Assertions.assertEquals("[price, articles]", scopes);
+        Assertions.assertEquals("[a, b]", scopes);
     }
 
     @Test

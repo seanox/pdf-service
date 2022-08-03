@@ -1,13 +1,33 @@
 --A
-A1: #[a[[ABC]]]
-A2: #[a]
-A3: #[a[[DEF]]]
-A4: #[a]
+A11: ABC
+A12: ABC
+A13: ABC
+A14: ABC
+A15: ABC 
+A16: ABC
+A17: ABC
 
-B1: #[a{{GHI}}]
-B2: #[a]
-B3: #[a{{JKL}}]
-B4: #[a]
-B5: #[a{{JKL}}]
-B6: #[a]
+A21: GHI
+A22: ABC
+A23: JKL
+A24: ABC
+A25: ABC 
+A26: [a1, a2, a3]
+A27: _[a1, a2, a3]_
+
+B11: MNO
+B12: MNO
+B13: MNO
+B14: MNO
+B15: MNO 
+B16: MNO
+B17: MNO
+
+B21: STU
+B22: MNO
+B23: VWX
+B24: MNO
+B25: MNO 
+B26: _b_
+B27: __b__
 --E
