@@ -130,12 +130,12 @@ import java.util.stream.Collectors;
  * produce final results that correspond to the call of {@link #set(Map)} in
  * combination with {@link #extract()}, but focus on only one structure.<br>
  * <br>
- * Generator 4.1.0 20220822<br>
+ * Generator 4.1.0 20220803<br>
  * Copyright (C) 2022 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 4.1.0 20220802
+ * @version 4.1.0 20220803
  */
 class Generator {
 
@@ -496,9 +496,11 @@ class Generator {
                 // value list.
                 //   e.g. #[A[[#[B[[#[A[[...]]...]]...]]
                 if (this.scopes.containsKey(scope)
+                        && Structure.Type.OBJECT.equals(this.scopes.get(scope).type)
                         && object instanceof Map) {
                     patch = this.assemble(scope, (Map)object);
                 } else if (this.scopes.containsKey(scope)
+                        && Structure.Type.OBJECT.equals(this.scopes.get(scope).type)
                         && object instanceof Collection) {
                     // Collection generate complex structures/tables through
                     // deep, repetitive recursive generation.

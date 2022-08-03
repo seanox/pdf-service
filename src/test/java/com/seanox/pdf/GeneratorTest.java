@@ -40,12 +40,12 @@ import java.util.Map;
  *   <li>JUnit 5</li>
  * </ul>
  * <br>
- * GeneratorTest 4.1.0 20220802<br>
+ * GeneratorTest 4.1.0 20220803<br>
  * Copyright (C) 2021 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 4.1.0 20220802
+ * @version 4.1.0 20220803
  */
 class GeneratorTest {
 
@@ -292,7 +292,13 @@ class GeneratorTest {
     @Test
     void testAcceptance_H()
             throws Exception {
-        // TODO:
+        final Map<String, Object> values = GeneratorTest.readTestDataMap("testAcceptance_H.json");
+        final Generator generator = Generator.parse(GeneratorTest.readTestContent("testAcceptance_H_1.txt").getBytes());
+        generator.set(values);
+        Assertions.assertEquals(GeneratorTest.readTestContent("testAcceptance_H_2.txt"), new String(generator.extract()));
+
+        String scopes = Collections.list(generator.scopes()).toString();
+        Assertions.assertEquals("[price, articles]", scopes);
     }
 
     @Test
