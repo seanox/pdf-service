@@ -20,7 +20,8 @@
         <p exists="#[phone-exists]">![ADDRESS_TEL]: #[phone]</p>
         <p exists="#[fax-exists]">![ADDRESS_FAX]: #[fax]</p>
         <p exists="#[email-exists]">![ADDRESS_E_MAIL]: #[email]</p>
-        <p exists="#[websiteUrl-exists]">![ADDRESS_WEB]: #[websiteUrl]</p>
+        #[websiteUrl{{<p>![ADDRESS_WEB]: #[#]</p>}}]
+        #[thatDoesNotExist{{<p>![ADDRESS_WEB]: This should not be rendered!</p>}}]
       </article>
       ]]]
       #[articles[[
