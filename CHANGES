@@ -20,7 +20,7 @@
            #[value{{text output only if value exists}}]
       Placeholders for static texts can be used from.
       e.g. #[price[[Your price #[#] ![currency]]]]
-           #[price{{Your price #[#] ![currency}}]]
+           #[price{{Your price #[#] ![currency]}}]
 
 4.1.2 20220713
   BF: Build: Optimization of the release info process
