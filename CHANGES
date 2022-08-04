@@ -2,13 +2,11 @@
   BF: Review: Optimizations
   CR: Change from wording segment, which is now called structure
   CR: Generator: Added placeholder syntax for disposable structures
-      TODO: Add in Introduction.md
       e.g. #[scope{{...}}]
       Disposable structures are bound to their place and, unlike a normal
       structure/scope, can be defined differently multiple times, but cannot be
       reused or created or extracted based on their name.
   CR: Generator: Added structures for single values
-      TODO: Add in Introduction.md
       e.g. #[price[[Your price #[#] Euro]]]
            #[price{{Your price #[#] Euro}}]
       Previously, the value of simple data was output directly.
