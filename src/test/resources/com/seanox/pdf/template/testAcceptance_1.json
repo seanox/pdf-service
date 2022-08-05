@@ -1,0 +1,43 @@
+{
+  "template" : {
+    "name" : "articleA.html"
+  },
+  "PAGE_OF" : "of",
+  "ADDRESS_E_MAIL" : "E-Mail",
+  "ADDRESS_WEB" : "Web",
+  "PAGE_LEGAL" : "* RPR including VAT.\nLorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmodtempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.At vero eos et accusam et justo duo dolores et ea rebum.Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.Lorem ipsum dolor sit amet, consetetur sadipscing elitr,sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
+  "ARTICLE_NUMBER" : "Article Number",
+  "ARTICLE_DESCRIPTION" : "Description",
+  "article" : {
+    "colorText" : "Sand light / dark",
+    "images" : {
+      "large" : "images/article.jpg"
+    },
+    "materialText" : "Polyester",
+    "articleNumber" : "B01234567",
+    "articlePrice" : {
+      "grossText" : "159.00 GBP",
+      "netText" : "139.00 GBP"
+    },
+    "description" : "Example with relative resource paths: images/article.jpg\n\nLorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmodtempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren,no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet,consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut laboreet dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam etjusto duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctusest Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscingelitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyamerat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.\n\nDuis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestieconsequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsanet iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duisdolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscingelit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquamerat volutpat.",
+    "headline" : "Teddy bear on white background"
+  },
+  "PAGE_PRODUCT_DATA_SHEET" : "Product data sheet",
+  "ARTICLE_COLOUR" : "Colour",
+  "SYSTEM_DATE" : "01/01/2000",
+  "ARTICLE_MATERIAL" : "Material",
+  "ARTICLE_PRICE_NETT" : "Nett price",
+  "PAGE_LOGO_URL" : "./images/logo.png",
+  "ARTICLE_PRICE_GROSS" : "Gross price",
+  "outlet" : {
+    "phone" : "+44 1234 05678 0",
+    "websiteUrl" : "https://outlet.local",
+    "street" : "Western Road",
+    "name" : "Jane Doe Toys Limited",
+    "location" : "GB BN1 2NW Brighton",
+    "fax" : "+44 1234 05678 1",
+    "email" : "mail@outlet.local"
+  },
+  "ADDRESS_FAX" : "Fax",
+  "ADDRESS_TEL" : "Tel"
+}
