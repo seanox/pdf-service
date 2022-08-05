@@ -314,6 +314,18 @@ class GeneratorTest {
     }
 
     @Test
+    void testAcceptance_J()
+            throws Exception {
+        final Map<String, Object> values = GeneratorTest.readTestDataMap("testAcceptance_J.json");
+        final Generator generator = Generator.parse(GeneratorTest.readTestContent("testAcceptance_J_1.txt").getBytes());
+        generator.set(values);
+        Assertions.assertEquals(GeneratorTest.readTestContent("testAcceptance_J_2.txt"), new String(generator.extract()));
+
+        String scopes = Collections.list(generator.scopes()).toString();
+        Assertions.assertEquals("[$, _articles]", scopes);
+    }
+
+    @Test
     void testRecursion_1()
             throws Exception {
         final Generator generator = Generator.parse(GeneratorTest.readTestContent("testRecursion_0_1.txt").getBytes());

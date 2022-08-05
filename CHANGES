@@ -5,7 +5,7 @@
       e.g. #[scope{{...}}]
       Disposable structures are bound to their place and, unlike a normal
       structure/scope, can be defined differently multiple times, but cannot be
-      reused or created or extracted based on their name.
+      reused or created or extracted based on their identifier.
   CR: Generator: Added structures for single values
       e.g. #[price[[Your price #[#] Euro]]]
            #[price{{Your price #[#] Euro}}]
@@ -19,6 +19,11 @@
       Placeholders for static texts can be used from.
       e.g. #[price[[Your price #[#] ![currency]]]]
            #[price{{Your price #[#] ![currency]}}]
+  CR: Generator: Placeholder identifier conventions optimized
+      Optimized for the conventions for variables in Java.
+      Identifier can start and end with characters: a-z A-Z _ $ in between the
+      characters: a-z A-Z _ - $ can be used.
+      TODO: Introduction.md + docu Generator.java / Template.java
 
 4.1.2 20220713
   BF: Build: Optimization of the release info process

@@ -139,6 +139,33 @@ import java.util.stream.Collectors;
  */
 class Generator {
 
+    /** Pattern fragment of an identifier */
+    private final static String TEXT_PATTERN_IDENTIFIER = "([_a-zA-Z$](?:[\\w-$]*[\\w$])?)";
+
+    /** Pattern fragment of an disposable identifier */
+    private final static String TEXT_PATTERN_IDENTIFIER_OPTIONAL_DISPOSABLE = "^" + TEXT_PATTERN_IDENTIFIER + "(:\\d+)?$";
+
+    /** Pattern fragment of a structure placeholder */
+    private final static String TEXT_PATTERN_PLACEHOLDER_STRUCTURE = "^(?s)#\\[" + TEXT_PATTERN_IDENTIFIER + "\\[\\[.*\\]{3}$";
+
+    /** Pattern fragment of a disposable structure placeholder */
+    private final static String TEXT_PATTERN_PLACEHOLDER_STRUCTURE_DISPOSABLE = "^(?s)#\\[" + TEXT_PATTERN_IDENTIFIER + "\\{\\{.*\\}\\}\\]$";
+
+    /** Pattern fragment of a structure value placeholder */
+    private final static String TEXT_PATTERN_PLACEHOLDER_STRUCTURE_VALUE = "#[#]";
+
+    /** Pattern fragment of a value placeholder */
+    private final static String TEXT_PATTERN_PLACEHOLDER_VALUE = "^#\\[" + TEXT_PATTERN_IDENTIFIER + "\\]$";
+
+    /** Pattern fragment of a disposable value placeholder */
+    private final static String TEXT_PATTERN_PLACEHOLDER_VALUE_DISPOSABLE = "^#\\[" + TEXT_PATTERN_IDENTIFIER + "(:\\d+)\\]$";
+
+    /** Pattern fragment of an optional disposable value placeholder */
+    private final static String TEXT_PATTERN_PLACEHOLDER_VALUE_OPTIONAL_DISPOSABLE = "^#\\[" + TEXT_PATTERN_IDENTIFIER + "(:\\d+)?\\]$";
+
+    /** Pattern fragment of a hexadecimal encodes value */
+    private final static String TEXT_PATTERN_PLACEHOLDER_VALUE_HEXADECIMAL = "^(?i)#\\[0x([0-9a-f]{2})+\\]$";
+
     /** Scopes with structures of the template */
     private HashMap<String, Structure> scopes;
 
@@ -307,7 +334,7 @@ class Generator {
 
             byte[] patch = new byte[0];
             String fetch = new String(model, cursor, offset);
-            if (fetch.matches("^(?si)#\\[[a-z]([\\w\\-]*\\w)?\\[\\[.*\\]{3}$")) {
+            if (fetch.matches(TEXT_PATTERN_PLACEHOLDER_STRUCTURE)) {
 
                 // scope is determined from: #[scope[[structure]]
                 String scope = fetch.substring(2);
@@ -325,7 +352,7 @@ class Generator {
                 // as new placeholder only the scope is used
                 patch = ("#[").concat(scope).concat("]").getBytes();
 
-            } else if (fetch.matches("^(?si)#\\[[a-z]([\\w\\-]*\\w)?\\{\\{.*\\}{2}\\]$")) {
+            } else if (fetch.matches(TEXT_PATTERN_PLACEHOLDER_STRUCTURE_DISPOSABLE)) {
 
                 // scope is determined from: #[scope{{structure}}]
                 String scope = fetch.substring(2);
@@ -343,11 +370,11 @@ class Generator {
                 // as new placeholder only the unique scope is used
                 patch = ("#[").concat(scope).concat("]").getBytes();
 
-            } else if (fetch.matches("^(?i)#\\[[a-z]([\\w-]*\\w)?\\]$")) {
+            } else if (fetch.matches(TEXT_PATTERN_PLACEHOLDER_VALUE)) {
 
                 patch = fetch.toLowerCase().getBytes();
 
-            } else if (fetch.matches("^(?i)#\\[[a-z]([\\w-]*\\w)?(:\\d+)\\]$")) {
+            } else if (fetch.matches(TEXT_PATTERN_PLACEHOLDER_VALUE_DISPOSABLE)) {
 
                 // The internal syntax #[scope:id] for scanned placeholders of
                 // structures must be escaped, because this must not be used
@@ -358,12 +385,12 @@ class Generator {
                 fetch = new BigInteger(fetch.getBytes()).toString(16);
                 patch = ("#[").concat(fetch).concat("]").getBytes();
 
-            } else if (fetch.matches("^(?i)#\\[#\\]$")) {
+            } else if (TEXT_PATTERN_PLACEHOLDER_STRUCTURE_VALUE.equals(fetch)) {
 
                 cursor += fetch.length() +1;
                 continue;
 
-            } else if (fetch.matches("^(?i)#\\[0x([0-9a-f]{2})+\\]$")) {
+            } else if (fetch.matches(TEXT_PATTERN_PLACEHOLDER_VALUE_HEXADECIMAL)) {
 
                 cursor += fetch.length() +1;
                 continue;
@@ -398,7 +425,7 @@ class Generator {
         if (scope == null)
             return new byte[0];
         scope = scope.toLowerCase().trim();
-        if (!scope.matches("^[a-z]([\\w-]*\\w)?(:\\d+)?$"))
+        if (!scope.matches(TEXT_PATTERN_IDENTIFIER_OPTIONAL_DISPOSABLE))
             return new byte[0];
 
         // Internally, a copy of the generator is created for the structure
@@ -473,8 +500,8 @@ class Generator {
 
             patch = new byte[0];
             scope = new String(this.model, cursor, offset);
-            if (scope.matches("^(?i)#\\[[a-z]([\\w-]*\\w)?(:\\d+)?\\]$")
-                    || (("#[#]").equals(scope)
+            if (scope.matches(TEXT_PATTERN_PLACEHOLDER_VALUE_OPTIONAL_DISPOSABLE)
+                    || (TEXT_PATTERN_PLACEHOLDER_STRUCTURE_VALUE.equals(scope)
                             && (values instanceof StructureValue))) {
                 scope = scope.substring(2, scope.length() -1);
 
@@ -551,7 +578,7 @@ class Generator {
                     }
                 }
                 
-            } else if (scope.matches("^(?i)#\\[0x([0-9a-f]{2})+\\]$")) {
+            } else if (scope.matches(TEXT_PATTERN_PLACEHOLDER_VALUE_HEXADECIMAL)) {
                 
                 // Hexadecimal placeholders are only resolved with clean, because
                 // they can contain unwanted (control) characters, which hinders
@@ -621,7 +648,7 @@ class Generator {
      */
     byte[] extract(String scope, Map<String, Object> values) {
         if (scope != null
-                && !scope.matches("(?i)^[a-z]([\\w-]*\\w)?$"))
+                && !scope.matches("^" + TEXT_PATTERN_IDENTIFIER + "$"))
             return new byte[0];
         return this.assemble(scope, values);
     }
@@ -644,7 +671,7 @@ class Generator {
         if (scope != null)
             scope = scope.toLowerCase().trim();
         if (scope != null
-                && !scope.matches("^[a-z]([\\w-]*\\w)?$"))
+                && !scope.matches("^" + TEXT_PATTERN_IDENTIFIER + "$"))
             return;
         this.model = this.assemble(scope, values, false);
     }
@@ -675,9 +702,9 @@ class Generator {
                     continue;
                 cursor--;
                 String fetch = new String(data, cursor, offset);
-                if (!fetch.matches("^(?si)#\\[[a-z]([\\w\\-]*\\w)?\\[\\[.*\\]{3}$")
-                        && !fetch.matches("^(?si)#\\[[a-z]([\\w\\-]*\\w)?\\{\\{.*\\}{2}\\]$")
-                        && !fetch.matches("^(?i)#\\[[a-z]([\\w-]*\\w)?\\]$")) {
+                if (!fetch.matches(TEXT_PATTERN_PLACEHOLDER_STRUCTURE)
+                        && !fetch.matches(TEXT_PATTERN_PLACEHOLDER_STRUCTURE_DISPOSABLE)
+                        && !fetch.matches(TEXT_PATTERN_PLACEHOLDER_VALUE)) {
                     cursor += fetch.length() +1;
                     continue;
                 }
