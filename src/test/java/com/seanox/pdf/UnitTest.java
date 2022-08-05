@@ -39,8 +39,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -48,6 +46,7 @@ import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -56,22 +55,6 @@ import java.util.Objects;
 import java.util.TreeMap;
 import java.util.logging.Level;
 
-/** 
- * Unit test for the PDF Service and Tools.<br>
- * <br>
- * Test-Runtime Configuration:
- * <ul>
- *   <li>Oracle Java 11</li>
- *   <li>JUnit 5</li>
- * </ul>
- * <br>
- * UnitTest 4.1.0 20210819<br>
- * Copyright (C) 2021 Seanox Software Solutions<br>
- * Alle Rechte vorbehalten.
- *
- * @author  Seanox Software Solutions
- * @version 4.1.0 20210819
- */
 @ExtendWith(UnitTest.Watcher.class)
 class UnitTest {
     
@@ -127,17 +110,23 @@ class UnitTest {
         TEMP.mkdirs();
     }
 
+    @BeforeAll
+    static void initPreview()
+            throws Exception {
+        Preview.main("src/test/resources/pdf/*.html", "@resourceS");
+    }
+
     private static void validatePreviewPdf(final File previewFile)
             throws Exception {
-        final File masterFile = new File(TEMP, previewFile.getName()).getCanonicalFile();
-        final File compareFile = new File(masterFile.getParentFile(), masterFile.getName().replaceAll("_preview\\.pdf$", ".pdf")).getCanonicalFile();
+        final var masterFile = new File(TEMP, previewFile.getName()).getCanonicalFile();
+        final var compareFile = new File(masterFile.getParentFile(), masterFile.getName().replaceAll("_preview\\.pdf$", ".pdf")).getCanonicalFile();
         System.out.printf("\tCompare:%n%s%n%s%n%s%n",
                 previewFile.getCanonicalFile(), masterFile, compareFile);
         if (!TEMP.equals(previewFile.getParentFile())) {
             Files.copy(previewFile.toPath(), masterFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            final File compareRootSourceFile = new File(ROOT, compareFile.getName());
+            final var compareRootSourceFile = new File(ROOT, compareFile.getName());
             if (!compareRootSourceFile.exists()) {
-                final File compareSourceFile = new File(previewFile.getParentFile(), compareFile.getName());
+                final var compareSourceFile = new File(previewFile.getParentFile(), compareFile.getName());
                 if (compareSourceFile.exists())
                     Files.move(compareSourceFile.toPath(), compareFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
             } else Files.move(compareRootSourceFile.toPath(), compareFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -147,7 +136,7 @@ class UnitTest {
         Assertions.assertTrue(compareFile.exists(), compareFile.toString());
         Assertions.assertTrue(compareFile.lastModified() >= previewFile.lastModified());
         Assertions.assertTrue(compareFile.lastModified() > masterFile.lastModified());
-        final File[] deltaFiles = Compare.compare(masterFile, compareFile);
+        final var deltaFiles = Compare.compare(masterFile, compareFile);
         System.out.println("\tDifferences:");
         if (Objects.nonNull(deltaFiles))
             Arrays.stream(deltaFiles).forEach(System.out::println);
@@ -158,48 +147,51 @@ class UnitTest {
 
     private static boolean compareImages(final File master, final File compare)
             throws Exception {
-        final BufferedImage masterImage = ImageIO.read(master);
-        final BufferedImage compareImage = ImageIO.read(compare);
-        final Method method = Compare.class.getDeclaredMethod("compareImage", BufferedImage.class, BufferedImage.class);
+        final var masterImage = ImageIO.read(master);
+        final var compareImage = ImageIO.read(compare);
+        final var method = Compare.class.getDeclaredMethod("compareImage", BufferedImage.class, BufferedImage.class);
         method.setAccessible(true);
-        final BufferedImage deltaImage = (BufferedImage)method.invoke(null, masterImage, compareImage);
+        final var deltaImage = (BufferedImage)method.invoke(null, masterImage, compareImage);
         if (Objects.isNull(deltaImage))
             return true;
-        final String deltaTimestamp = String.format("%tY%<tm%<td%<tH%<tM%<tS", new Date());
-        final String deltaName = "_diffs_" + deltaTimestamp;
-        final File deltaFile = new File(compare.getParentFile(), compare.getName().replaceAll("\\.\\w+$", deltaName + ".png"));
+        final var deltaTimestamp = String.format("%tY%<tm%<td%<tH%<tM%<tS", new Date());
+        final var deltaName = "_diffs_" + deltaTimestamp;
+        final var deltaFile = new File(compare.getParentFile(), compare.getName().replaceAll("\\.\\w+$", deltaName + ".png"));
         ImageIO.write(deltaImage, "png", deltaFile);
         return false;
     }
 
     @Test
-    void checkTemplateGeneration()
+    void checkTemplateGeneration_1()
             throws Exception {
-
-        Preview.main("src/test/resources/pdf/*.html", "@resourceS");
-
         UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/report_preview.pdf"));
+    }
 
-        String master;
-
-        master = "src/test/resources/pdf/reportDiffs_preview.pdf";
-        UnitTest.validatePreviewPdf(new File(ROOT, master));
-        File[] diffs = Compare.compare(new File(TEMP, new File(master).getName()), new File(TEMP, "report_preview.pdf"));
+    @Test
+    void checkTemplateGeneration_2()
+            throws Exception {
+        final var master1 = "src/test/resources/pdf/reportDiffs_preview.pdf";
+        UnitTest.validatePreviewPdf(new File(ROOT, master1));
+        var diffs = Compare.compare(new File(TEMP, new File(master1).getName()), new File(TEMP, "report_preview.pdf"));
         Assertions.assertNotNull(diffs);
         Assertions.assertEquals(3, diffs.length);
 
-        master = "src/test/resources/pdf/reportDiffs_diffs_page_1.png";
-        Files.copy(Paths.get(master), new File(TEMP, new File(master).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
-        Assertions.assertTrue(UnitTest.compareImages(new File(TEMP, new File(master).getName()), diffs[0]));
+        final var master2 = "src/test/resources/pdf/reportDiffs_diffs_page_1.png";
+        Files.copy(Paths.get(master2), new File(TEMP, new File(master2).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
+        Assertions.assertTrue(UnitTest.compareImages(new File(TEMP, new File(master2).getName()), diffs[0]));
 
-        master = "src/test/resources/pdf/reportDiffs_diffs_page_2.png";
-        Files.copy(Paths.get(master), new File(TEMP, new File(master).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
-        Assertions.assertTrue(UnitTest.compareImages(new File(TEMP, new File(master).getName()), diffs[1]));
+        final var master3 = "src/test/resources/pdf/reportDiffs_diffs_page_2.png";
+        Files.copy(Paths.get(master3), new File(TEMP, new File(master3).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
+        Assertions.assertTrue(UnitTest.compareImages(new File(TEMP, new File(master3).getName()), diffs[1]));
 
-        master = "src/test/resources/pdf/reportDiffs_diffs_page_3.png";
-        Files.copy(Paths.get(master), new File(TEMP, new File(master).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
-        Assertions.assertTrue(UnitTest.compareImages(new File(TEMP, new File(master).getName()), diffs[2]));
+        final var master4 = "src/test/resources/pdf/reportDiffs_diffs_page_3.png";
+        Files.copy(Paths.get(master4), new File(TEMP, new File(master4).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
+        Assertions.assertTrue(UnitTest.compareImages(new File(TEMP, new File(master4).getName()), diffs[2]));
+    }
 
+    @Test
+    void checkTemplateGeneration_3()
+            throws Exception {
         UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/articleC_preview.pdf"));
         UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/articleB_preview.pdf"));
         UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/articleA_preview.pdf"));
@@ -219,33 +211,36 @@ class UnitTest {
     @Test
     void checkCompatibility()
             throws Exception {
-        final File outputFile = new File(TEMP, "compatibility.pdf");
-        final String sourceContent = new String(UnitTest.class.getResourceAsStream("/pdf/compatibility.html").readAllBytes());
+        final var outputFile = new File(TEMP, "compatibility.pdf");
+        final var sourceContent = new String(UnitTest.class.getResourceAsStream("/pdf/compatibility.html").readAllBytes());
         Files.deleteIfExists(outputFile.toPath());
-        try (final OutputStream outputStream = new FileOutputStream(outputFile)) {
+        try (final var outputStream = new FileOutputStream(outputFile)) {
             final PdfRendererBuilder builder = new PdfRendererBuilder();
             builder.withHtmlContent(sourceContent, "/");
             builder.toStream(outputStream);
             builder.run();
         }
-        final String master = "src/test/resources/pdf/compatibility_preview.pdf";
+        final var master = "src/test/resources/pdf/compatibility_preview.pdf";
         UnitTest.validatePreviewPdf(new File(ROOT, master));
     }
 
     @Test
-    void checkTemplatesWithErrors() {
-
-        Throwable throwable;
-
-        throwable = Assertions.assertThrows(Template.TemplateResourceNotFoundException.class, () ->
+    void checkTemplatesWithErrors_1() {
+        var throwable = Assertions.assertThrows(Template.TemplateResourceNotFoundException.class, () ->
                 Preview.execute(new File(ROOT, "src/test/resources/pdf/articleIncludeB.html")));
         Assertions.assertTrue(throwable.toString().replace("\\", "/") .contains("/pdf/pdf/articleA.html"));
+    }
 
-        throwable = Assertions.assertThrows(Template.TemplateResourceNotFoundException.class, () ->
+    @Test
+    void checkTemplatesWithErrors_2() {
+        var throwable = Assertions.assertThrows(Template.TemplateResourceNotFoundException.class, () ->
                 Preview.execute(new File(ROOT, "src/test/resources/pdf/articleIncludeE.html")));
         Assertions.assertTrue(throwable.toString().contains("articleIncludeE_1.html"));
+    }
 
-        throwable = Assertions.assertThrows(Service.Template.TemplateException.class, () ->
+    @Test
+    void checkTemplatesWithErrors_3() {
+        var throwable = Assertions.assertThrows(Service.Template.TemplateException.class, () ->
                 Preview.execute(new File(ROOT, "src/test/resources/pdf/articleIncludeF.html")));
         Assertions.assertTrue(throwable.toString().contains("Recursion found in:"));
         Assertions.assertTrue(throwable.toString().contains("articleIncludeF_2.html"));
@@ -255,7 +250,7 @@ class UnitTest {
     void checkUsageTemplate()
             throws Exception {
         UsageTemplate.main();
-        final String master = "src/test/resources/com/seanox/pdf/example/UsageTemplate_preview.pdf";
+        final var master = "src/test/resources/com/seanox/pdf/example/UsageTemplate_preview.pdf";
         UnitTest.validatePreviewPdf(new File(ROOT, master).getCanonicalFile());
     }
 
@@ -263,7 +258,7 @@ class UnitTest {
     void checkMarkupStructureEmpty()
             throws Exception {
         Preview.main("src/test/resources/pdf/structure_**empty.html");
-        final String resourcePath = "src/test/resources/pdf/";
+        final var resourcePath = "src/test/resources/pdf/";
         UnitTest.validatePreviewPdf(new File(ROOT, resourcePath
                 + "structure_body_content_empty_preview.pdf"));
         UnitTest.validatePreviewPdf(new File(ROOT, resourcePath
@@ -288,7 +283,7 @@ class UnitTest {
     void checkMarkupStructureNotEmpty()
             throws Exception {
         Preview.main("src/test/resources/pdf/structure_**.html");
-        final String resourcePath = "src/test/resources/pdf/";
+        final var resourcePath = "src/test/resources/pdf/";
         UnitTest.validatePreviewPdf(new File(ROOT, resourcePath
                 + "structure_body_content_footer_preview.pdf"));
         UnitTest.validatePreviewPdf(new File(ROOT, resourcePath
@@ -315,23 +310,23 @@ class UnitTest {
     void checkDuplicateTemplate()
             throws Exception {
         
-        final Meta meta = new Meta();
+        final var meta = new Meta();
 
-        final Map<String, Object> data = new TreeMap<>();
+        final var data = new TreeMap<String, Object>();
         data.put("x", "1");
         data.put("X", "2");
         meta.setData(data);
 
-        final Map<String, String> statics = new TreeMap<>();
+        final var statics = new TreeMap<String, String>();
         statics.put("x", "A");
         statics.put("X", "B");
         meta.setStatics(statics);
 
-        final File output = new File(TEMP, "DuplicateTemplate.pdf");
-        final byte[] pdf = Service.render(DuplicateTemplate.class, meta);
+        final var output = new File(TEMP, "DuplicateTemplate.pdf");
+        final var pdf = Service.render(DuplicateTemplate.class, meta);
         Files.write(output.toPath(), pdf, StandardOpenOption.CREATE);
 
-        final String master = "src/test/resources/com/seanox/pdf/DuplicateTemplate_preview.pdf";
+        final var master = "src/test/resources/com/seanox/pdf/DuplicateTemplate_preview.pdf";
         UnitTest.validatePreviewPdf(new File(ROOT, master));
     }
 
@@ -344,7 +339,7 @@ class UnitTest {
         UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/compareA_preview.pdf"));
         UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/compareB_preview.pdf"));
 
-        final File[] diffs = Compare.compare(new File(TEMP, "compareA.pdf"), new File(TEMP, "compareB.pdf"));
+        final var diffs = Compare.compare(new File(TEMP, "compareA.pdf"), new File(TEMP, "compareB.pdf"));
         Assertions.assertNotNull(diffs);
         Assertions.assertEquals(1, diffs.length);
 
@@ -382,17 +377,17 @@ class UnitTest {
             
             put("COLLECTION_NULL", null);
             put("COLLECTION_EMPTY", new ArrayList<>());
-            put("COLLECTION_NOT_EMPTY", Arrays.asList(new Map[] {statics}));
+            put("COLLECTION_NOT_EMPTY", Collections.singletonList(statics));
 
             put("MAP_NULL", null);
             put("MAP_EMPTY", new HashMap<>());
             put("MAP_NOT_EMPTY", statics);
         }};
 
-        final File output = new File(TEMP, "ExistsTemplate.pdf");
-        final byte[] pdf = Service.render(ExistsTemplate.class, new Service.Meta(data, statics));
+        final var output = new File(TEMP, "ExistsTemplate.pdf");
+        final var pdf = Service.render(ExistsTemplate.class, new Service.Meta(data, statics));
         Files.write(output.toPath(), pdf, StandardOpenOption.CREATE);
-        final String master = "src/test/resources/com/seanox/pdf/ExistsTemplate_preview.pdf";
+        final var master = "src/test/resources/com/seanox/pdf/ExistsTemplate_preview.pdf";
         UnitTest.validatePreviewPdf(new File(ROOT, master).getCanonicalFile());
     }
 }
