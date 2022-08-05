@@ -24,6 +24,7 @@ import lombok.Data;
 
 @Data
 public class Article {
+
     private String headline;
     private String articleNumber;
     private String colorText;
