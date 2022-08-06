@@ -4,7 +4,7 @@
  * Diese Software unterliegt der Version 2 der Apache License.
  *
  * PDF Service
- * Copyright (C) 2021 Seanox Software Solutions
+ * Copyright (C) 2022 Seanox Software Solutions
  *  
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -23,9 +23,7 @@ package com.seanox.pdf;
 import com.openhtmltopdf.util.XRLog;
 
 import java.io.File;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Date;
@@ -39,12 +37,12 @@ import java.util.logging.Level;
  * started directly in the IDE. The templates are edited in the source
  * directory. The PDFs are output in the same directory as the template.<br>
  * <br>
- * Designer 4.1.0 20210818<br>
- * Copyright (C) 2021 Seanox Software Solutions<br>
+ * Designer 4.2.0 20220806<br>
+ * Copyright (C) 2022 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 4.1.0 20210818
+ * @version 4.2.0 20220806
  */
 public class Designer {
     
@@ -91,7 +89,7 @@ public class Designer {
         
         Service.Template.scan();
         
-        final HashMap<File, Date> fileMap = new HashMap<>();
+        final var fileMap = new HashMap<File, Date>();
         while (true) {
             try {Thread.sleep(1000);
             } catch (InterruptedException exception) {
@@ -100,9 +98,9 @@ public class Designer {
 
             if (options.length <= 0
                     || Arrays.stream(options).anyMatch(option -> option.matches("(?i)^@Resources$"))) {
-                for (Class<Service.Template> template : Service.Template.scan()) {
-                    final File file = new File(template.getDeclaredConstructor().newInstance().getSource());
-                    final Date lastModified = new Date(file.lastModified());
+                for (final var template : Service.Template.scan()) {
+                    final var file = new File(template.getDeclaredConstructor().newInstance().getSource());
+                    final var lastModified = new Date(file.lastModified());
                     if (Preview.locateOutput(file).exists()
                             && fileMap.containsKey(file)
                             && fileMap.get(file).equals(lastModified))
@@ -115,15 +113,15 @@ public class Designer {
                 }
             }
 
-            for (String option : options) {
+            for (final var option : options) {
                 if (("@Resources").equalsIgnoreCase(option))
                     continue;
-                final String path = option.replaceAll("^(?:(.*)[/\\\\])*(.*)$", "$1");
-                final String glob = option.replaceAll("^(?:(.*)[/\\\\])*(.*)$", "$2");
-                try (DirectoryStream<Path> stream = Files.newDirectoryStream(
+                final var path = option.replaceAll("^(?:(.*)[/\\\\])*(.*)$", "$1");
+                final var glob = option.replaceAll("^(?:(.*)[/\\\\])*(.*)$", "$2");
+                try (final var stream = Files.newDirectoryStream(
                         Paths.get(path), glob)) {
                     stream.forEach(file -> {
-                        Date lastModified = new Date(file.toFile().lastModified());
+                        final var lastModified = new Date(file.toFile().lastModified());
                         if (Preview.locateOutput(file.toFile()).exists()
                                 && fileMap.containsKey(file.toFile())
                                 && fileMap.get(file.toFile()).equals(lastModified))
