@@ -4,7 +4,7 @@
  * Diese Software unterliegt der Version 2 der Apache License.
  *
  * PDF Service
- * Copyright (C) 2021 Seanox Software Solutions
+ * Copyright (C) 2022 Seanox Software Solutions
  *  
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -33,18 +33,17 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 /** 
  * Pixel-based comparison of PDF files.<br>
  * <br>
- * Compare 4.1.0 20210924<br>
- * Copyright (C) 2021 Seanox Software Solutions<br>
+ * Compare 4.2.0 20220806<br>
+ * Copyright (C) 2022 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 4.1.0 20210924
+ * @version 4.2.0 20220806
  */
 public class Compare {
     
@@ -68,19 +67,19 @@ public class Compare {
             return;
         }
 
-        for (int loop = 0; loop <= 1; loop++)
+        for (var loop = 0; loop <= 1; loop++)
             if (!new File(options[loop]).exists()
                     || !new File(options[loop]).isFile()) {
                 System.out.println("Invalid file: " + options[loop]);
                 return;
             }
         
-        final File[] files = Compare.compare(new File(options[0]), new File(options[1]));
+        final var files = Compare.compare(new File(options[0]), new File(options[1]));
         if (files != null
                 && files.length > 0) {
             System.out.println("Following differences were found:");
             System.out.println("----");
-            for (final File file : files)
+            for (final var file : files)
                 System.out.println(file.getName());
         } else System.out.println("No differences were found.");
     }
@@ -116,11 +115,11 @@ public class Compare {
      */
     private static int increaseColorTone(final int rgba, final Color tone, final int factor) {
 
-        Color color = new Color(rgba, true);
-        final int r = color.getRed();
-        final int g = color.getGreen();
-        final int b = color.getBlue();
-        final int a = color.getAlpha();
+        var color = new Color(rgba, true);
+        final var r = color.getRed();
+        final var g = color.getGreen();
+        final var b = color.getBlue();
+        final var a = color.getAlpha();
         if (Color.RED.equals(tone))
             color = new Color(
                     Compare.increaseColorDelta(r),
@@ -156,17 +155,17 @@ public class Compare {
     public static File[] compare(final File master, final File compare)
             throws IOException {
 
-        final List<BufferedImage> masterImages = new ArrayList<>();
-        try (final PDDocument document = PDDocument.load(master)) {
-            final PDFRenderer pdfRenderer = new PDFRenderer(document);
-            for (int page = 0; page < document.getNumberOfPages(); ++page)
+        final var masterImages = new ArrayList<BufferedImage>();
+        try (final var document = PDDocument.load(master)) {
+            final var pdfRenderer = new PDFRenderer(document);
+            for (var page = 0; page < document.getNumberOfPages(); ++page)
                 masterImages.add(pdfRenderer.renderImageWithDPI(page, 300, ImageType.RGB));
         }
 
-        final List<BufferedImage> compareImages = new ArrayList<>();
-        try (final PDDocument document = PDDocument.load(compare)) {
-            final PDFRenderer pdfRenderer = new PDFRenderer(document);
-            for (int page = 0; page < document.getNumberOfPages(); ++page)
+        final var compareImages = new ArrayList<BufferedImage>();
+        try (final var document = PDDocument.load(compare)) {
+            final var pdfRenderer = new PDFRenderer(document);
+            for (var page = 0; page < document.getNumberOfPages(); ++page)
                 compareImages.add(pdfRenderer.renderImageWithDPI(page, 300, ImageType.RGB));
         }
         
@@ -175,12 +174,12 @@ public class Compare {
         while (masterImages.size() > compareImages.size())
             compareImages.add(new BufferedImage(1, 1, BufferedImage.TYPE_4BYTE_ABGR));
 
-        final String deltaTimestamp = String.format("%tY%<tm%<td%<tH%<tM%<tS", new Date());
-        final List<File> deltas = new ArrayList<>();
-        for (int page = 0; page < masterImages.size(); ++page) {
-            final String deltaName = "_diffs_page_" + (page +1) + "_" + deltaTimestamp;
-            final File deltaFile = new File(compare.getParentFile(), compare.getName().replaceAll("\\.\\w+$", deltaName + ".png"));
-            final BufferedImage delta = Compare.compareImage(masterImages.get(page), compareImages.get(page));
+        final var deltaTimestamp = String.format("%tY%<tm%<td%<tH%<tM%<tS", new Date());
+        final var deltas = new ArrayList<>();
+        for (var page = 0; page < masterImages.size(); ++page) {
+            final var deltaName = "_diffs_page_" + (page +1) + "_" + deltaTimestamp;
+            final var deltaFile = new File(compare.getParentFile(), compare.getName().replaceAll("\\.\\w+$", deltaName + ".png"));
+            final var delta = Compare.compareImage(masterImages.get(page), compareImages.get(page));
             if (Objects.isNull(delta))
                 continue;
             deltas.add(deltaFile);
@@ -201,19 +200,19 @@ public class Compare {
      */
     private static BufferedImage compareImage(final BufferedImage master, final BufferedImage compare) {
 
-        final Dimension dimension = new Dimension(
+        final var dimension = new Dimension(
                 Math.max(master.getWidth(), compare.getWidth()),
                 Math.max(master.getHeight(), compare.getHeight()));
-        final BufferedImage delta = new BufferedImage((int)dimension.getWidth(), (int)dimension.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
+        final var delta = new BufferedImage((int)dimension.getWidth(), (int)dimension.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
 
         Graphics graphics;
 
-        final BufferedImage masterGray = new BufferedImage(master.getWidth(), master.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+        final var masterGray = new BufferedImage(master.getWidth(), master.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
         graphics = masterGray.getGraphics();
         graphics.drawImage(master, 0, 0, null);
         graphics.dispose();
 
-        final BufferedImage compareGray = new BufferedImage(compare.getWidth(), compare.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+        final var compareGray = new BufferedImage(compare.getWidth(), compare.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
         graphics = compareGray.getGraphics();
         graphics.drawImage(compare, 0, 0, null);
         graphics.dispose();
@@ -222,19 +221,19 @@ public class Compare {
         graphics.drawImage(masterGray, 0, 0, null);
         graphics.dispose();
 
-        final int COLOR_TONE_FACTOR = 127;
+        final var COLOR_TONE_FACTOR = 127;
 
-        boolean control = true;
-        for (int y = 0; y < dimension.getHeight(); y++) {
-            for (int x = 0; x < dimension.getWidth(); x++) {
+        var control = true;
+        for (var y = 0; y < dimension.getHeight(); y++) {
+            for (var x = 0; x < dimension.getWidth(); x++) {
                 Integer pixelM = null;
                 if (x < master.getWidth()
                         && y < master.getHeight())
-                    pixelM = Integer.valueOf(master.getRGB(x, y));
+                    pixelM = master.getRGB(x, y);
                 Integer pixelC = null;
                 if (x < compare.getWidth()
                         && y < compare.getHeight())
-                    pixelC = Integer.valueOf(compare.getRGB(x, y));
+                    pixelC = compare.getRGB(x, y);
                 if (pixelM == null
                         && pixelC == null) {
                     // case height or width mismatch without pixel
@@ -245,12 +244,12 @@ public class Compare {
                     // case pixel differences with height or width mismatch
                     // draw the grayscale pixel
                     control = false;
-                    final Color color = new Color(masterGray.getRGB(x, y));
+                    final var color = new Color(masterGray.getRGB(x, y));
                     delta.setRGB(x, y, Compare.increaseColorTone(color.getRGB(), Color.GREEN, COLOR_TONE_FACTOR));                    
                 } else if (pixelM == null) {
                     // case pixel differences with height or width mismatch
                     // draw the grayscale pixel
-                    final Color color = new Color(compareGray.getRGB(x, y));
+                    final var color = new Color(compareGray.getRGB(x, y));
                     delta.setRGB(x, y, Compare.increaseColorTone(color.getRGB(), Color.BLUE, COLOR_TONE_FACTOR));                    
                 } else if (pixelM.equals(pixelC)) {
                     // case pixel matches without height or width mismatch
@@ -259,9 +258,9 @@ public class Compare {
                     // case pixel differences without height or width mismatch
                     // draw the grayscale pixel
                     control = false;
-                    final Color colorM = new Color(masterGray.getRGB(x, y));
-                    final Color colorC = new Color(compareGray.getRGB(x, y));
-                    final Color colorD = new Color(
+                    final var colorM = new Color(masterGray.getRGB(x, y));
+                    final var colorC = new Color(compareGray.getRGB(x, y));
+                    final var colorD = new Color(
                             (colorM.getRed() +colorC.getRed()) /2,
                             (colorM.getGreen() +colorC.getGreen()) /2,
                             (colorM.getBlue() +colorC.getBlue()) /2,
