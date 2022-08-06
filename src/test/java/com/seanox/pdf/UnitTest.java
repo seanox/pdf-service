@@ -110,12 +110,6 @@ class UnitTest {
         TEMP.mkdirs();
     }
 
-    @BeforeAll
-    static void initPreview()
-            throws Exception {
-        Preview.main("src/test/resources/pdf/*.html", "@resourceS");
-    }
-
     private static void validatePreviewPdf(final File previewFile)
             throws Exception {
         final var masterFile = new File(TEMP, previewFile.getName()).getCanonicalFile();
@@ -162,36 +156,33 @@ class UnitTest {
     }
 
     @Test
-    void checkTemplateGeneration_1()
+    void checkTemplateGeneration()
             throws Exception {
-        UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/report_preview.pdf"));
-    }
 
-    @Test
-    void checkTemplateGeneration_2()
-            throws Exception {
-        final var master1 = "src/test/resources/pdf/reportDiffs_preview.pdf";
-        UnitTest.validatePreviewPdf(new File(ROOT, master1));
-        var diffs = Compare.compare(new File(TEMP, new File(master1).getName()), new File(TEMP, "report_preview.pdf"));
+        Preview.main("src/test/resources/pdf/*.html", "@resourceS");
+
+        UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/report_preview.pdf"));
+
+        String master;
+
+        master = "src/test/resources/pdf/reportDiffs_preview.pdf";
+        UnitTest.validatePreviewPdf(new File(ROOT, master));
+        var diffs = Compare.compare(new File(TEMP, new File(master).getName()), new File(TEMP, "report_preview.pdf"));
         Assertions.assertNotNull(diffs);
         Assertions.assertEquals(3, diffs.length);
 
-        final var master2 = "src/test/resources/pdf/reportDiffs_diffs_page_1.png";
-        Files.copy(Paths.get(master2), new File(TEMP, new File(master2).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
-        Assertions.assertTrue(UnitTest.compareImages(new File(TEMP, new File(master2).getName()), diffs[0]));
+        master = "src/test/resources/pdf/reportDiffs_diffs_page_1.png";
+        Files.copy(Paths.get(master), new File(TEMP, new File(master).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
+        Assertions.assertTrue(UnitTest.compareImages(new File(TEMP, new File(master).getName()), diffs[0]));
 
-        final var master3 = "src/test/resources/pdf/reportDiffs_diffs_page_2.png";
-        Files.copy(Paths.get(master3), new File(TEMP, new File(master3).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
-        Assertions.assertTrue(UnitTest.compareImages(new File(TEMP, new File(master3).getName()), diffs[1]));
+        master = "src/test/resources/pdf/reportDiffs_diffs_page_2.png";
+        Files.copy(Paths.get(master), new File(TEMP, new File(master).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
+        Assertions.assertTrue(UnitTest.compareImages(new File(TEMP, new File(master).getName()), diffs[1]));
 
-        final var master4 = "src/test/resources/pdf/reportDiffs_diffs_page_3.png";
-        Files.copy(Paths.get(master4), new File(TEMP, new File(master4).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
-        Assertions.assertTrue(UnitTest.compareImages(new File(TEMP, new File(master4).getName()), diffs[2]));
-    }
+        master = "src/test/resources/pdf/reportDiffs_diffs_page_3.png";
+        Files.copy(Paths.get(master), new File(TEMP, new File(master).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
+        Assertions.assertTrue(UnitTest.compareImages(new File(TEMP, new File(master).getName()), diffs[2]));
 
-    @Test
-    void checkTemplateGeneration_3()
-            throws Exception {
         UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/articleC_preview.pdf"));
         UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/articleB_preview.pdf"));
         UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/articleA_preview.pdf"));
