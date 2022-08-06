@@ -4,7 +4,7 @@
  * Diese Software unterliegt der Version 2 der Apache License.
  *
  * PDF Service
- * Copyright (C) 2021 Seanox Software Solutions
+ * Copyright (C) 2022 Seanox Software Solutions
  *  
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -30,26 +30,20 @@ import org.apache.pdfbox.multipdf.Overlay;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.multipdf.Splitter;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import java.io.ByteArrayInputStream;
@@ -61,7 +55,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -117,44 +110,64 @@ import java.util.stream.Stream;
  * The implementation decides which generator, renderer, engine, ... it uses.
  * As engine {@link Generator} is used, here you can find more details.
  * The most important in short form:
- *  
+ *
  * <code>#[placeholder]</code><br>
- * Simple placeholder, global or in a section.
- *  
+ * Placeholder in general, representing a value or a structure with the same
+ * identifier.
+ *
  * <code>#[placeholder-exists]</code><br>
  * Pendant to any placeholder, if the value is not {@code null}, not empty and
  * not blank. Then the placeholder contains the value {@code exists}.
- *  
- * <code>#[section[[...]]]</code><br>
- * Section/Bock can contain more substructures.
- * Sections/blocks are only rendered if a corresponding map entry exists.
- *  
+ * The exists-placeholder is supported because of backward compatibility, but
+ * is deprecated and is replaced by the value structure and value disposable
+ * structure.
+ *
+ * <code>#[structure[[...]]]</code><br>
+ * Structures are complex nested constructs for the output of objects, lists,
+ * folders and much more and work like templates. Structures are defined only
+ * once and can then be reused anywhere using the simple placeholder of the
+ * same identifier. They are rendered only if the corresponding object exists
+ * as a value. Because the placeholders for inserting structures are preserved,
+ * they can be used to build lists.
+ *
+ * <code>#[structure{{...}}]</code><br>
+ * Disposable structures are bound to their place and, unlike a normal
+ * structure, can be defined differently multiple times, but cannot be reused
+ * or extracted based on their identifier.
+ *
+ * Because of the conditional output, disposable structures can be used as a
+ * replacement for the exists-placeholder.
+ *
+ * <code>#[structure{{...#[#]...}}]</code><br>
+ * The disposable structure can also be used for a value, which is then
+ * represented by the placeholder #[#].
+ *
  * <code>![static-text]</code><br>
  * Placeholder for static non-structured text e.g. from the ResourceBundle.
- * 
+ *
  * <code>![static-text-exists]</code><br>
  * Pendant to any placeholder of static non-structured text, if the value is not
  * {@code null}, not empty and not blank. Then the placeholder contains the
  * value {@code exists}.
- *  
+ *
  * <code>#[locale]</code><br>
  * Placeholder provided by {@link Service} with the current language.
  * Available in all sections (header, content/data, footer).
- *  
+ *
  * <code>#[page]</code><br>
  * Placeholder provided by {@link Service} with the current page number.
  * Available in sections: header, footer
- *  
+ *
  * <code>#[pages]</code><br>
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer<br>
  * <br>
- * Service 4.1.0 20210924<br>
- * Copyright (C) 2021 Seanox Software Solutions<br>
+ * Service 4.2.0 20220806<br>
+ * Copyright (C) 2022 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 4.1.0 20210924
+ * @version 4.2.0 20220806
  */
 public class Service {
     
@@ -168,10 +181,10 @@ public class Service {
      * @throws ServiceException
      *     In case of unexpected errors.
      */
-    public static byte[] render(Class<? extends Template> template, Meta meta)
+    public static byte[] render(final Class<? extends Template> template, final Meta meta)
             throws ServiceException {
 
-        Template instance;
+        final Template instance;
         try {instance = Service.Template.instantiate(template);
         } catch (Exception exception) {
             throw new Template.TemplateException(exception);
@@ -191,7 +204,7 @@ public class Service {
      * @throws ServiceException
      *     In case of unexpected errors.
      */
-    public static byte[] render(Template template, Meta meta)
+    public static byte[] render(final Template template, final Meta meta)
             throws ServiceException {
         
         try {new URI(template.getBase().toString());
@@ -241,7 +254,7 @@ public class Service {
          * Constructor, creates a new Meta object.
          * @param locale
          */
-        public Meta(Locale locale) {
+        public Meta(final Locale locale) {
             this.locale = locale;
         }
         
@@ -249,7 +262,7 @@ public class Service {
          * Constructor, creates a new Meta object.
          * @param data
          */
-        public Meta(Map<String, Object> data) {
+        public Meta(final Map<String, Object> data) {
             this.data = data;
         }
 
@@ -258,7 +271,7 @@ public class Service {
          * @param data
          * @param statics
          */
-        public Meta(Map<String, Object> data, Map<String, String> statics) {
+        public Meta(final Map<String, Object> data, final Map<String, String> statics) {
             this.data = data;
             this.statics = statics;
         }
@@ -268,7 +281,7 @@ public class Service {
          * @param locale
          * @param data
          */
-        public Meta(Locale locale, Map<String, Object> data) {
+        public Meta(final Locale locale, final Map<String, Object> data) {
             this.locale = locale;
             this.data = data;
         }
@@ -279,7 +292,7 @@ public class Service {
          * @param data
          * @param statics
          */
-        public Meta(Locale locale, Map<String, Object> data, Map<String, String> statics) {
+        public Meta(final Locale locale, final Map<String, Object> data, final Map<String, String> statics) {
             this.locale = locale;
             this.data = data;
             this.statics = statics;
@@ -297,7 +310,7 @@ public class Service {
          * Set value of locale.
          * @param locale value of locale
          */
-        public void setLocale(Locale locale) {
+        public void setLocale(final Locale locale) {
             this.locale = locale;
         }
 
@@ -313,7 +326,7 @@ public class Service {
          * Set value of data.
          * @param data value of data
          */
-        public void setData(Map<String, Object> data) {
+        public void setData(final Map<String, Object> data) {
             this.data = data;
         }
 
@@ -329,13 +342,13 @@ public class Service {
          * Set value of statics.
          * @param statics value of statics
          */
-        public void setStatics(Map<String, String> statics) {
+        public void setStatics(final Map<String, String> statics) {
             this.statics = statics;
         }
 
         @Override
         protected Meta clone() {
-            final Meta meta = new Meta();
+            final var meta = new Meta();
             meta.locale = this.locale;
             meta.data = this.data;
             if (Objects.nonNull(this.statics))
@@ -357,7 +370,7 @@ public class Service {
 
         static Template instantiate(final Class<? extends Template> template)
                 throws Exception {
-            final Constructor<? extends Template> constructor = template.getDeclaredConstructor();
+            final var constructor = template.getDeclaredConstructor();
             constructor.setAccessible(true);
             return constructor.newInstance();
         }
@@ -409,17 +422,17 @@ public class Service {
             if (Objects.nonNull(Template.templates))
                 return Template.templates.clone();
             
-            List<Class<Template>> templates = new ArrayList<>();
-            for (String basePackage : Stream.of(new Throwable().getStackTrace())
+            final var templates = new ArrayList<>();
+            for (final var basePackage : Stream.of(new Throwable().getStackTrace())
                     .map(element -> element.getClassName().replaceAll("\\W.*$", ""))
                     .distinct()
                     .toArray(String[]::new)) {
-                ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(false);
+                final var provider = new ClassPathScanningCandidateComponentProvider(false);
                 provider.addIncludeFilter(new AnnotationTypeFilter(Resources.class));
-                for (BeanDefinition beanDefinition : provider.findCandidateComponents(basePackage)) {
-                    Class<?> template = Class.forName(beanDefinition.getBeanClassName());
+                for (final var beanDefinition : provider.findCandidateComponents(basePackage)) {
+                    final var template = Class.forName(beanDefinition.getBeanClassName());
                     if (Template.class.isAssignableFrom(template))
-                        templates.add((Class<Template>)template);
+                        templates.add(template);
                 }
             }
             Template.templates = templates.toArray(new Class[0]);
@@ -432,8 +445,7 @@ public class Service {
          * @return the path of resources
          */
         protected String getBasePath() {
-            
-            Resources resource = this.getClass().getAnnotation(Resources.class);
+            final var resource = this.getClass().getAnnotation(Resources.class);
             if (Objects.isNull(resource)
                     || resource.base().trim().isEmpty())
                 return "/";
@@ -460,9 +472,8 @@ public class Service {
          *     If the template cannot be found in the ClassPath.
          */
         protected String getSourcePath() {
-            
-            String template = "/" + this.getClass().getName().replace('.', '/') + ".html";    
-            Resources resource = this.getClass().getAnnotation(Resources.class);
+            var template = "/" + this.getClass().getName().replace('.', '/') + ".html";
+            final var resource = this.getClass().getAnnotation(Resources.class);
             if (StringUtils.isNotEmpty(resource.template())) {
                 template = resource.template().trim();
                 if (!template.startsWith("/"))
@@ -506,9 +517,8 @@ public class Service {
          * @throws Exception
          *     In case of unexpected errors.
          */
-        protected URI getResource(String resource)
+        protected URI getResource(final String resource)
                 throws Exception {
-
             if (StringUtils.isEmpty(resource))
                 throw new TemplateResourceNotFoundException();
             if (Objects.isNull(Service.class.getResource(resource)))
@@ -525,9 +535,8 @@ public class Service {
          * @throws Exception
          *     In case of unexpected errors.
          */
-        protected InputStream getResourceStream(String resource)
+        protected InputStream getResourceStream(final String resource)
                 throws Exception {
-            
             if (StringUtils.isEmpty(resource))
                 throw new TemplateResourceNotFoundException();
             if (Objects.isNull(Service.class.getResource(resource)))
@@ -606,7 +615,7 @@ public class Service {
          * @param  meta
          * @return the created (X)HTML markup for the PDF creation
          */
-        protected abstract String generate(String markup, Type type, Meta meta);
+        protected abstract String generate(final String markup, final Type type, final Meta meta);
         
         /**
          * Merges a collection of PDDocuments into one. 
@@ -614,19 +623,17 @@ public class Service {
          * @return the merged PDDocuments
          * @throws IOException
          */
-        protected static PDDocument merge(Collection<PDDocument> documents)
+        protected static PDDocument merge(final Collection<PDDocument> documents)
                 throws IOException {
-
-            PDFMergerUtility merge = new PDFMergerUtility();
-            for (PDDocument document : documents) {
-                ByteArrayOutputStream output = new ByteArrayOutputStream();
+            final var merge = new PDFMergerUtility();
+            for (final var document : documents) {
+                final var output = new ByteArrayOutputStream();
                 document.save(output);
                 merge.addSource(new ByteArrayInputStream(output.toByteArray()));
             }
-            ByteArrayOutputStream output = new ByteArrayOutputStream();
+            final var output = new ByteArrayOutputStream();
             merge.setDestinationStream(output);
             merge.mergeDocuments(MemoryUsageSetting.setupMainMemoryOnly());
-            
             return PDDocument.load(output.toByteArray());
         }
         
@@ -638,7 +645,7 @@ public class Service {
          * @param  path
          * @return the normalizes a path
          */
-        protected static String normalizePath(String path) {
+        protected static String normalizePath(final String path) {
             
             String string;
             String stream;
@@ -665,7 +672,6 @@ public class Service {
                 string = string.concat("/");
 
             while ((cursor = string.indexOf("/../")) >= 0) {
-
                 stream = string.substring(cursor +3);
                 string = string.substring(0, cursor);
 
@@ -677,7 +683,13 @@ public class Service {
             // multiple slashes are combined
             while ((cursor = string.indexOf("//")) >= 0)
                 string = string.substring(0, cursor).concat(string.substring(cursor +1));
-            
+
+            // Paths without a slash at the beginning must remain without a
+            // slash. This can happen when normalizing .. to the root.
+            if (!path.replace('\\', '/').trim().startsWith("/")
+                    && string.equals("/"))
+                string = "";
+
             return string;
         }
         
@@ -701,7 +713,7 @@ public class Service {
                 meta.data = new HashMap<>();
             else meta.data = new HashMap<>(meta.data);
 
-            URI base = this.getBase();
+            var base = this.getBase();
             if (Objects.isNull(base.getScheme())) {
                 if (Objects.isNull(Service.class.getResource(base.toString())))
                     throw new TemplateResourceNotFoundException(base.toString());
@@ -710,16 +722,16 @@ public class Service {
             if (!base.toString().endsWith("/"))
                 base = new URI(base + "/");
 
-            String markup = this.getMarkup();
-            Multiplex multiplex = Multiplex.demux(markup);
+            final var markup = this.getMarkup();
+            final var multiplex = Multiplex.demux(markup);
 
-            List<PDDocument> artifacts = new ArrayList<>();
+            final var artifacts = new ArrayList<PDDocument>();
             
             try {
 
                 PdfRendererBuilder builder;
-                
-                ByteArrayOutputStream content = new ByteArrayOutputStream();
+
+                final var content = new ByteArrayOutputStream();
                 builder = new PdfRendererBuilder();
                 builder.withHtmlContent(this.generate(multiplex.content, Type.DATA, meta), base.toString());
                 builder.toStream(content);
@@ -734,27 +746,24 @@ public class Service {
                                 || multiplex.footer.trim().isEmpty()))
                     return content.toByteArray();
                     
-                try (PDDocument document = Template.merge(artifacts)) {
-
-                    Splitter splitter = new Splitter();
-                    List<PDDocument> pages = splitter.split(document);
+                try (final var document = Template.merge(artifacts)) {
+                    final var splitter = new Splitter();
+                    final var pages = splitter.split(document);
                     meta.data.put("pages", String.valueOf(pages.size()));
                     
-                    for (PDDocument page : new ArrayList<>(pages)) {
-                        
-                        int offset = pages.indexOf(page);
-                        
+                    for (var page : new ArrayList<>(pages)) {
+                        var offset = pages.indexOf(page);
                         meta.data.put("page", String.valueOf(offset +1));
                         
                         if (Objects.nonNull(multiplex.header)
                                 && !multiplex.header.trim().isEmpty()) {
-                            ByteArrayOutputStream header = new ByteArrayOutputStream();
+                            final var header = new ByteArrayOutputStream();
                             builder = new PdfRendererBuilder();
                             builder.withHtmlContent(this.generate(multiplex.header, Type.HEADER, meta), base.toString());
                             builder.toStream(header);
                             builder.run();
                             
-                            try (Overlay overlay = new Overlay()) {
+                            try (final var overlay = new Overlay()) {
                                 overlay.setInputPDF(page);
                                 overlay.setAllPagesOverlayPDF(PDDocument.load(header.toByteArray()));
                                 ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -766,13 +775,13 @@ public class Service {
 
                         if (Objects.nonNull(multiplex.footer)
                                 && !multiplex.footer.trim().isEmpty()) {
-                            ByteArrayOutputStream footer = new ByteArrayOutputStream();
+                            final var footer = new ByteArrayOutputStream();
                             builder = new PdfRendererBuilder();
                             builder.withHtmlContent(this.generate(multiplex.footer, Type.FOOTER, meta), base.toString());
                             builder.toStream(footer);
                             builder.run();  
                             
-                            try (Overlay overlay = new Overlay()) {
+                            try (final var overlay = new Overlay()) {
                                 overlay.setInputPDF(page);
                                 overlay.setAllPagesOverlayPDF(PDDocument.load(footer.toByteArray()));
                                 ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -786,18 +795,18 @@ public class Service {
                         pages.remove(offset).close();
                     }
                     
-                    try (PDDocument release = Template.merge(pages)) {
-                        ByteArrayOutputStream output = new ByteArrayOutputStream();
+                    try (final var release = Template.merge(pages)) {
+                        final var output = new ByteArrayOutputStream();
                         release.save(output);
                         return output.toByteArray();
                     } finally {
-                        for (PDDocument page : pages)
+                        for (final var page : pages)
                             page.close();
                     }
                 }
 
             } finally {
-                for (PDDocument artifact : artifacts)
+                for (final var artifact : artifacts)
                     artifact.close();
             }
         }
@@ -872,14 +881,14 @@ public class Service {
              * @param  nodes
              * @return list of nodes
              */
-            private static List<Node> convertNodeList(NodeList nodes) {
+            private static List<Node> convertNodeList(final NodeList nodes) {
                 
                 if (Objects.isNull(nodes)
                         || nodes.getLength() == 0)
                     return Collections.emptyList();
                 
-                List<Node> list = new ArrayList<>();
-                for (int loop = 0; loop < nodes.getLength(); loop++)
+                final var list = new ArrayList<Node>();
+                for (var loop = 0; loop < nodes.getLength(); loop++)
                     list.add(nodes.item(loop));
                 return list;
             } 
@@ -890,15 +899,13 @@ public class Service {
              * @return a copy of the passed document
              * @throws ParserConfigurationException
              */
-            private static Document documentClone(Document document)
+            private static Document documentClone(final Document document)
                     throws ParserConfigurationException {
-
-                Node root = document.getDocumentElement();
-                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-                DocumentBuilder builder = factory.newDocumentBuilder();
-                Document clone = builder.newDocument();
+                final var root = document.getDocumentElement();
+                final var factory = DocumentBuilderFactory.newInstance();
+                final var builder = factory.newDocumentBuilder();
+                final var clone = builder.newDocument();
                 clone.appendChild(clone.importNode(root, true));
-
                 return clone;
             }
 
@@ -910,11 +917,10 @@ public class Service {
              * @return the first matching node, otherwise {@code null}
              * @throws XPathExpressionException
              */
-            private static Node documentFetchNode(Document document, String selector)
+            private static Node documentFetchNode(final Document document, final String selector)
                     throws XPathExpressionException {
-
-                XPath xpath = XPathFactory.newInstance().newXPath();
-                XPathExpression expression = xpath.compile(selector);
+                final var xpath = XPathFactory.newInstance().newXPath();
+                final var expression = xpath.compile(selector);
                 return (Node)expression.evaluate(document, XPathConstants.NODE);
             }
             
@@ -924,15 +930,14 @@ public class Service {
              * @param  selector
              * @throws XPathExpressionException
              */
-            private static void documentEmptyNode(Document document, String selector)
+            private static void documentEmptyNode(final Document document, final String selector)
                     throws XPathExpressionException {
-
-                XPath xpath = XPathFactory.newInstance().newXPath();
-                XPathExpression expression = xpath.compile(selector);
-                NodeList nodes = (NodeList)expression.evaluate(document, XPathConstants.NODESET);
-                for (Node node : Multiplex.convertNodeList(nodes)) {
-                    NodeList childs = node.getChildNodes();
-                    for (Node child : Multiplex.convertNodeList(childs))
+                final var xpath = XPathFactory.newInstance().newXPath();
+                final var expression = xpath.compile(selector);
+                final var nodes = (NodeList)expression.evaluate(document, XPathConstants.NODESET);
+                for (final var node : Multiplex.convertNodeList(nodes)) {
+                    final var childs = node.getChildNodes();
+                    for (final var child : Multiplex.convertNodeList(childs))
                         node.removeChild(child);
                 }
             }
@@ -943,13 +948,12 @@ public class Service {
              * @param  selector
              * @throws XPathExpressionException
              */
-            private static void documentRemoveNode(Document document, String selector)
+            private static void documentRemoveNode(final Document document, final String selector)
                     throws XPathExpressionException {
-
-                XPath xpath = XPathFactory.newInstance().newXPath();
-                XPathExpression expression = xpath.compile(selector);
-                NodeList nodes = (NodeList)expression.evaluate(document, XPathConstants.NODESET);
-                for (int loop = 0; loop < nodes.getLength(); loop++)
+                final var xpath = XPathFactory.newInstance().newXPath();
+                final var expression = xpath.compile(selector);
+                final var nodes = (NodeList)expression.evaluate(document, XPathConstants.NODESET);
+                for (var loop = 0; loop < nodes.getLength(); loop++)
                     nodes.item(loop).getParentNode().removeChild(nodes.item(loop));
             }
 
@@ -959,19 +963,19 @@ public class Service {
              * @param  document
              * @throws XPathExpressionException
              */
-            private static void documentBorderless(Document document)
+            private static void documentBorderless(final Document document)
                     throws XPathExpressionException {
 
-                Element style = document.createElement("style");
+                final var style = document.createElement("style");
                 style.setAttribute("type", "text/css");
                 style.setTextContent("@page {"
                         + " margin:0mm!important;"
                         + " padding:0mm!important;"
                         + " border:0mm solid!important;}");
 
-                XPath xpath = XPathFactory.newInstance().newXPath();
-                XPathExpression expression = xpath.compile("/html/head");
-                Node node = (Node)expression.evaluate(document, XPathConstants.NODE);
+                final var xpath = XPathFactory.newInstance().newXPath();
+                final var expression = xpath.compile("/html/head");
+                final var node = (Node)expression.evaluate(document, XPathConstants.NODE);
                 if (Objects.nonNull(node))
                     node.appendChild(style);
             }
@@ -982,18 +986,16 @@ public class Service {
              * @return an XML string based on the document
              * @throws TransformerException
              */
-            private static String documentToString(Document document)
+            private static String documentToString(final  Document document)
                     throws TransformerException {
-
-                TransformerFactory factory = TransformerFactory.newInstance();
-                Transformer transformer = factory.newTransformer();
+                final var factory = TransformerFactory.newInstance();
+                final var transformer = factory.newTransformer();
                 transformer.setOutputProperty(OutputKeys.METHOD, "xml");
                 transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
                 transformer.setOutputProperty(OutputKeys.INDENT, "no");
                 transformer.setOutputProperty(OutputKeys.ENCODING, StandardCharsets.US_ASCII.name());
-                ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+                final var buffer = new ByteArrayOutputStream();
                 transformer.transform(new DOMSource(document), new StreamResult(buffer));
-
                 return buffer.toString();
             }
 
@@ -1004,37 +1006,37 @@ public class Service {
              *     header, content a footer
              * @throws Exception
              */
-            public static Multiplex demux(String markup)
+            public static Multiplex demux(final String markup)
                     throws Exception {
 
-                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-                DocumentBuilder builder = factory.newDocumentBuilder();
-                Document document = builder.parse(new ByteArrayInputStream(markup.getBytes()));
-                
-                Multiplex multiplex = new Multiplex();
-                
-                Document content = Multiplex.documentClone(document);
+                final var factory = DocumentBuilderFactory.newInstance();
+                final var builder = factory.newDocumentBuilder();
+                final var document = builder.parse(new ByteArrayInputStream(markup.getBytes()));
+
+                final var multiplex = new Multiplex();
+
+                final var content = Multiplex.documentClone(document);
                 Multiplex.documentRemoveNode(content, "/html/body/header");
                 Multiplex.documentRemoveNode(content, "/html/body/footer");
                 multiplex.content = Multiplex.documentToString(content);
 
-                Document header = Multiplex.documentClone(document);
-                Node headerNode = Multiplex.documentFetchNode(document, "/html/body/header");
+                final var header = Multiplex.documentClone(document);
+                var headerNode = Multiplex.documentFetchNode(document, "/html/body/header");
                 if (Objects.nonNull(headerNode)) {
                     Multiplex.documentEmptyNode(header, "/html/body");
-                    Node headerBody =  Multiplex.documentFetchNode(header, "/html/body");
+                    final var headerBody =  Multiplex.documentFetchNode(header, "/html/body");
                     headerNode = header.importNode(headerNode, true);
                     headerBody.appendChild(headerNode);
                     Multiplex.documentBorderless(header);
                     multiplex.header = Multiplex.documentToString(header);
                 }
-                
-                Document footer = Multiplex.documentClone(document);
-                Node footerNode = Multiplex.documentFetchNode(document, "/html/body/footer");
+
+                final var footer = Multiplex.documentClone(document);
+                var footerNode = Multiplex.documentFetchNode(document, "/html/body/footer");
                 if (Objects.nonNull(footerNode)) {
                     footerNode = footerNode.cloneNode(true);
                     Multiplex.documentEmptyNode(footer, "/html/body");
-                    Node footerBody =  Multiplex.documentFetchNode(footer, "/html/body");
+                    final var footerBody =  Multiplex.documentFetchNode(footer, "/html/body");
                     footerNode = footer.importNode(footerNode, true);
                     footerBody.appendChild(footerNode);
                     Multiplex.documentBorderless(footer);
@@ -1059,7 +1061,7 @@ public class Service {
              * Constructor, creates a new TemplateException
              * @param cause
              */
-            public TemplateException(Throwable cause) {
+            public TemplateException(final Throwable cause) {
                 super(cause);
             }
 
@@ -1067,7 +1069,7 @@ public class Service {
              * Constructor, creates a new TemplateException
              * @param message
              */
-            public TemplateException(String message) {
+            public TemplateException(final String message) {
                 super(message);
             }
             
@@ -1076,7 +1078,7 @@ public class Service {
              * @param message
              * @param cause
              */
-            public TemplateException(String message, Throwable cause) {
+            public TemplateException(final String message, final Throwable cause) {
                 super(message, cause);
             }               
         }
@@ -1095,7 +1097,7 @@ public class Service {
              * Constructor, creates a new TemplateResourceException.
              * @param message
              */
-            public TemplateResourceException(String message) {
+            public TemplateResourceException(final String message) {
                 super(message);
             }
         }
@@ -1114,7 +1116,7 @@ public class Service {
              * Constructor, creates a new TemplateResourceNotFoundException.
              * @param message
              */
-            public TemplateResourceNotFoundException(String message) {
+            public TemplateResourceNotFoundException(final String message) {
                 super(message);
             }
         }
@@ -1145,7 +1147,7 @@ public class Service {
          * ServiceException
          * @param cause
          */
-        ServiceException(Throwable cause) {
+        ServiceException(final Throwable cause) {
             super(cause);
         } 
 
@@ -1153,7 +1155,7 @@ public class Service {
          * ServiceException
          * @param message
          */
-        ServiceException(String message) {
+        ServiceException(final String message) {
             super(message);
         }
         
@@ -1162,7 +1164,7 @@ public class Service {
          * @param message
          * @param cause
          */
-        ServiceException(String message, Throwable cause) {
+        ServiceException(final String message, final Throwable cause) {
             super(message, cause);
         }        
     }
