@@ -27,6 +27,16 @@ import java.io.ByteArrayOutputStream;
 import java.util.Collections;
 import java.util.Hashtable;
 
+/**
+ * Unit test for Generator.<br>
+ * <br>
+ * GeneratorTest 4.2.0 20220806<br>
+ * Copyright (C) 2022 Seanox Software Solutions<br>
+ * Alle Rechte vorbehalten.
+ *
+ * @author  Seanox Software Solutions
+ * @version 4.2.0 20220806
+ */
 class GeneratorTest {
 
     @Test
