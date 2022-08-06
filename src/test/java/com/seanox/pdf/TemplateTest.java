@@ -30,7 +30,7 @@ import java.util.Properties;
 /**
  * Unit test for Template.<br>
  * <br>
- * GeneratorTest 4.2.0 20220806<br>
+ * TemplateTest 4.2.0 20220806<br>
  * Copyright (C) 2022 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
