@@ -299,6 +299,18 @@ class GeneratorTest {
     }
 
     @Test
+    void testAcceptance_K()
+            throws Exception {
+        final var values = TestDataReader.readTestDataMap("testAcceptance_K.json");
+        final var generator = Generator.parse(TestDataReader.readTestContent("testAcceptance_K_1.txt").getBytes());
+        generator.set(values);
+        Assertions.assertEquals(TestDataReader.readTestContent("testAcceptance_K_2.txt"), new String(generator.extract()));
+
+        final var scopes = Collections.list(generator.scopes()).toString();
+        Assertions.assertEquals("[a]", scopes);
+    }
+
+    @Test
     void testRecursion_1()
             throws Exception {
         final var generator = Generator.parse(TestDataReader.readTestContent("testRecursion_0_1.txt").getBytes());
