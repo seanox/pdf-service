@@ -4,7 +4,7 @@
  * Diese Software unterliegt der Version 2 der Apache License.
  *
  * PDF Service
- * Copyright (C) 2021 Seanox Software Solutions
+ * Copyright (C) 2022 Seanox Software Solutions
  *  
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -41,8 +41,8 @@ import com.seanox.pdf.example.data.OutletDelegate;
  * The resources (CSS, images, fonts, ...) are in the ClassPath /pdf/... and are
  * used in the template relative.<br>
  * <br>
- * UsageTemplate 4.1.0 20210817<br>
- * Copyright (C) 2021 Seanox Software Solutions<br>
+ * UsageTemplate 4.2.0 20220806<br>
+ * Copyright (C) 2022 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
@@ -57,7 +57,7 @@ public class UsageTemplate {
         // are available in a similar way as properties or JSON file and can be
         // easily converted. Static texts are available in the template in the
         // header, dataset and footer sections.
-        final Map<String, String> statics = new HashMap<>() {
+        final var statics = new HashMap<String, String>() {
             private static final long serialVersionUID = 1L; {
             put("ARTICLE_NUMBER", "Article Number");
             put("ARTICLE_PRICE", "Price");
@@ -68,7 +68,7 @@ public class UsageTemplate {
         }};
         
         // The template is configured via a meta-object.
-        final Meta meta = new Meta();
+        final var meta = new Meta();
         meta.setStatics(statics);
         meta.setData(new HashMap<>());
         
@@ -87,7 +87,7 @@ public class UsageTemplate {
         // The render-method of the template creates the final PDF. The PDF is
         // output to the current working directory. The file name is derived
         // from the UsageTemplate class.
-        final byte[] data = Service.render(ExampleTemplate.class, meta);
+        final var data = Service.render(ExampleTemplate.class, meta);
         Files.write(Paths.get(UsageTemplate.class.getSimpleName() + ".pdf"), data, StandardOpenOption.CREATE);
     }
     

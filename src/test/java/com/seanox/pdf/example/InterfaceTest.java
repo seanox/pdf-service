@@ -4,7 +4,7 @@
  * Diese Software unterliegt der Version 2 der Apache License.
  *
  * PDF Service
- * Copyright (C) 2021 Seanox Software Solutions
+ * Copyright (C) 2022 Seanox Software Solutions
  *  
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -32,12 +32,12 @@ import com.seanox.pdf.Service.Template;
  * Here the implementation and use of the Template-API shall be tested and
  * protected by the compiler..<br>
  * <br>
- * InterfaceTest 4.1.0 20210817<br>
- * Copyright (C) 2021 Seanox Software Solutions<br>
+ * InterfaceTest 4.2.0 20220806<br>
+ * Copyright (C) 2022 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 4.1.0 20210817
+ * @version 4.2.0 20220806
  */
 class InterfaceTest extends Template {
 
@@ -120,12 +120,12 @@ class InterfaceTest extends Template {
         Template.normalizePath(null);
         Template.merge(null);
 
-        final Multiplex multiplex = Multiplex.demux(null);
+        final var multiplex = Multiplex.demux(null);
         multiplex.getHeader();
         multiplex.getContent();
         multiplex.getFooter();
 
-        final Resources resources = InterfaceTest.class.getAnnotation(Resources.class);
+        final var resources = InterfaceTest.class.getAnnotation(Resources.class);
         resources.base();
         resources.template();
     }
