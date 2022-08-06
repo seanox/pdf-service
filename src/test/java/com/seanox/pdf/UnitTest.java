@@ -216,7 +216,7 @@ class UnitTest {
         final var sourceContent = new String(UnitTest.class.getResourceAsStream("/pdf/compatibility.html").readAllBytes());
         Files.deleteIfExists(outputFile.toPath());
         try (final var outputStream = new FileOutputStream(outputFile)) {
-            final PdfRendererBuilder builder = new PdfRendererBuilder();
+            final var builder = new PdfRendererBuilder();
             builder.withHtmlContent(sourceContent, "/");
             builder.toStream(outputStream);
             builder.run();
@@ -357,7 +357,7 @@ class UnitTest {
     void checkExistsTemplate()
             throws Exception {
         
-        final Map<String, String> statics = new HashMap<>() {
+        final var statics = new HashMap<String, String>() {
             private static final long serialVersionUID = 1L; {
             put("VALUE_EMPTY", "");
             put("VALUE_BLANK", " ");
@@ -367,7 +367,7 @@ class UnitTest {
             put("VALUE_NOT_NULL", "3");
         }};
 
-        final Map<String, Object> data = new HashMap<>() {
+        final var data = new HashMap<String, Object>() {
             private static final long serialVersionUID = 1L; {
             put("VALUE_EMPTY", "");
             put("VALUE_BLANK", " ");
