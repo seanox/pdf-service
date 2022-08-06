@@ -49,7 +49,7 @@ import java.util.stream.IntStream;
  *  
  * <code>#[placeholder]</code><br>
  * Placeholder in general, representing a value or a structure with the same
- * name.
+ * identifier.
  *  
  * <code>#[placeholder-exists]</code><br>
  * Pendant to any placeholder, if the value is not {@code null}, not empty and
@@ -58,19 +58,25 @@ import java.util.stream.IntStream;
  * is deprecated and is replaced by the value structure and value disposable
  * structure.
  *
- * <code>#[placeholder{{...#[#]...}}</code><br>
- * TOOD:
- *
  * <code>#[structure[[...]]]</code><br>
  * Structures are complex nested constructs for the output of objects, lists,
  * folders and much more and work like templates. Structures are defined only
  * once and can then be reused anywhere using the simple placeholder of the
- * same name. They are rendered only if the corresponding object exists as a
- * value. Because the placeholders for inserting structures are preserved, they
- * can be used to build lists.
+ * same identifier. They are rendered only if the corresponding object exists
+ * as a value. Because the placeholders for inserting structures are preserved,
+ * they can be used to build lists.
  *
  * <code>#[structure{{...}}]</code><br>
- * TODO:
+ * Disposable structures are bound to their place and, unlike a normal
+ * structure, can be defined differently multiple times, but cannot be reused
+ * or extracted based on their identifier.
+ *
+ * Because of the conditional output, disposable structures can be used as a
+ * replacement for the exists-placeholder.
+ *
+ * <code>#[structure{{...#[#]...}}]</code><br>
+ * The disposable structure can also be used for a value, which is then
+ * represented by the placeholder #[#].
  *
  * <code>![static-text]</code><br>
  * Placeholder for static non-structured text e.g. from the ResourceBundle.
@@ -144,10 +150,10 @@ public abstract class Template extends Service.Template {
         private static String normalize(final String string) {
             if (StringUtils.isBlank(string))
                 return "";
-            final StringBuilder buffer = new StringBuilder();
-            for (final String fragment : string.trim().split("((?<=\\d)(?!\\d))|((?<!\\d)(?=\\d))")) {
+            final var buffer = new StringBuilder();
+            for (final var fragment : string.trim().split("((?<=\\d)(?!\\d))|((?<!\\d)(?=\\d))")) {
                 if (fragment.matches("^\\d+$")) {
-                    final String patch = fragment.replaceAll("^0+", "");
+                    final var patch = fragment.replaceAll("^0+", "");
                     buffer.append(Long.toString(patch.length(), 36).toUpperCase());
                     buffer.append(patch);
                 } else buffer.append(fragment);
@@ -156,9 +162,9 @@ public abstract class Template extends Service.Template {
         }
 
         @Override
-        public int compare(final String string1, final String string2) {
-            return NaturalComparator.normalize(string1)
-                    .compareTo(NaturalComparator.normalize(string2));
+        public int compare(final String string, final String compare) {
+            return NaturalComparator.normalize(string)
+                    .compareTo(NaturalComparator.normalize(compare));
         }
     }    
     
@@ -274,15 +280,15 @@ public abstract class Template extends Service.Template {
         if (PATTERN_MARKUP_DETECTION.matcher(value).find())
             value = new Markup(value);           
         
-        final List<String> entries = new ArrayList<>(Arrays.asList(PATTERN_KEY_DELIMITER.split(key)));
+        final var entries = new ArrayList<>(Arrays.asList(PATTERN_KEY_DELIMITER.split(key)));
         while (entries.size() > 0) {
-            String entry = entries.remove(0);
+            var entry = entries.remove(0);
             if (PATTERN_LIST_EXPRESSION.matcher(entry).find()) {
-                final int index = Integer.valueOf(PATTERN_LIST_EXPRESSION.matcher(entry).replaceAll("$2")).intValue();
+                final var index = Integer.valueOf(PATTERN_LIST_EXPRESSION.matcher(entry).replaceAll("$2")).intValue();
                 entry = PATTERN_LIST_EXPRESSION.matcher(entry).replaceAll("$1").trim();
                 if (!(map.get(entry) instanceof List))
                     map.put(entry, new ArrayList<>());
-                final List list = (List)map.get(entry);
+                final var list = (List)map.get(entry);
                 if (list.size() < index)
                     throw new PreviewDataParserException("Invalid key index: " + key);
                 if (entries.size() > 0) {
@@ -316,9 +322,9 @@ public abstract class Template extends Service.Template {
      */
     protected Properties getPreviewProperties()
             throws Exception {
-        final String resource = this.getSourcePath()
+        final var resource = this.getSourcePath()
                 .replaceAll("[^\\\\/\\.]+$", "") + "properties";
-        Properties properties = new Properties();
+        final var properties = new Properties();
         properties.load(this.getResourceStream(resource));
         return properties;
     }
@@ -335,13 +341,13 @@ public abstract class Template extends Service.Template {
     @Override
     protected Map<String, Object> getPreviewData()
             throws Exception {
-        final Properties properties = this.getPreviewProperties();
-        final Map<String, Object> map = new HashMap<>();
-        final Set keySet = new TreeSet<>(new NaturalComparator());
-        keySet.addAll(properties.keySet());
-        for (final Object key : keySet) {
-            final String source = ((String)key);
-            final String target = source.replaceAll("(^\\.+)|(\\.+$)", "");
+        final var properties = this.getPreviewProperties();
+        final var map = new HashMap<String, Object>();
+        final var keySet = new TreeSet<String>(new NaturalComparator());
+        keySet.addAll(properties.keySet().stream().map(String::valueOf).collect(Collectors.toList()));
+        for (final var key : keySet) {
+            final var source = ((String)key);
+            final var target = source.replaceAll("(^\\.+)|(\\.+$)", "");
             Template.collectPreviewData(map, target, properties.getProperty(source));
         }
         return map;
@@ -402,8 +408,8 @@ public abstract class Template extends Service.Template {
     static String escapeHtml(final String text, final boolean markup) {
         if (Objects.isNull(text))
             return "";
-        final StringBuilder buffer = new StringBuilder();
-        for (final char digit : text.toCharArray()) {
+        final var buffer = new StringBuilder();
+        for (final var digit : text.toCharArray()) {
             if (digit > 0x7F)
                 buffer.append("&#").append((int)digit).append(";");
             else if (!markup) {
@@ -416,7 +422,7 @@ public abstract class Template extends Service.Template {
                 else buffer.append(digit);
             } else buffer.append(digit);
         }
-        final String result = PATTERN_AMPERSAND.matcher(buffer.toString()).replaceAll("&amp;");
+        final var result = PATTERN_AMPERSAND.matcher(buffer.toString()).replaceAll("&amp;");
         if (markup)
             return result;
         return PATTERN_LINE_BREAKS.matcher(result).replaceAll("<br/>");
@@ -481,7 +487,7 @@ public abstract class Template extends Service.Template {
     private static Collection<Map<String, Object>> indicateEmpty(final Collection<Map<String, Object>> collection) {
         if (Objects.isNull(collection))
             return new ArrayList<>();
-        final List<Map<String, Object>> result = new ArrayList<>();
+        final var result = new ArrayList<Map<String, Object>>();
         collection.forEach(entry -> {
             if (entry.isEmpty())
                 return;
@@ -503,12 +509,12 @@ public abstract class Template extends Service.Template {
     private static <T> Map<String, T> indicateEmpty(final Map<String, T> map) {
         if (Objects.isNull(map))
             return new HashMap<>();
-        final Map<String, T> result = new HashMap<>();
+        final var result = new HashMap<String, T>();
         map.entrySet().forEach(entry -> {
             if (Objects.isNull(entry.getValue()))
                 return;
             if (entry.getValue() instanceof Collection) {
-                final Collection value = (Collection)entry.getValue();
+                final var value = (Collection)entry.getValue();
                 if (!value.isEmpty())
                     result.put(entry.getKey() + "-exists", (T)"exists");
                 try {result.put(entry.getKey(), (T)Template.indicateEmpty(value));
@@ -516,7 +522,7 @@ public abstract class Template extends Service.Template {
                     result.put(entry.getKey(), (T)String.valueOf(entry.getValue()));
                 }
             } else if (entry.getValue() instanceof Map) {
-                final Map value = (Map)entry.getValue();
+                final var value = (Map)entry.getValue();
                 if (!value.isEmpty())
                     result.put(entry.getKey() + "-exists", (T)"exists");
                 try {result.put(entry.getKey(), (T)Template.indicateEmpty(value));
@@ -524,7 +530,7 @@ public abstract class Template extends Service.Template {
                     result.put(entry.getKey(), (T)String.valueOf(entry.getValue()));
                 }
             } else {
-                final String value = String.valueOf(entry.getValue());
+                final var value = String.valueOf(entry.getValue());
                 if (!value.trim().isEmpty())
                     result.put(entry.getKey() + "-exists", (T)"exists");
                 result.put(entry.getKey(), (T)value);
@@ -544,12 +550,12 @@ public abstract class Template extends Service.Template {
      */
     private String resolveIncludes(String path, String markup, List<String> stack)
             throws Exception {
-        final Pattern pattern = Pattern.compile("(?i)(?:^|(?<=[\r\n]))\\s*#include(?:(?:\\s+([^\r\n]*)\\s*((?=[\r\n])|$))|(?=\\s*$))");
-        final Matcher matcher = pattern.matcher(markup);
+        final var pattern = Pattern.compile("(?i)(?:^|(?<=[\r\n]))\\s*#include(?:(?:\\s+([^\r\n]*)\\s*((?=[\r\n])|$))|(?=\\s*$))");
+        final var matcher = pattern.matcher(markup);
         while (matcher.find()) {
             if (matcher.groupCount() < 1)
                 throw new TemplateException("Invalid include found");
-            String patch = matcher.group(1);
+            var patch = matcher.group(1);
             patch = this.followIncludes(path, patch, stack);
             markup = markup.replace(matcher.group(0), patch);
         }
@@ -573,11 +579,11 @@ public abstract class Template extends Service.Template {
         else include = Service.Template.normalizePath("/" + path + "/" + include);
         if (stack.contains(include))
             throw new TemplateRecursionException();
-        final List<String> recursions = new ArrayList<>(stack);
+        final var recursions = new ArrayList<String>(stack);
         recursions.add(include);
         if (Objects.isNull(this.getResource(include)))
             throw new TemplateResourceNotFoundException(include);
-        final String markup = new String(this.getResourceStream(include).readAllBytes());
+        final var markup = new String(this.getResourceStream(include).readAllBytes());
         try {return this.resolveIncludes(Service.Template.normalizePath(include + "/.."), markup, recursions);
         } catch (TemplateRecursionException exception) {
             throw new TemplateException("Recursion found in: " + this.getResource(include));
@@ -594,9 +600,9 @@ public abstract class Template extends Service.Template {
         // - Placeholders cannot be inserted subsequently
         // - Placeholders without value are removed at the end
 
-        final Map<String, String> statics = meta.getStatics();
-        final Pattern pattern = Pattern.compile("!\\[\\s*(.*?)\\s*\\]");
-        final Matcher matcher = pattern.matcher(markup);
+        final var statics = meta.getStatics();
+        final var pattern = Pattern.compile("!\\[\\s*(.*?)\\s*\\]");
+        final var matcher = pattern.matcher(markup);
         while (matcher.find()) {
             String value = null;
             if (matcher.group(0).matches("^(?i)!\\[[a-z]([\\w-]*\\w)?\\]$"))
@@ -607,7 +613,7 @@ public abstract class Template extends Service.Template {
             markup = markup.replace(matcher.group(0), value);
         }
 
-        final Generator generator = Generator.parse(markup.getBytes());
+        final var generator = Generator.parse(markup.getBytes());
         generator.set(meta.getData());
         generator.set(new HashMap<>() {
             private static final long serialVersionUID = 1L; {
@@ -629,11 +635,11 @@ public abstract class Template extends Service.Template {
         // The rendering is done in three steps (content, header, footer) and so
         // this can be done once for all steps.
 
-        Map<String, Object> data = meta.getData();
+        var data = meta.getData();
         data = Template.escapeHtml(data);
         data = Template.indicateEmpty(data);
 
-        Map<String, String> statics = meta.getStatics();
+        var statics = meta.getStatics();
         if (Objects.isNull(statics))
             statics = new HashMap<>();
         statics = statics.entrySet().stream()
