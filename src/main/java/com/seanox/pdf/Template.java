@@ -4,7 +4,7 @@
  * Diese Software unterliegt der Version 2 der Apache License.
  *
  * PDF Service
- * Copyright (C) 2021 Seanox Software Solutions
+ * Copyright (C) 2022 Seanox Software Solutions
  *  
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -48,16 +48,30 @@ import java.util.stream.IntStream;
  * The most important in short form:
  *  
  * <code>#[placeholder]</code><br>
- * Simple placeholder, global or in a section.
+ * Placeholder in general, representing a value or a structure with the same
+ * name.
  *  
  * <code>#[placeholder-exists]</code><br>
  * Pendant to any placeholder, if the value is not {@code null}, not empty and
  * not blank. Then the placeholder contains the value {@code exists}.
- *  
- * <code>#[section[[...]]]</code><br>
- * Section/Bock can contain more substructures.
- * Sections/blocks are only rendered if a corresponding map entry exists.
- *  
+ * The exists-placeholder is supported because of backward compatibility, but
+ * is deprecated and is replaced by the value structure and value disposable
+ * structure.
+ *
+ * <code>#[placeholder{{...#[#]...}}</code><br>
+ * TOOD:
+ *
+ * <code>#[structure[[...]]]</code><br>
+ * Structures are complex nested constructs for the output of objects, lists,
+ * folders and much more and work like templates. Structures are defined only
+ * once and can then be reused anywhere using the simple placeholder of the
+ * same name. They are rendered only if the corresponding object exists as a
+ * value. Because the placeholders for inserting structures are preserved, they
+ * can be used to build lists.
+ *
+ * <code>#[structure{{...}}]</code><br>
+ * TODO:
+ *
  * <code>![static-text]</code><br>
  * Placeholder for static non-structured text e.g. from the ResourceBundle.
  * 
@@ -78,23 +92,32 @@ import java.util.stream.IntStream;
  * Placeholder provided by {@link Service} with the total page number.
  * Available in sections: header, footer<br>
  * <br>
- * Template 4.1.0 20210924<br>
- * Copyright (C) 2021 Seanox Software Solutions<br>
+ * Template 4.2.0 20220806<br>
+ * Copyright (C) 2022 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 4.1.0 20210924
+ * @version 4.2.0 20220806
  */
 public abstract class Template extends Service.Template {
-    
+
+    /** Pattern fragment of an identifier */
+    private final static String TEXT_PATTERN_IDENTIFIER = "([_a-zA-Z$](?:[\\w-$]*[\\w$])?)";
+
+    /** Pattern fragment of a numeric index */
+    private final static String TEXT_PATTERN_NUMERIC_INDEX = "(?:\\[\\s*(\\d+)\\s*\\])";
+
+    /** Pattern fragment of a key */
+    private final static String TEXT_PATTERN_KEY = "((" + TEXT_PATTERN_IDENTIFIER + TEXT_PATTERN_NUMERIC_INDEX + ")|(" + TEXT_PATTERN_IDENTIFIER + "))";
+
     /** Pattern for the detection of markup */
     private final static Pattern PATTERN_MARKUP_DETECTION = Pattern.compile("(?si).*(([<>].*(<\\s*/)|(/\\s*>))|(&#\\d+;)|(&#x[0-9a-f]+;)|(&[a-z]+;)).*");
     
     /** Pattern for the validation of expressions */
-    private final static Pattern PATTERN_EXPRESSION = Pattern.compile("^(?i)([a-z](?:[\\w\\-]*\\w)?)((?:\\[\\s*\\d+\\s*\\])?)(\\.([a-z](?:[\\w\\-]*\\w)?)((?:\\[\\s*\\d+\\s*\\])?))*$");
+    private final static Pattern PATTERN_EXPRESSION = Pattern.compile("^(?i)" + TEXT_PATTERN_IDENTIFIER + "(" + TEXT_PATTERN_NUMERIC_INDEX + "?)(\\." + TEXT_PATTERN_IDENTIFIER + "(" + TEXT_PATTERN_NUMERIC_INDEX + "?))*$");
     
     /** Pattern for the validation of list expressions */
-    private final static Pattern PATTERN_LIST_EXPRESSION = Pattern.compile("^(.*)\\s*\\[\\s*(\\d+)\\s*\\]$");
+    private final static Pattern PATTERN_LIST_EXPRESSION = Pattern.compile("^(.*)\\s*" + TEXT_PATTERN_NUMERIC_INDEX + "$");
     
     /** Pattern for the detection of line breaks */
     private final static Pattern PATTERN_LINE_BREAKS = Pattern.compile("(\r\n)|(\n\r)|[\r\n]");
@@ -103,7 +126,7 @@ public abstract class Template extends Service.Template {
     private final static Pattern PATTERN_AMPERSAND = Pattern.compile("(?i)&(?!#\\d+;)(?!#x[0-9a-f]+;)(?![a-z]+;)");
     
     /** Pattern for the validation of key */
-    private final static Pattern PATTERN_KEY = Pattern.compile("^((\\w+\\[\\d+\\])|(\\w+))(\\.((\\w+\\[\\d+\\])|(\\w+)))*$");
+    private final static Pattern PATTERN_KEY = Pattern.compile("^" + TEXT_PATTERN_KEY + "(\\." + TEXT_PATTERN_KEY +")*$");
     
     /** Pattern for splitting keys */
     private final static Pattern PATTERN_KEY_DELIMITER = Pattern.compile("\\.");

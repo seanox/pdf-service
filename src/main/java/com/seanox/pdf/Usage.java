@@ -4,7 +4,7 @@
  * Diese Software unterliegt der Version 2 der Apache License.
  *
  * PDF Service
- * Copyright (C) 2021 Seanox Software Solutions
+ * Copyright (C) 2022 Seanox Software Solutions
  *  
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -26,20 +26,20 @@ import java.io.PrintStream;
 /** 
  * Output of information on how to use the command line tools.<br>
  * <br>
- * Usage 4.1.0 20210819<br>
- * Copyright (C) 2021 Seanox Software Solutions<br>
+ * Usage 4.2.0 20220806<br>
+ * Copyright (C) 2022 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 4.1.0 20210819
+ * @version 4.2.0 20220806
  */
 public class Usage {
 
     private static String catchToolInfos(final Class<?> tool) {
         
-        final PrintStream output = System.out;
-        final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        try (PrintStream cache = new PrintStream(buffer)) {
+        final var output = System.out;
+        final var buffer = new ByteArrayOutputStream();
+        try (final var cache = new PrintStream(buffer)) {
             System.setOut(cache);
             try {tool.getMethod("main", String[].class).invoke(null, new Object[]{null});
             } catch (Exception exception) {
@@ -47,9 +47,9 @@ public class Usage {
             }
         }
         System.setOut(output);
-        final String summary = buffer.toString();
-        final String version = summary.replaceAll("(?s)\\R.*$", "");
-        final String usage = summary.replaceAll("(?s)(^.*\\R(?=usage:))|(\\s*$)", "").replaceFirst("\\R", "");
+        final var summary = buffer.toString();
+        final var version = summary.replaceAll("(?s)\\R.*$", "");
+        final var usage = summary.replaceAll("(?s)(^.*\\R(?=usage:))|(\\s*$)", "").replaceFirst("\\R", "");
 
         return version + System.lineSeparator() + usage;
     }
@@ -60,7 +60,7 @@ public class Usage {
      * @throws Exception
      *     In case of unexpected errors.
      */     
-    public static void main(final String... options) throws Exception {
+    public static void main(final String... options) {
         
         System.out.println("Seanox PDF Tools Usage [Version 4.1.2 20220713]");
         System.out.println("Copyright (C) 2022 Seanox Software Solutions");
