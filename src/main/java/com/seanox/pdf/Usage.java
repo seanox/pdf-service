@@ -56,10 +56,8 @@ public class Usage {
     
     /**
      * Main entry for the console application.
-     * @param  options ignored
-     * @throws Exception
-     *     In case of unexpected errors.
-     */     
+     * @param options ignored
+     */
     public static void main(final String... options) {
         
         System.out.println("Seanox PDF Tools Usage [Version 4.1.2 20220713]");

@@ -33,9 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
-import java.util.Set;
 import java.util.TreeSet;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -337,13 +335,12 @@ public abstract class Template extends Service.Template {
      * @throws Exception
      *     In case of unexpected errors.
      */
-    @SuppressWarnings({"rawtypes", "unchecked"})
     @Override
     protected Map<String, Object> getPreviewData()
             throws Exception {
         final var properties = this.getPreviewProperties();
         final var map = new HashMap<String, Object>();
-        final var keySet = new TreeSet<String>(new NaturalComparator());
+        final var keySet = new TreeSet<>(new NaturalComparator());
         keySet.addAll(properties.keySet().stream().map(String::valueOf).collect(Collectors.toList()));
         for (final var key : keySet) {
             final var source = ((String)key);
@@ -579,7 +576,7 @@ public abstract class Template extends Service.Template {
         else include = Service.Template.normalizePath("/" + path + "/" + include);
         if (stack.contains(include))
             throw new TemplateRecursionException();
-        final var recursions = new ArrayList<String>(stack);
+        final var recursions = new ArrayList<>(stack);
         recursions.add(include);
         if (Objects.isNull(this.getResource(include)))
             throw new TemplateResourceNotFoundException(include);
