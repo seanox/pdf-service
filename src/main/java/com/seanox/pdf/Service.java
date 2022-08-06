@@ -640,7 +640,7 @@ public class Service {
         /**
          * Normalizes a path.
          * Relative directives like . and .. are balanced out.
-         * If necessary, backslashes are uniformly converted to slashes.
+         * If necessary, backslashes are uniformly converted to slash.
          * The return value contains at least one slash.
          * @param  path
          * @return the normalizes a path

@@ -4,7 +4,7 @@
  * Diese Software unterliegt der Version 2 der Apache License.
  *
  * PDF Service
- * Copyright (C) 2021 Seanox Software Solutions
+ * Copyright (C) 2022 Seanox Software Solutions
  *  
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -26,9 +26,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URI;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
@@ -39,12 +37,12 @@ import java.util.logging.Level;
  * Tool for the design process to create a test output of the rendered PDFs.
  * The PDFs are output in the same directory as the template.<br>
  * <br>
- * Preview 4.1.0 20210821<br>
- * Copyright (C) 2021 Seanox Software Solutions<br>
+ * Preview 4.2.0 20220806<br>
+ * Copyright (C) 2022 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 4.1.0 20210821
+ * @version 4.2.0 20220806
  */
 public class Preview {
     
@@ -70,7 +68,7 @@ public class Preview {
      */
     static File locateOutput(final File file) {
         
-        String target = file.getAbsolutePath();
+        var target = file.getAbsolutePath();
         target = target.replaceAll("\\.[^\\.]*$", ".pdf");
         if (!target.matches("^.*\\.[^\\.]*$"))
             target += ".pdf";
@@ -85,7 +83,7 @@ public class Preview {
     static void execute()
             throws Exception {
         
-        for (final Class<Service.Template> template : Service.Template.scan()) {
+        for (final var template : Service.Template.scan()) {
             System.out.println("INFORMATION: " + template.getSimpleName() + " started");
             try {
                 Preview.execute(template);
@@ -105,8 +103,8 @@ public class Preview {
      */
     static void execute(final Class<Service.Template> template)
             throws Exception {
-        final Template instance = (Template)Service.Template.instantiate(template);
-        final File output = Preview.locateOutput(new File(instance.getSource()));
+        final var instance = (Template)Service.Template.instantiate(template);
+        final var output = Preview.locateOutput(new File(instance.getSource()));
         output.delete();
         Files.write(output.toPath(), instance.getPreview(), StandardOpenOption.CREATE);
     }
@@ -125,11 +123,11 @@ public class Preview {
                 || !file.exists())
             return;
 
-        final File canonical = file.getCanonicalFile();
-        final File output = Preview.locateOutput(canonical);
+        final var canonical = file.getCanonicalFile();
+        final var output = Preview.locateOutput(canonical);
         output.delete();
 
-        final Template template = new Template() {
+        final var template = new Template() {
             
             @Override
             protected URI getBase() {
@@ -150,8 +148,7 @@ public class Preview {
             @Override
             protected URI getResource(final String resource)
                     throws Exception {
-
-                final File target = new File(canonical.getParentFile(), resource).getCanonicalFile();
+                final var target = new File(canonical.getParentFile(), resource).getCanonicalFile();
                 if (!target.isFile()
                         || !target.exists())
                     throw new Template.TemplateResourceNotFoundException(target.toString());
@@ -161,8 +158,7 @@ public class Preview {
             @Override
             protected InputStream getResourceStream(final String resource)
                     throws Exception {
-
-                final File target = new File(canonical.getParentFile(), resource).getCanonicalFile();
+                final var target = new File(canonical.getParentFile(), resource).getCanonicalFile();
                 if (!target.isFile()
                         || !target.exists())
                     throw new Template.TemplateResourceNotFoundException(target.toString());
@@ -207,12 +203,12 @@ public class Preview {
         // implementation with dynamic preview data, in which case they are
         // simply overwritten in the next step.
 
-        for (final String option : options) {
+        for (final var option : options) {
             if (("@Resources").equalsIgnoreCase(option))
                 continue;
-            final String path = option.replaceAll("^(?:(.*)[/\\\\])*(.*)$", "$1");
-            final String glob = option.replaceAll("^(?:(.*)[/\\\\])*(.*)$", "$2");
-            try (final DirectoryStream<Path> stream = Files.newDirectoryStream(
+            final var path = option.replaceAll("^(?:(.*)[/\\\\])*(.*)$", "$1");
+            final var glob = option.replaceAll("^(?:(.*)[/\\\\])*(.*)$", "$2");
+            try (final var stream = Files.newDirectoryStream(
                     Paths.get(path), glob)) {
                 stream.forEach(file -> {
                     try {
