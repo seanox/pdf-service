@@ -30,27 +30,27 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Generator, generates data by filling placeholders (tags) in a template/model.
- * A value list with keys is passed to the template. If the keys correspond to
- * the placeholders (case-insensitive), the placeholders are replaced by the
- * values.<br>
+ * Generator fills placeholders in a template (model) with the values of
+ * key-value pairs from a directory ({@link Map}) if the keys match the
+ * identifier of the placeholder (case-insensitive).<br>
  * <br>
- * The generator worked at byte level.<br>
- * Values are therefore expected to be prim&auml;r as byte arrays. All other
- * data types are converted using {@code String.valueOf(value).getBytes()}.<br>
+ * Filling works at byte level, which uses the values as byte arrays. Other data
+ * types are converted via {@code String.valueOf(value).getBytes()}.<br>
  * <br>
- * Placeholders can be used for values and structures.<br>
- * Structures can be nested up to a depth of 65535 levels. These sub-structures
- * can be used and filled globally or by the name of a scope dedicated/partial.
- * Because the placeholders of structures are preserved after filling, they can
- * be reused iteratively.<br>
- * The data types {@link Collection} and {@link Map} are expected as values for
- * structures. A {@link Map} then contains the values for the placeholders
- * within the structure. A {@link Collection} causes to an iteration over a set
- * of {@link Map} and is comparable to the iterative call of the method
- * {@link #set(String, Map)}.<br>
- * Both {@link Map} and {@link Collection} create deep, complex, possibly
- * repetitive and recursive structures.
+ * Placeholders represent values and structures. Structures are nested
+ * placeholders with a depth of up to 65535 levels, which use a tree-like
+ * directory with key-value pairs. In addition structures provide scopes, these
+ * are comparable with sub-templates, which can be inserted at any place by
+ * simple placeholders and can be dedicated or partially filled and extracted
+ * on basis of the structure identifier. Because placeholders of structures are
+ * preserved after filling, they can be reused iteratively.<br>
+ * <br>
+ * Structures use {@link Collection} and {@link Map} as values. A {@link Map}
+ * then contains the values for the placeholders within the structure. A
+ * {@link Collection} iterates over a set of {@link Map} objects, which is
+ * similar to the iterative call of the {@link #set(String, Map)} method.
+ * {@link Map} and {@link Collection} create deep, complex, and recursive
+ * structures.
  *
  * <h3>Description of the syntax</h3>
  * The syntax of the placeholders is case-insensitive, must begin with a letter
@@ -239,7 +239,8 @@ class Generator {
                     && mode != 1) {
                 if (model[cursor] == '#'
                         && model[cursor +1] == '[') {
-                    stack[++deep] = 1;
+                    if (deep < 65535)
+                        stack[++deep] = 1;
                     cursor += 2;
                     continue;
                 }

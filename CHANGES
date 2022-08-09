@@ -1,5 +1,7 @@
 4.2.0 2022xxxx
   BF: Review: Optimizations
+  BF: Generator: Correction when parsing structures
+      Structures deeper 65535 levels no longer cause an exception.
   CR: Change from wording segment, which is now called structure
   CR: Generator: Added placeholder syntax for disposable structures
       e.g. #[scope{{...}}]
@@ -9,10 +11,10 @@
   CR: Generator: Added structures for single values
       e.g. #[price[[Your price #[#] Euro]]]
            #[price{{Your price #[#] Euro}}]
-      Previously, the value of simple data was output directly. Now a structure
-      can be used here as well. For simple data types, the additional
-      placeholder #[#] can be used. These structures can also be used to
-      replace the exists placeholder and for conditional output of static text.
+      Previously, single values was output directly. Now a structure can be
+      used here as well. For single value, the additional placeholder #[#] was
+      introduced. These structures can also be used to replace the exists
+      placeholder and for conditional output of static text.
       e.g. #[value[[text output only if value exists]]]
            #[value{{text output only if value exists}}]
       Placeholders for static texts can be used from.
