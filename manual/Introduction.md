@@ -7,12 +7,13 @@ Seanox PDF-Service for generating/rendering PDFs based on
 [Open HTML to PDF](https://github.com/danfickle/openhtmltopdf).
 
 The static service contains an abstraction of templates, an API for templates,
-renderer and markup generators, a markup generator with preview function and
-mock-up data support.
+renderer and markup generators, a built-in markup generator, and a preview
+function with mock-up data support.
 
-The templates supports includes and independent areas for header, content and
-footer, which are assembled by overlay for each page. Header and footer are
-borderless overlays and can therefore also use the border area of the content.
+Templates support includes, locale-dependent CSS, native page numbers and total
+page numbers, as well independent areas for header, content and footer, which
+are assembled by overlay for each page. Header and footer are borderless and
+can therefore also use the border area of the content.
 
 Locale dependent CSS and native page numbers and total page number are
 supported.
@@ -26,7 +27,7 @@ very simple syntax, supports placeholders, structures and includes
 simplifies the design process by allowing previewing without the target
 application  
 - Independent header, data and footer areas in one template (without magic)  
-header, footer and data area are merged by overlaysand can therefore be
+header, footer and data area are merged by overlays and can therefore be
 formatted independently of the data area  
 e.g. margins of the document can be used by the header and footer
 - Native support of page numbers
@@ -36,7 +37,7 @@ language can be used
 - Creation of markup as preview e.g. for the frontend
 - API for templates and other renderer and markup generators 
 abstract templates for individual renderer and generators
-- PDF and image comparison for test automation (e.g. Junit)  
+- PDF and image comparison for test automation (e.g. JUnit)  
 pixel- and color-based with difference image generation
 - PDF Tools as standalone Java applications  
 includes Compare, Designer, Preview as command line applications  
@@ -49,14 +50,16 @@ designing and testing outside and independent of projects
   * [Integration](#integration)
   * [Implementation](#implementation)
   * [Markup](#markup)
-  * [Meta Tags](#meta-tags)
+  * [Meta-Tags](#meta-tags)
     * [#include](#include)
   * [Placeholder](#placeholder)
-    * [Static Placeholder](#static-placeholder)
-    * [Data Value Placeholder](#data-value-placeholder)
-    * [Data Structure Placeholder](#data-structure-placeholder)
+    * [Value Placeholder](#value-placeholder)
+    * [Disposable Value Placeholder](#disposable-value-placeholder)
+    * [Structure Placeholder](#structure-placeholder)
+    * [Disposable Structure Placeholder](#disposable-structure-placeholder)
     * [Escaped Placeholders](#escaped-placeholders)
-    * [Standard Value Placeholder](#standard-value-placeholder)
+    * [Runtime Placeholder](#runtime-placeholder)
+    * [Static Placeholder](#static-placeholder)
 * [Test](#test)
 * [Mock-Up](#mock-up)
 * [Template API](#template-api)
@@ -92,7 +95,7 @@ are called directly at any point in Java.
 import com.seanox.pdf.Service;
 import ...
 
-byte[] data = Service.render(..., ...);
+final var data = Service.render(..., ...);
 Files.write(Paths.get("example.pdf"), data, StandardOpenOption.CREATE);
 ```
 
@@ -107,11 +110,11 @@ dependent resources like fonts.
 import com.seanox.pdf.Service;
 import ...
 
-Meta meta = new Meta(Locale.GERMANY);
+final var meta = new Meta(Locale.GERMANY);
 meta.setData(...);
 meta.setStatics(...);
 
-byte[] data = Service.render(..., meta);
+final var data = Service.render(..., meta);
 Files.write(Paths.get("example.pdf"), data, StandardOpenOption.CREATE);
 ```
 
@@ -123,8 +126,7 @@ import com.seanox.pdf.Service;
 import com.seanox.pdf.Service.Meta;
 import ...
 
-Map<String, String> statics = new HashMap<String, String>() {
-    private static final long serialVersionUID = 1L; {
+final var statics = new HashMap<String, String>() {{
     put("ARTICLE_NUMBER", "Article Number");
     put("ARTICLE_PRICE", "Price");
     put("ADDRESS_TEL", "Tel");
@@ -133,13 +135,15 @@ Map<String, String> statics = new HashMap<String, String>() {
     put("ADDRESS_WEB", "Web");
 }};
 
-Meta meta = new Meta(Locale.GERMANY);
+final var meta = new Meta(Locale.GERMANY);
 meta.setData(...);
 meta.setStatics(statics);
 
-byte[] data = Service.render(..., meta);
+final var data = Service.render(..., meta);
 Files.write(Paths.get("example.pdf"), data, StandardOpenOption.CREATE);
 ```
+
+TODO
 
 The data structure is a structured map for data objects (entities). The keys
 are always of data type String. The values can be of the data type Collection,
@@ -155,8 +159,7 @@ import com.seanox.pdf.Service;
 import com.seanox.pdf.Service.Meta;
 import ...
 
-Map<String, String> statics = new HashMap<String, String>() {
-    private static final long serialVersionUID = 1L; {
+final var statics = new HashMap<String, String>() {{
     put("ARTICLE_NUMBER", "Article Number");
     put("ARTICLE_PRICE", "Price");
     put("ADDRESS_TEL", "Tel");
@@ -165,7 +168,7 @@ Map<String, String> statics = new HashMap<String, String>() {
     put("ADDRESS_WEB", "Web");
 }};
 
-Meta meta = new Meta(Locale.GERMANY);
+final var meta = new Meta(Locale.GERMANY);
 meta.setData(new HashMap<>());
 meta.setStatics(statics);
 
@@ -175,7 +178,7 @@ meta.getData().put("articles", ...stream().map(
     entity -> new ObjectMapper().convertValue(entity, Map.class)
 ).collect(Collectors.toList()));
 
-byte[] data = Service.render(..., meta);
+final var data = Service.render(..., meta);
 Files.write(Paths.get("example.pdf"), data, StandardOpenOption.CREATE);
 ```
 
@@ -196,8 +199,7 @@ import com.seanox.pdf.Service;
 import com.seanox.pdf.Service.Meta;
 import ...
 
-Map<String, String> statics = new HashMap<String, String>() {
-    private static final long serialVersionUID = 1L; {
+final var statics = new HashMap<String, String>() {{
     put("ARTICLE_NUMBER", "Article Number");
     put("ARTICLE_PRICE", "Price");
     put("ADDRESS_TEL", "Tel");
@@ -206,7 +208,7 @@ Map<String, String> statics = new HashMap<String, String>() {
     put("ADDRESS_WEB", "Web");
 }};
 
-Meta meta = new Meta(Locale.GERMANY);
+final var meta = new Meta(Locale.GERMANY);
 meta.setData(new HashMap<>());
 meta.setStatics(statics);
 
@@ -216,7 +218,7 @@ meta.getData().put("articles", ...stream().map(
     entity -> new ObjectMapper().convertValue(entity, Map.class)
 ).collect(Collectors.toList()));
 
-byte[] data = Service.render(ExampleTemplate.class, meta);
+final var data = Service.render(ExampleTemplate.class, meta);
 Files.write(Paths.get("example.pdf"), data, StandardOpenOption.CREATE);
 ```
 
@@ -238,8 +240,7 @@ import com.seanox.pdf.Service;
 import com.seanox.pdf.Service.Meta;
 import ...
 
-Map<String, String> statics = new HashMap<String, String>() {
-    private static final long serialVersionUID = 1L; {
+final var statics = new HashMap<String, String>() {{
     put("ARTICLE_NUMBER", "Article Number");
     put("ARTICLE_PRICE", "Price");
     put("ADDRESS_TEL", "Tel");
@@ -248,7 +249,7 @@ Map<String, String> statics = new HashMap<String, String>() {
     put("ADDRESS_WEB", "Web");
 }};
 
-Meta meta = new Meta(Locale.GERMANY);
+final var meta = new Meta(Locale.GERMANY);
 meta.setData(new HashMap<>());
 meta.setStatics(statics);
 
@@ -258,7 +259,7 @@ meta.getData().put("articles", ...stream().map(
     entity -> new ObjectMapper().convertValue(entity, Map.class)
 ).collect(Collectors.toList()));
 
-byte[] data = Service.render(ExampleTemplate.class, meta);
+final var data = Service.render(ExampleTemplate.class, meta);
 Files.write(Paths.get("example.pdf"), data, StandardOpenOption.CREATE);
 ```
 
@@ -275,7 +276,7 @@ https://github.com/seanox/pdf-service/blob/master/src/test/java/com/seanox/pdf/e
 
 ### Markup
 
-The template is a pure (X)HTML document with CSS support and meta tags and
+The template is a pure (X)HTML document with CSS support and meta-tags and
 placeholder for the generator.
 
 ```html
@@ -365,10 +366,10 @@ The complete example and more can be found here:
 https://github.com/seanox/pdf-service/blob/master/src/test/resources/com/seanox/pdf/example/UsageTemplate%24ExampleTemplate.html  
 https://github.com/seanox/pdf-service/tree/master/src/test/resources/pdf
 
-### Meta Tags
+### Meta-Tags
 
-Meta tags are not an HTML standard. They are additional instructions for the
-generator. Meta tags works exclusive, line-based and start with a hash. The
+Meta-tags are not an HTML standard. They are additional instructions for the
+generator. Meta-tags works exclusive, line-based and start with a hash. The
 description refers to the template generator which is integrated in Seanox
 PDF-Service.
 
@@ -402,25 +403,26 @@ https://github.com/seanox/pdf-service/tree/master/src/test/resources/pdf
 
 ### Placeholder
 
-This section depends on the template generator used. The description refers to
-the template generator which is integrated in Seanox PDF-Service.
+This section and description depend on the used built-in template generator.
 
 Placeholders can be used for static texts, values and data structures. The
-syntax of the placeholders is case-insensitive, must begin with a letter and is
-limited to the following characters:  
-`a-z A-Z 0-9 _-`
+syntax of the placeholders is case-insensitive, must begin and end with a word
+character (a-z A-Z 0-9 _) and in between word characters and the minus sign are
+supported.
+
 
 #### Static Placeholder
 
-For the output of static texts from Meta-Statics. Meta-Statics is a strict
-string based key value map. The placeholder is replaced by the value. If no
-value exists, the placeholder is removed without replacement.
+For the output of static texts from meta-statics, which uses a strictly
+text-based key-value map without collections and nesting. The placeholder is
+replaced by the value. If no value exists, the placeholder is removed without
+replacement.
 
 ```
 ![NAME]
 ```
  
-#### Data Value Placeholder
+#### Value Placeholder
 
 For output of single values from Meta-Data. Meta-Data is a structured map like
 a tree. The keys are always strings. The values can be of the data type
@@ -433,9 +435,9 @@ recursively. For other objects, the string value is then used.
 
 The name of the placeholder always refers to the current branch in the tree.
 The placeholder syntax has no syntax for navigating the tree. This is made
-using the nesting of the data structure placeholders.
+using the nesting of the structure placeholders.
 
-#### Data Structure Placeholder
+#### Structure Placeholder
 
 For output of data structures from meta-data. Meta-Data is a structured map
 like a tree. The keys are always strings. The values can be of the data type
@@ -453,7 +455,7 @@ placeholder always refers to the current branch in the tree.
   __those already determined.__
  
 The placeholder syntax has no syntax for navigating the tree. This is made
-using the nesting of the data structure placeholders.
+using the nesting of the structure placeholders.
 
 ```
 #[A[[
@@ -463,16 +465,16 @@ using the nesting of the data structure placeholders.
 ]]]
 ```
 
-__For a basic understanding of the structured placeholders it is important to__
-__understand that they do not represent a real structure or nesting. They are__
-__templates for placeholders and these templates may contain other templates__
-__than placeholders. Therefore, the placeholders can also be defined at that__
-__location. They are simply used in the structure.__
+__For a basic understanding of the structured placeholders it is important to
+understand that they do not represent a real structure or nesting. They are
+templates for placeholders and these templates may contain other templates than
+placeholders. Therefore, the placeholders can also be defined at that location.
+They are simply used in the structure.__
 
 The example uses in the map the value of: `A -> B -> C`
 
 ```java
-Map<String, Object> data = new HashMap<>() {{
+final var data = new HashMap<>() {{
     put("A", new HashMap<>() {{
         put("B", new HashMap<>() {{
             put("C", "Value");
@@ -481,10 +483,37 @@ Map<String, Object> data = new HashMap<>() {{
 }};
 ```
 
-Data structure placeholders are retained for iterative use. The value is
+Structure placeholders are retained for iterative use. The value is
 inserted before the placeholder. They are only removed when the generation is
 complete. Structure placeholders work like independent sub-template and can
 contain markup and other placeholders. 
+
+
+#### Structure Placeholder
+
+TODO:
+#[scope{{...}}]
+
+
+#### Value Structure Placeholder
+
+TODO:
+#[price[[Your price #[#] Euro]]]
+#[#]
+
+#[value[[text output only if value exists]]]
+#[price[[Your price #[#] ![currency]]]]
+
+
+#### Value Disposable Structure Placeholder
+
+TODO:
+#[price{{Your price #[#] Euro}}]
+#[#]
+
+#[value{{text output only if value exists}}]
+#[price{{Your price #[#] ![currency]}}]
+
 
 #### Escaped Placeholders
 
@@ -496,11 +525,11 @@ resolved when the generation is completed.
 #[0x4578616D706C6521]
 ```
 
-#### Standard Value Placeholder
+#### Runtime Placeholder
 
 The generator provides a few additional value placeholders.
 
-The placeholder `#[locale]` is provided from the Meta-Locale and can be used
+The placeholder `#[locale]` is provided from the meta-locale and can be used
 for internationalization (i18n). 
 
 ```html
@@ -576,6 +605,9 @@ blank.
 The complete example and more can be found here:  
 https://github.com/seanox/pdf-service/blob/master/src/test/resources/pdf/articleA.html  
 https://github.com/seanox/pdf-service/tree/master/src/test/resources/pdf
+
+__The exists-placeholder is supported because of backward compatibility, but is
+deprecated and is replaced by the value structure and value disposable structure.__
 
 
 ## Test
