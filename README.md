@@ -44,7 +44,7 @@ the language can be used.
 - Creation of markup as preview e.g. for the frontend
 - API for templates and other renderer and markup generators  
 Abstract templates for individual renderer and generators.
-- PDF and image comparison for test automation (e.g. Junit)  
+- PDF and image comparison for test automation (e.g. JUnit)  
 Pixel- and color-based with difference image generation.
 - PDF Tools as standalone Java applications  
 Includes Compare, Designer, Preview as command line applications designing and
