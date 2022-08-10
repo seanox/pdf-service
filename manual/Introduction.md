@@ -535,7 +535,7 @@ for a value, which is then represented by the placeholder `#[#]`.
 #[IDENTIFIER{{... #[#] ...}}]
 ```
 
-Also a conditional output of text instead of the value is possible.
+Also, a conditional output of text instead of the value is possible.
 
 ```
 #[IDENTIFIER{{...}}]
@@ -807,20 +807,14 @@ created from one template and each fragment can be rendered individually as PDF.
 
 #### Header
 
-TODO:
-
 The complete (X)HTML document with `BODY > HEADER` only.
 
 #### Content
-
-TODO:
 
 The complete (X)HTMl document without `BODY > HEADER` and without
 `BODY > FOOTER`.
 
 #### Footer
-
-TODO:
 
 The complete (X)HTML document with `BODY > FOOTER` only.
 
@@ -836,32 +830,22 @@ implementation. Type provides the constants for the layers as enumeration.
 
 ### TemplateException
 
-TODO:
-
 General exception in the context of the templates.
 
 ### TemplateResourceException
-
-TODO:
 
 Exception when accessing and using template resources.
 
 ### TemplateResourceNotFoundException
 
-TODO:
-
 Exception if template resources are not found.
 
 ### TemplateRecursionException
-
-TODO:
 
 Exception for endless recursions in the context of the templates.
 
 
 ## PDF-Tools
-
-TODO:
 
 The command line tools include helpers that focus on the design process and
 testing outside and independent of projects.  
@@ -869,17 +853,14 @@ Includes: Compare, Designer, Preview
 
 ### Download
 
-TODO:
-
 The download includes a Java archive that contains all required libraries.  
 The current version can be found here:  
-https://github.com/seanox/pdf-service/raw/master/releases
+https://github.com/seanox/pdf-service/releases
 
 ### Compare
 
-TODO:
-
-Compares two PDFs pixel- and color-based with difference image generation.
+Command line tool for pixel and color based comparison of two PDFs that
+generates an image with the differences.
 
 ```
 java -cp seanox-pdf-tools.jar com.seanox.pdf.Compare <master> <compare>
@@ -895,10 +876,9 @@ green (only in master).
 
 ### Preview
 
-TODO:
-
-Creates a PDF preview of all templates with the annotation `@Resources` in the
-ClassPath and of all files found for the specified paths, filters and globs.
+Command line tool that creates a PDF preview of all templates with the
+annotation `@Resources` in the ClassPath and of all files found for the
+specified paths, filters and globs.
 
 ```
 java -cp seanox-pdf-tools.jar com.seanox.pdf.Preview <paths/filters/globs> ...
@@ -909,12 +889,10 @@ templates.
 
 ### Designer
 
-TODO:
-
-Command line Deamon, which permanently searches for templates in the ClassPath
-for the annotation `@Resources` and in the file system for templates for paths,
-filters and globs and creates PDF previews like the preview tool. The previews
-are updated if there are changes to the templates. 
+Command line daemon which continuously creates a PDF preview of all templates
+with the annotation `@Resources` in the ClassPath and of all files found for
+the specified paths, filters and globs. The previews are updated when there are
+changes to the templates.
 
 ```
 java -cp seanox-pdf-tools.jar com.seanox.pdf.Designer <paths/filters/globs> ...
