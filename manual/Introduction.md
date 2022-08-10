@@ -54,9 +54,10 @@ designing and testing outside and independent of projects
     * [#include](#include)
   * [Placeholder](#placeholder)
     * [Value Placeholder](#value-placeholder)
-    * [Disposable Value Placeholder](#disposable-value-placeholder)
     * [Structure Placeholder](#structure-placeholder)
     * [Disposable Structure Placeholder](#disposable-structure-placeholder)
+    * [Disposable Value Placeholder](#disposable-value-placeholder)
+    * [Exists Placeholders](#exists-placeholder)
     * [Escaped Placeholders](#escaped-placeholders)
     * [Runtime Placeholder](#runtime-placeholder)
     * [Static Placeholder](#static-placeholder)
@@ -143,7 +144,7 @@ final var data = Service.render(..., meta);
 Files.write(Paths.get("example.pdf"), data, StandardOpenOption.CREATE);
 ```
 
-TODO
+TODO:
 
 The data structure is a structured map for data objects (entities). The keys
 are always of data type String. The values can be of the data type Collection,
@@ -181,6 +182,8 @@ meta.getData().put("articles", ...stream().map(
 final var data = Service.render(..., meta);
 Files.write(Paths.get("example.pdf"), data, StandardOpenOption.CREATE);
 ```
+
+TODO:
 
 The render method needs an implemented template, in the best case. But you can
 also implement a universal template, which uses simple strings for the paths to
@@ -225,9 +228,11 @@ Files.write(Paths.get("example.pdf"), data, StandardOpenOption.CREATE);
 ```java
 import com.seanox.pdf.Template;
 
-public static class ExampleTemplate extends Template {
+class ExampleTemplate extends Template {
 }
 ```
+
+TODO:
 
 Template need the annotation `@Resources`. This annotation defines where in the
 ClassPath the resources (CSS, images, fonts, ...) for the template are located
@@ -267,7 +272,7 @@ Files.write(Paths.get("example.pdf"), data, StandardOpenOption.CREATE);
 import com.seanox.pdf.Template;
 
 @Resources(base="/pdf")
-public static class ExampleTemplate extends Template {
+class ExampleTemplate extends Template {
 }
 ```
 
@@ -275,6 +280,8 @@ The complete example can be found here:
 https://github.com/seanox/pdf-service/blob/master/src/test/java/com/seanox/pdf/example/UsageTemplate.java
 
 ### Markup
+
+TODO:
 
 The template is a pure (X)HTML document with CSS support and meta-tags and
 placeholder for the generator.
@@ -368,12 +375,13 @@ https://github.com/seanox/pdf-service/tree/master/src/test/resources/pdf
 
 ### Meta-Tags
 
-Meta-tags are not an HTML standard. They are additional instructions for the
-generator. Meta-tags works exclusive, line-based and start with a hash. The
-description refers to the template generator which is integrated in Seanox
-PDF-Service.
+Meta-tags are a part of the built-in generator and are not an HTML standard.
+They are additional instructions for the generator that start with a hash and
+work exclusive line-based.
 
 #### #include
+
+TODO:
 
 Inserts markup fragments from other resources. The path of the resources is
 always relative to the ClassPath of the using resource.
@@ -405,57 +413,50 @@ https://github.com/seanox/pdf-service/tree/master/src/test/resources/pdf
 
 This section and description depend on the used built-in template generator.
 
-Placeholders can be used for static texts, values and data structures. The
-syntax of the placeholders is case-insensitive, must begin and end with a word
-character (a-z A-Z 0-9 _) and in between word characters and the minus sign are
-supported.
+Placeholders support values, structures and static texts. The identifier is
+case-insensitive and based on the conventions of Java variables. Thus, the
+identifier begins with one of the following characters: a-z A-Z _ $ and ends on
+a word character: 0-9 a-z A-Z _ or $. In between, all word characters 0-9 a-z
+A-Z _ as well as the currency symbol ($) and the minus sign can be used. 
 
-
-#### Static Placeholder
-
-For the output of static texts from meta-statics, which uses a strictly
-text-based key-value map without collections and nesting. The placeholder is
-replaced by the value. If no value exists, the placeholder is removed without
-replacement.
-
-```
-![NAME]
-```
- 
 #### Value Placeholder
 
-For output of single values from Meta-Data. Meta-Data is a structured map like
-a tree. The keys are always strings. The values can be of the data type
-Collection, Map, and Object. Collections are used iteratively and maps
-recursively. For other objects, the string value is then used.
+Placeholders represent a value to the corresponding key of a level of a
+structured or branched directory with key-value pairs. If to the identifier a
+structure with the same name exists, this is applied to the value.
 
 ```
-#[NAME]
+#[IDENTIFIER]
 ```
 
-The name of the placeholder always refers to the current branch in the tree.
-The placeholder syntax has no syntax for navigating the tree. This is made
-using the nesting of the structure placeholders.
+Basically the value is used as string and if necessary converted with
+`String.valueOf(value).getBytes()`. Exceptions are the data types Collection
+and Map. Collections are used iteratively and maps recursively. In both cases
+the placeholder is preserved and can be used to build lists and deep
+structures.
 
 #### Structure Placeholder
 
-For output of data structures from meta-data. Meta-Data is a structured map
-like a tree. The keys are always strings. The values can be of the data type
-Collection, Map, and Object. Collections are used iteratively and maps
-recursively. For other objects, the string value is then used. The name of the
-placeholder always refers to the current branch in the tree.
+Structures are complex nested constructs for the output of values, nested data
+structures as well as lists and function like templates. Structures are defined
+once and can then be reused anywhere with simple placeholders of the same
+identifier. They are rendered only if the key-value directory at the
+appropriate level contains a key matching the identifier. For the data type
+Collection and Map, the placeholders remain after rendering and can thus be
+(re)used iteratively for lists or recursive for complex nested outputs.
 
 ```
-#[NAME[[...]]]
+#[IDENTIFIER[[...]]]
 ```
 
 - __Structural placeholders are unique.__
 - __During parsing of the markup all placeholders are determined.__
 - __If structural placeholders are defined more than once, they overwrite__
   __those already determined.__
- 
-The placeholder syntax has no syntax for navigating the tree. This is made
-using the nesting of the structure placeholders.
+
+The placeholder syntax has no syntax for navigating the branched data structure
+from the key-value directory. For that the nesting in the structure placeholder
+is used.
 
 ```
 #[A[[
@@ -466,7 +467,7 @@ using the nesting of the structure placeholders.
 ```
 
 __For a basic understanding of the structured placeholders it is important to
-understand that they do not represent a real structure or nesting. They are
+understand that they do not represent a real structure or branching. They are
 templates for placeholders and these templates may contain other templates than
 placeholders. Therefore, the placeholders can also be defined at that location.
 They are simply used in the structure.__
@@ -483,39 +484,78 @@ final var data = new HashMap<>() {{
 }};
 ```
 
-Structure placeholders are retained for iterative use. The value is
-inserted before the placeholder. They are only removed when the generation is
-complete. Structure placeholders work like independent sub-template and can
-contain markup and other placeholders. 
+Structure placeholders are retained for iterative use. The value is inserted
+before the placeholder. They are only removed when the generation is complete.
+Structure placeholders work like independent sub-template and can contain
+markup and other placeholders.
 
+#### Disposable Structure Placeholder
 
-#### Structure Placeholder
+Disposable structures are bound to their place and, unlike a normal structure,
+can be defined differently multiple times, but cannot be reused or extracted
+based on their identifier.
+
+```
+#[IDENTIFIER{{...}}]
+```
+
+Because of the conditional output, disposable structures can be used as a
+replacement for [exists-placeholder](#exists-placeholder) and then does not
+need a CSS hack.
+
+```html
+  <article id="outlet">
+    <h1>#[name]</h1>
+    <div exists="#[address-exists]">
+      #[address[[
+        ...
+      ]]]
+    </div>
+  </article>
+
+  <article id="outlet">
+    <h1>#[name]</h1>
+    #[address{{
+      <div>
+      ...
+      </div>
+    }}]
+  </article>
+  
+
+  <article id="outlet">
+    <h1>#[name]</h1>
+    #[street{{    }}
+    <p exists="#[street-exists]">#[street]</p>
+    ...
+  </article>
+```
+
+#### Disposable Value Placeholder
+
+The [disposable structure](#disposable-structure-placeholder) can also be used
+for a value, which is then represented by the placeholder `#[#]`.
+
+```
+#[IDENTIFIER{{... #[#] ...}}]
+```
+
+Also a conditional output of text instead of the value is possible.
+
+```
+#[IDENTIFIER{{...}}]
+```
+
+The complete example and more can be found here:  
+https://github.com/seanox/pdf-service/tree/master/src/test/resources/pdf/ArticleMultiTemplate.html
+
+#### Exists Placeholder
 
 TODO:
-#[scope{{...}}]
-
-
-#### Value Structure Placeholder
-
-TODO:
-#[price[[Your price #[#] Euro]]]
-#[#]
-
-#[value[[text output only if value exists]]]
-#[price[[Your price #[#] ![currency]]]]
-
-
-#### Value Disposable Structure Placeholder
-
-TODO:
-#[price{{Your price #[#] Euro}}]
-#[#]
-
-#[value{{text output only if value exists}}]
-#[price{{Your price #[#] ![currency]}}]
-
 
 #### Escaped Placeholders
+
+TODO:
 
 For output of special and control characters. These placeholders are only
 resolved when the generation is completed.
@@ -527,10 +567,12 @@ resolved when the generation is completed.
 
 #### Runtime Placeholder
 
+TODO:
+
 The generator provides a few additional value placeholders.
 
 The placeholder `#[locale]` is provided from the meta-locale and can be used
-for internationalization (i18n). 
+for internationalization (i18n).
 
 ```html
 <html>
@@ -609,8 +651,36 @@ https://github.com/seanox/pdf-service/tree/master/src/test/resources/pdf
 __The exists-placeholder is supported because of backward compatibility, but is
 deprecated and is replaced by the value structure and value disposable structure.__
 
+TODO: Example of the new solution
+
+#### Static Placeholder
+
+TODO:
+
+For the output of static texts from meta-statics, which uses a strictly
+flat/plane string-based key-value map without collections and branching. If no
+value exists for a placeholder, it is removed.
+
+```
+![NAME]
+```
+
+TODO:
+#[value[[text output only if value exists]]]
+#[price[[Your price #[#] ![currency]]]]
+
+#### Value Disposable Structure Placeholder
+
+TODO:
+#[price{{Your price #[#] Euro}}]
+#[#]
+
+#[value{{text output only if value exists}}]
+#[price{{Your price #[#] ![currency]}}]
 
 ## Test
+
+TODO:
 
 PDF Service is primarily optimized for the design process. Therefore, the test
 of PDFs is pixel- and color-based. For automated tests the Compare with the
@@ -636,15 +706,17 @@ difference images. If no differences were found, the return value is `null`.
 
 ## Mock-Up
 
+TODO:
+
 Mock-up is part of the preview and design process to design and test the markup
 of the PDFs independently of the project. For this purpose, a property file
 with the same name can be provided parallel to the template file.
 
-The properties creates a nested map structure for a data object, comparable to
-JSON. The nesting is based on the dot as separator in the key.
+The properties creates a branched map structure for a data object, comparable to
+JSON. The branching is based on the dot as separator in the key.
 
 The data structure supports the data types: Collection, Map, Markup, Text.
-Collection and Map are only used for nesting. Text is markup if it contains
+Collection and Map are only used for branching. Text is markup if it contains
 HTML sequences `<.../>` or `>...</`. Markup indicates text where the escape of
 HTML symbols is not required.
 
@@ -672,6 +744,8 @@ https://github.com/seanox/pdf-service/tree/master/src/test/resources/pdf
 
 ### Template
 
+TODO:
+
 Abstract class for implementing templates. The implementation defines the
 resource management, the preparation of markup, the generation of markup and
 can optionally also define the PDF rendering. The service only uses the API and
@@ -679,12 +753,16 @@ has no own template and markup generator.
 
 ### Resources
 
+TODO:
+
 Templates are based on an implementation of the [Template](#template) and the
 annotation [Resources](#resources), which with `base` and `template` contains
 information about the base directory of the resources (CSS, images, fonts, ...),
 as well the path of the markup template with the same name.
 
 ### Multiplex
+
+TODO:
 
 The template can contain three fragments: header, content, footer. The content
 can be generated in one step. Because the content is framed in a page and the
@@ -700,18 +778,26 @@ created from one template and each fragment can be rendered individually as PDF.
 
 #### Header
 
+TODO:
+
 The complete (X)HTML document with `BODY > HEADER` only.
 
 #### Content
+
+TODO:
 
 The complete (X)HTMl document without `BODY > HEADER` and without
 `BODY > FOOTER`.
 
 #### Footer
 
+TODO:
+
 The complete (X)HTML document with `BODY > FOOTER` only.
 
 ### Type
+
+TODO:
 
 The template can contain three fragments: header, content, footer. The
 rendering of the markup uses overlays. During rendering, the type tells the
@@ -721,22 +807,32 @@ implementation. Type provides the constants for the layers as enumeration.
 
 ### TemplateException
 
+TODO:
+
 General exception in the context of the templates.
 
 ### TemplateResourceException
+
+TODO:
 
 Exception when accessing and using template resources.
 
 ### TemplateResourceNotFoundException
 
+TODO:
+
 Exception if template resources are not found.
 
 ### TemplateRecursionException
+
+TODO:
 
 Exception for endless recursions in the context of the templates.
 
 
 ## PDF-Tools
+
+TODO:
 
 The command line tools include helpers that focus on the design process and
 testing outside and independent of projects.  
@@ -744,11 +840,15 @@ Includes: Compare, Designer, Preview
 
 ### Download
 
+TODO:
+
 The download includes a Java archive that contains all required libraries.  
 The current version can be found here:  
 https://github.com/seanox/pdf-service/raw/master/releases
 
 ### Compare
+
+TODO:
 
 Compares two PDFs pixel- and color-based with difference image generation.
 
@@ -766,6 +866,8 @@ green (only in master).
 
 ### Preview
 
+TODO:
+
 Creates a PDF preview of all templates with the annotation `@Resources` in the
 ClassPath and of all files found for the specified paths, filters and globs.
 
@@ -777,6 +879,8 @@ The preview is based on the mock-up data in the properties files for the
 templates.
 
 ### Designer
+
+TODO:
 
 Command line Deamon, which permanently searches for templates in the ClassPath
 for the annotation `@Resources` and in the file system for templates for paths,
