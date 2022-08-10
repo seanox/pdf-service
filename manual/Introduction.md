@@ -381,9 +381,7 @@ work exclusive line-based.
 
 #### #include
 
-TODO:
-
-Inserts markup fragments from other resources. The path of the resources is
+Inserts template fragments from other resources. The path of the resources is
 always relative to the ClassPath of the using resource.
 
 ```html
@@ -504,32 +502,29 @@ replacement for [exists-placeholder](#exists-placeholder) and then does not
 need a CSS hack.
 
 ```html
-  <article id="outlet">
-    <h1>#[name]</h1>
-    <div exists="#[address-exists]">
-      #[address[[
-        ...
-      ]]]
-    </div>
-  </article>
-
-  <article id="outlet">
-    <h1>#[name]</h1>
-    #[address{{
-      <div>
+<article id="outlet">
+  <h1>#[name]</h1>
+  <div exists="#[address-exists]">
+    #[address[[
+      <p exists="#[street-exists]">#[street]</p>
       ...
-      </div>
-    }}]
-  </article>
-  
+    ]]]
+  </div>
+</article>
 
-  <article id="outlet">
-    <h1>#[name]</h1>
-    #[street{{    }}
-    <p exists="#[street-exists]">#[street]</p>
-    ...
-  </article>
+<article id="outlet">
+  <h1>#[name]</h1>
+  #[address{{
+    <div>
+      #[street{{<p>#[#]</p>}}]
+      ...
+    </div>
+  }}]
+</article>
 ```
+
+The complete example and more can be found here:  
+https://github.com/seanox/pdf-service/tree/master/src/test/resources/pdf/ArticleMultiTemplate.html
 
 #### Disposable Value Placeholder
 
@@ -551,7 +546,41 @@ https://github.com/seanox/pdf-service/tree/master/src/test/resources/pdf/Article
 
 #### Exists Placeholder
 
-TODO:
+As part of the [runtime placeholders](#runtime-placeholder) the exits
+placeholder is generated automatically based on the keys and values. __In the
+meantime this function is deprecated, because this is replaced by [disposable
+structures](#disposable-structure-placeholder).__
+
+For each key and placeholder an exists-placeholder is provided. This can be
+used in the markup and in combination with CSS to output/display markup
+depending on the existence of values in meta-data. The Exists placeholder
+contains the value `exists` if the value is not `null`, not empty and not
+blank.
+
+```html
+<article id="outlet">
+  <h1>#[name]</h1>
+  <div exists="#[address-exists]">
+    #[address[[
+      <p exists="#[street-exists]">#[street]</p>
+      ...
+    ]]]
+  </div>
+</article>
+
+<article id="outlet">
+  <h1>#[name]</h1>
+  #[address{{
+    <div>
+      #[street{{<p>#[#]</p>}}]
+      ...
+    </div>
+  }}]
+</article>
+```
+
+The complete example and more can be found here:  
+https://github.com/seanox/pdf-service/tree/master/src/test/resources/pdf/ArticleMultiTemplate.html
 
 #### Escaped Placeholders
 
