@@ -584,10 +584,8 @@ https://github.com/seanox/pdf-service/tree/master/src/test/resources/pdf/Article
 
 #### Escaped Placeholders
 
-TODO:
-
-For output of special and control characters. These placeholders are only
-resolved when the generation is completed.
+For the output of special and control characters a hexadecimal escape sequence
+can be used, for which the identifier from the placeholder must start with `0x`.
 
 ```
 #[0x0A]
@@ -596,9 +594,8 @@ resolved when the generation is completed.
 
 #### Runtime Placeholder
 
-TODO:
-
-The generator provides a few additional value placeholders.
+Runtime placeholders are additional automatically generated placeholders based
+on the keys and values in the key-value directory.
 
 The placeholder `#[locale]` is provided from the meta-locale and can be used
 for internationalization (i18n).
@@ -677,10 +674,9 @@ The complete example and more can be found here:
 https://github.com/seanox/pdf-service/blob/master/src/test/resources/pdf/articleA.html  
 https://github.com/seanox/pdf-service/tree/master/src/test/resources/pdf
 
-__The exists-placeholder is supported because of backward compatibility, but is
-deprecated and is replaced by the value structure and value disposable structure.__
-
-TODO: Example of the new solution
+__The exists-placeholder is supported for backward compatibility, but is
+deprecated and is replaced by the [disposable
+structure](#disposable-structure-placeholder).__
 
 #### Static Placeholder
 
