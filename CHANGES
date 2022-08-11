@@ -1,4 +1,4 @@
-4.2.0 2022xxxx
+4.2.0 20220811
   BF: Review: Optimizations
   BF: Generator: Correction when parsing structures
       Structures deeper 65535 levels no longer cause an exception.

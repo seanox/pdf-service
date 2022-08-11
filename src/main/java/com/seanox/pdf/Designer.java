@@ -73,7 +73,7 @@ public class Designer {
     public static void main(final String... options)
             throws Exception {
         
-        System.out.println("Seanox PDF Design Deamon [Version 4.1.2 20220713]");
+        System.out.println("Seanox PDF Design Deamon [Version 4.2.0 20220811]");
         System.out.println("Copyright (C) 2022 Seanox Software Solutions");
         System.out.println();
 

@@ -76,17 +76,17 @@ Java 11 or higher
 
 
 # Downloads
-https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service/4.1.2  
+https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service/4.2.0  
 https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
 ```xml
 <dependency>
     <groupId>com.seanox</groupId>
     <artifactId>seanox-pdf-service</artifactId>
-    <version>4.1.2</version>
+    <version>4.2.0</version>
 </dependency>
 ```
 
-[Seanox PDF-Tools 4.1.2](https://github.com/seanox/pdf-service/releases/download/4.1.2/seanox-pdf-tools-4.1.2.jar)
+[Seanox PDF-Tools 4.2.0](https://github.com/seanox/pdf-service/releases/download/4.2.0/seanox-pdf-tools-4.2.0.jar)
 
 
 # Manuals
@@ -94,10 +94,13 @@ https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
 
 
 # Changes (Change Log)
-## 4.1.2 20220713 (summary of the current version)  
-BF: Build: Optimization of the release info process  
-BF: Maven: Update of dependencies  
-BF: Template: Correction for handling unexpected data type in data map  
+## 4.2.0 20220811 (summary of the current version)  
+BF: Review: Optimizations  
+BF: Generator: Correction when parsing structures  
+CR: Change from wording segment, which is now called structure  
+CR: Generator: Added placeholder syntax for disposable structures  
+CR: Generator: Added structures for single values  
+CR: Generator: Placeholder identifier conventions optimized  
 
 [Read more](https://raw.githubusercontent.com/seanox/pdf-service/master/CHANGES)
 
