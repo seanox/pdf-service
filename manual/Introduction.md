@@ -101,17 +101,13 @@ Files.write(Paths.get("example.pdf"), data, StandardOpenOption.CREATE);
 ```
 
 The data is passed to the renderer as a meta-object. The meta-object provides
-various constructors, getters, and setters for this. The data is divided into
-data structure and static texts.
-
-Internationalization (i18n) can be set via the locale when using locale
-dependent resources like fonts. 
+various constructors, getters, and setters for this.
 
 ```java
 import com.seanox.pdf.Service;
 import ...
 
-final var meta = new Meta(Locale.GERMANY);
+final var meta = new Meta(...);
 meta.setData(...);
 meta.setStatics(...);
 
@@ -119,40 +115,17 @@ final var data = Service.render(..., meta);
 Files.write(Paths.get("example.pdf"), data, StandardOpenOption.CREATE);
 ```
 
-Static texts are mapped as simple Map<String, String> and are used e.g. for
-labels and text output.
+There are two types of data. Structured data and static texts. Both are based
+on key-value dictionaries in the form of a Map.
 
-```java
-import com.seanox.pdf.Service;
-import com.seanox.pdf.Service.Meta;
-import ...
+For structured data (`Map<String, Object>`), values of the data type Collection
+are interpreted as a list that can be iterated over, and values of the data
+type Map are interpreted as a branch that can be processed recursively. All
+other data types are considered as output value and converted by
+`String.valueOf(value).getBytes()` if required.
 
-final var statics = new HashMap<String, String>() {{
-    put("ARTICLE_NUMBER", "Article Number");
-    put("ARTICLE_PRICE", "Price");
-    put("ADDRESS_TEL", "Tel");
-    put("ADDRESS_FAX", "Fax");
-    put("ADDRESS_E_MAIL", "E-Mail");
-    put("ADDRESS_WEB", "Web");
-}};
-
-final var meta = new Meta(Locale.GERMANY);
-meta.setData(...);
-meta.setStatics(statics);
-
-final var data = Service.render(..., meta);
-Files.write(Paths.get("example.pdf"), data, StandardOpenOption.CREATE);
-```
-
-TODO:
-
-The data structure is a structured map for data objects (entities). The keys
-are always of data type String. The values can be of the data type Collection,
-Map, and Object. Collections are used iteratively, maps recursively, and other
-objects as string values.
-
-The creation of the data structure can be done manually, partially manually and
-with tools, e.g. with a ObjectMapper.
+The creation of the structured data can be done by yourself or using frameworks
+like ObjectMapper.
 
 ```java
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -160,6 +133,41 @@ import com.seanox.pdf.Service;
 import com.seanox.pdf.Service.Meta;
 import ...
 
+// Data access is only hinted at here.
+final var data = new HashMap<String, Object>() {{
+    put("outlet", new ObjectMapper().convertValue(..., Map.class));
+    put("articles", ...stream()
+        .map(entity -> new ObjectMapper().convertValue(entity, Map.class))
+        .collect(Collectors.toList()));
+    }};
+        
+final var meta = new Meta(Locale.GERMANY);
+meta.setData(data);
+meta.setStatics(...);
+
+final var data = Service.render(..., meta);
+Files.write(Paths.get("example.pdf"), data, StandardOpenOption.CREATE);
+```
+
+Static texts use a strictly flat and string-based key-value pairs
+(`Map<String, String>`) without the support of data types Collection and Map.
+This data is practical because the key-value pairs dictionary has no levels and
+the keys can be used in any level of the template structures.
+
+```java
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.seanox.pdf.Service;
+import com.seanox.pdf.Service.Meta;
+import ...
+
+// Data access is only hinted at here.
+final var data = new HashMap<String, Object>() {{
+    put("outlet", new ObjectMapper().convertValue(..., Map.class));
+    put("articles", ...stream()
+        .map(entity -> new ObjectMapper().convertValue(entity, Map.class))
+        .collect(Collectors.toList()));
+    }};
+
 final var statics = new HashMap<String, String>() {{
     put("ARTICLE_NUMBER", "Article Number");
     put("ARTICLE_PRICE", "Price");
@@ -170,14 +178,8 @@ final var statics = new HashMap<String, String>() {{
 }};
 
 final var meta = new Meta(Locale.GERMANY);
-meta.setData(new HashMap<>());
+meta.setData(data);
 meta.setStatics(statics);
-
-// Data access is only hinted at here.
-meta.getData().put("outlet", new ObjectMapper().convertValue(..., Map.class));
-meta.getData().put("articles", ...stream().map(
-    entity -> new ObjectMapper().convertValue(entity, Map.class)
-).collect(Collectors.toList()));
 
 final var data = Service.render(..., meta);
 Files.write(Paths.get("example.pdf"), data, StandardOpenOption.CREATE);
@@ -418,7 +420,7 @@ A-Z _ as well as the currency symbol ($) and the minus sign can be used.
 #### Value Placeholder
 
 Placeholders represent a value to the corresponding key of a level of a
-structured or branched directory with key-value pairs. If to the identifier a
+structured or branched dictionary with key-value pairs. If to the identifier a
 structure with the same name exists, this is applied to the value.
 
 ```
@@ -436,7 +438,7 @@ structures.
 Structures are complex nested constructs for the output of values, nested data
 structures as well as lists and function like templates. Structures are defined
 once and can then be reused anywhere with simple placeholders of the same
-identifier. They are rendered only if the key-value directory at the
+identifier. They are rendered only if the key-value dictionary at the
 appropriate level contains a key matching the identifier. For the data type
 Collection and Map, the placeholders remain after rendering and can thus be
 (re)used iteratively for lists or recursive for complex nested outputs.
@@ -451,8 +453,8 @@ Collection and Map, the placeholders remain after rendering and can thus be
   __those already determined.__
 
 The placeholder syntax has no syntax for navigating the branched data structure
-from the key-value directory. For that the nesting in the structure placeholder
-is used.
+from the key-value dictionary. For that the nesting in the structure
+placeholder is used.
 
 ```
 #[A[[
@@ -539,6 +541,12 @@ Also, a conditional output of text instead of the value is possible.
 #[IDENTIFIER{{...}}]
 ```
 
+Or the combination with static placeholders is also supported.
+
+```
+#[IDENTIFIER{{... #[#] ... ![IDENTIFIER] ...}}]
+```
+
 The complete example and more can be found here:  
 https://github.com/seanox/pdf-service/tree/master/src/test/resources/pdf/ArticleMultiTemplate.html
 
@@ -593,7 +601,7 @@ can be used, for which the identifier from the placeholder must start with `0x`.
 #### Runtime Placeholder
 
 Runtime placeholders are additional automatically generated placeholders based
-on the keys and values in the key-value directory.
+on the keys and values in the key-value dictionary.
 
 The placeholder `#[locale]` is provided from the meta-locale and can be used
 for internationalization (i18n).
@@ -678,36 +686,25 @@ structure](#disposable-structure-placeholder).__
 
 #### Static Placeholder
 
-TODO:
-
-For the output of static texts from meta-statics, which uses a strictly
-flat/plane string-based key-value map without collections and branching. If no
-value exists for a placeholder, it is removed.
+For the output of static texts from meta-statics, which uses a strictly flat
+and string-based key-value map without collections and branching. If no value
+exists for a placeholder, it is removed.
 
 ```
-![NAME]
+![IDENTIFIER]
 ```
 
-TODO:
-#[value[[text output only if value exists]]]
-#[price[[Your price #[#] ![currency]]]]
+The static texts are practical, then key-value dictionary has no levels and the
+keys can be used in any level of the template structures.
 
-#### Value Disposable Structure Placeholder
-
-TODO:
-#[price{{Your price #[#] Euro}}]
-#[#]
-
-#[value{{text output only if value exists}}]
-#[price{{Your price #[#] ![currency]}}]
 
 ## Test
 
-TODO:
-
-PDF Service is primarily optimized for the design process. Therefore, the test
-of PDFs is pixel- and color-based. For automated tests the Compare with the
-static method of the same name is available.
+In addition to PDF creation, PDF Service is also focused on the design process
+and testing. For this purpose, a pixel- and color-based comparison of PDF files
+is included, which can be used as a command line tool and also directly in code
+and thus also in JUnit for test automation. Any differences are visualized in
+the form of delta images.
 
 ```java
 import com.seanox.pdf.Compare;
@@ -728,8 +725,6 @@ difference images. If no differences were found, the return value is `null`.
 
 
 ## Mock-Up
-
-TODO:
 
 Mock-up is part of the preview and design process to design and test the markup
 of the PDFs independently of the project. For this purpose, a property file
@@ -767,21 +762,18 @@ https://github.com/seanox/pdf-service/tree/master/src/test/resources/pdf
 
 ### Template
 
-TODO:
-
 Abstract class for implementing templates. The implementation defines the
 resource management, the preparation of markup, the generation of markup and
 can optionally also define the PDF rendering. The service only uses the API and
-has no own template and markup generator.
+has no own template and markup generator. Only the implemented standard
+template defines a built-in generator.
 
 ### Resources
 
-TODO:
-
-Templates are based on an implementation of the [Template](#template) and the
+Templates are based on an implementation of [Template](#template) and the
 annotation [Resources](#resources), which with `base` and `template` contains
-information about the base directory of the resources (CSS, images, fonts, ...),
-as well the path of the markup template with the same name.
+information about the base directory of the resources (CSS, images, fonts,
+...), as well the path of the markup template with the same name.
 
 ### Multiplex
 
