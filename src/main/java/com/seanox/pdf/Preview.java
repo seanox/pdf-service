@@ -34,8 +34,13 @@ import java.util.Objects;
 import java.util.logging.Level;
 
 /**
- * Tool for the design process to create a test output of the rendered PDFs.
- * The PDFs are output in the same directory as the template.<br>
+ * Command line tool that creates a PDF preview of all templates with the
+ * annotation {@link com.seanox.pdf.Service.Template.Resources} in the
+ * ClassPath and of all files found for the specified paths, filters and
+ * globs.<br>
+ * <br>
+ * The preview is based on the mock-up data in the properties files for the
+ * templates.<br>
  * <br>
  * Preview 4.2.0 20220806<br>
  * Copyright (C) 2022 Seanox Software Solutions<br>

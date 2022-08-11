@@ -819,11 +819,11 @@ java -cp seanox-pdf-tools.jar com.seanox.pdf.Compare <master> <compare>
 
 During the comparison, differences are searched for page by page, pixel by
 pixel and color by color. If a difference is found between master and compare
-on the same page, a difference image in the path of compare is created. The
-image is based on the grayscale image of the master. The differences, which
-compare causes, are marked in red. If there are discrepancies in resolution or
-image mass, overlaps occur, which are displayed in blue (only in compare) and
-green (only in master).
+on the same page, a delta image in the path of compare is created. The image is
+based on the grayscale image of the master. The differences, which compare
+causes, are marked in red. If there are discrepancies in resolution or image
+mass, overlaps occur, which are displayed in blue (only in compare) and green
+(only in master).
 
 ### Preview
 

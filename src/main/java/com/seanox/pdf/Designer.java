@@ -32,10 +32,13 @@ import java.util.Objects;
 import java.util.logging.Level;
 
 /**
- * Deamon for the design process, for the continuous creation of PDFs if the
- * templates change. The compilation is done by the IDE and the daemon are
- * started directly in the IDE. The templates are edited in the source
- * directory. The PDFs are output in the same directory as the template.<br>
+ * Command line daemon which continuously creates a PDF preview of all
+ * templates with annotation {@link com.seanox.pdf.Service.Template.Resources}
+ * in the ClassPath and of all files found for the specified paths, filters and
+ * globs. The previews are updated when there are changes to the templates.<br>
+ * <br>
+ * The preview is based on the mock-up data in the properties files for the
+ * templates.<br>
  * <br>
  * Designer 4.2.0 20220806<br>
  * Copyright (C) 2022 Seanox Software Solutions<br>
