@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 
 /**
  * Generator fills placeholders in a template (model) with the values of
- * key-value pairs from a directory ({@link Map}) if the keys match the
+ * key-value pairs from a dictionary ({@link Map}) if the keys match the
  * identifier of the placeholder (case-insensitive).<br>
  * <br>
  * Filling works at byte level, which uses the values as byte arrays. Other data
@@ -39,11 +39,12 @@ import java.util.stream.Collectors;
  * <br>
  * Placeholders represent values and structures. Structures are nested
  * placeholders with a depth of up to 65535 levels, which use a tree-like
- * directory with key-value pairs. In addition structures provide scopes, these
- * are comparable with sub-templates, which can be inserted at any place by
- * simple placeholders and can be dedicated or partially filled and extracted
- * on basis of the structure identifier. Because placeholders of structures are
- * preserved after filling, they can be reused iteratively.<br>
+ * dictionary with key-value pairs in the form of a {@link Map}. In addition,
+ * structures provide scopes, these are comparable with sub-templates, which
+ * can be inserted at any place by simple placeholders and can be dedicated or
+ * partially filled and extracted on basis of the structure identifier. Because
+ * placeholders of structures are preserved after filling, they can be reused
+ * iteratively.<br>
  * <br>
  * Structures use {@link Collection} and {@link Map} as values. A {@link Map}
  * then contains the values for the placeholders within the structure. A
