@@ -281,8 +281,6 @@ https://github.com/seanox/pdf-service/blob/master/src/test/java/com/seanox/pdf/e
 
 ### Markup
 
-TODO:
-
 The template is a pure (X)HTML document with CSS support and meta-tags and
 placeholder for the generator.
 
@@ -787,19 +785,17 @@ as well the path of the markup template with the same name.
 
 ### Multiplex
 
-TODO:
-
-The template can contain three fragments: header, content, footer. The content
-can be generated in one step. Because the content is framed in a page and the
-page can contain margins in which headers and footers must be inserted. Header
-and footer must therefore be inserted later as an overlay. Header and footer
-can contain their own placeholders and are therefore generated separately. So
-the special placeholders `#[page]` (current page number) and `#[pages]` (total
-number) can also be used.
+Templates consist of three fragments: header, content and footer. The content
+can be created in one step because it is embedded in a page that can contain
+margins into which the headers and footers are inserted. Headers and footers
+are subsequently inserted as a one-page overlay on each page. Since headers and
+footers are created separately, they can use custom and additional placeholders
+such as `#[page]` (current page number) and `#[pages]` (total number).
 
 The multiplexer separates the markup for the fragments: header, content, footer
-into completely separate (X)HTML documents. This way, three templates can be
-created from one template and each fragment can be rendered individually as PDF.
+into completely separate (X)HTML documents. For this purpose, all fragments use
+the complete (X)HTML document, but for each fragment the content of the body
+element is reduced to the respective fragment.
 
 #### Header
 
@@ -816,13 +812,10 @@ The complete (X)HTML document with `BODY > FOOTER` only.
 
 ### Type
 
-TODO:
-
-The template can contain three fragments: header, content, footer. The
-rendering of the markup uses overlays. During rendering, the type tells the
-generator which fragments of the markup is generated. The generator can thus
-react specifically to the fragments if it is necessary for the generator
-implementation. Type provides the constants for the layers as enumeration.
+Templates consist of three fragments: Header, Content and Footer. The markup is
+rendered using overlays, to which Type provides the corresponding constants as
+an enumeration, which can then be used by the generator implementation as an
+orientation to be able to react specifically to the fragments.
 
 ### TemplateException
 
