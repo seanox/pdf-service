@@ -159,12 +159,12 @@ import java.util.stream.Collectors;
  * produce final results that correspond to the call of {@link #set(Map)} in
  * combination with {@link #extract()}, but focus on only one structure.<br>
  * <br>
- * Generator 4.1.0 20220803<br>
+ * Generator 4.1.0 20220811<br>
  * Copyright (C) 2022 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
  *
  * @author  Seanox Software Solutions
- * @version 4.1.0 20220803
+ * @version 4.1.0 20220811
  */
 class Generator {
 
@@ -215,7 +215,7 @@ class Generator {
      * @return the generator with the template passed as bytes
      */
     static Generator parse(byte[] model) {
-        Generator generator = new Generator();
+        final var generator = new Generator();
         generator.model = generator.scan(model);
         return generator;
     }
@@ -246,14 +246,14 @@ class Generator {
                 || model[cursor +1] != '[')
             return 0;
             
-        int offset = cursor;
-        int deep   = 0;
+        var offset = cursor;
+        var deep   = 0;
 
-        int[] stack = new int[65535];
+        var stack = new int[65535];
         while (cursor < model.length) {
 
             // The current mode is determined.
-            int mode = deep > 0 ? Math.abs(stack[deep]) : 0;
+            var mode = deep > 0 ? Math.abs(stack[deep]) : 0;
 
             // Phase 0-1: Recognition of the start of a placeholder
             // - supported formats: #[...], #[...[[...]]], #[...{{...}}]
@@ -306,7 +306,7 @@ class Generator {
             // completed.
             if (cursor +2 < model.length
                     && mode == 2) {
-                int symbol = mode == 2 ? stack[deep] > 0 ? ']' : '}' : 0;
+                final var symbol = mode == 2 ? stack[deep] > 0 ? ']' : '}' : 0;
                 if (model[cursor +0] == symbol
                         && model[cursor +1] == symbol
                         && model[cursor +2] == ']') {
@@ -351,9 +351,9 @@ class Generator {
         if (model == null)
             return new byte[0];
         
-        int cursor = 0;
+        var cursor = 0;
         while (true) {
-            int offset = Generator.scan(model, cursor++);
+            var offset = Generator.scan(model, cursor++);
             if (offset < 0)
                 break;
             if (offset == 0)
@@ -361,17 +361,17 @@ class Generator {
                 
             cursor--;            
 
-            byte[] patch = new byte[0];
-            String fetch = new String(model, cursor, offset);
+            var patch = new byte[0];
+            var fetch = new String(model, cursor, offset);
             if (fetch.matches(TEXT_PATTERN_PLACEHOLDER_STRUCTURE)) {
 
                 // scope is determined from: #[scope[[structure]]
-                String scope = fetch.substring(2);
+                var scope = fetch.substring(2);
                 scope = scope.substring(0, scope.indexOf('['));
                 scope = scope.toLowerCase();
 
                 // structure is extracted from the model
-                byte[] cache = new byte[offset -scope.length() -7];
+                final var cache = new byte[offset -scope.length() -7];
                 System.arraycopy(model, cursor +scope.length() +4, cache, 0, cache.length);
 
                 // scope and structure are registered if scope does not exist
@@ -384,12 +384,12 @@ class Generator {
             } else if (fetch.matches(TEXT_PATTERN_PLACEHOLDER_STRUCTURE_DISPOSABLE)) {
 
                 // scope is determined from: #[scope{{structure}}]
-                String scope = fetch.substring(2);
+                var scope = fetch.substring(2);
                 scope = scope.substring(0, scope.indexOf('{'));
                 scope = scope.toLowerCase();
 
                 // structure is extracted from the model
-                byte[] cache = new byte[offset - scope.length() - 7];
+                final var cache = new byte[offset - scope.length() - 7];
                 System.arraycopy(model, cursor + scope.length() + 4, cache, 0, cache.length);
 
                 // unique scope is registered with the structure
@@ -426,7 +426,7 @@ class Generator {
             }
             
             // model is rebuilt with the patch
-            byte[] cache = new byte[model.length -offset +patch.length];
+            final var cache = new byte[model.length -offset +patch.length];
             System.arraycopy(model, 0, cache, 0, cursor);
             System.arraycopy(patch, 0, cache, cursor, patch.length);
             System.arraycopy(model, cursor +offset, cache, cursor +patch.length, model.length -cursor -offset);
@@ -459,7 +459,7 @@ class Generator {
 
         // Internally, a copy of the generator is created for the structure
         // (partial model) and thus partially filled.
-        Generator generator = new Generator();
+        final var generator = new Generator();
         generator.scopes = (HashMap)this.scopes.clone();
         generator.scopes.remove(scope);
         generator.model = this.scopes.get(scope).data;
@@ -519,7 +519,7 @@ class Generator {
         
         int cursor = 0;
         while (true) {
-            int offset = Generator.scan(this.model, cursor++);
+            final var offset = Generator.scan(this.model, cursor++);
             if (offset < 0)
                 break;
             if (offset == 0)
@@ -536,7 +536,7 @@ class Generator {
 
                 // the placeholders of not transmitted keys are ignored, with
                 // 'clean' the placeholders are deleted
-                String key = scope.replaceAll(":\\d+$", "");
+                final var key = scope.replaceAll(":\\d+$", "");
                 if (!values.containsKey(key)
                         && !clean) {
                     cursor += scope.length() +3 +1;
@@ -587,7 +587,7 @@ class Generator {
                 
                     // if necessary the # characters are encoded to protect the
                     // placeholders and structure in the model
-                    int index = 0;
+                    var index = 0;
                     while (index < patch.length) {
                         if (patch[index++] != '#')
                             continue;
@@ -721,15 +721,15 @@ class Generator {
 
             this.data = data;
 
-            int cursor = 0;
+            var cursor = 0;
             while (true) {
-                int offset = Generator.scan(data, cursor++);
+                final var offset = Generator.scan(data, cursor++);
                 if (offset < 0)
                     break;
                 if (offset == 0)
                     continue;
                 cursor--;
-                String fetch = new String(data, cursor, offset);
+                final var fetch = new String(data, cursor, offset);
                 if (!fetch.matches(TEXT_PATTERN_PLACEHOLDER_STRUCTURE)
                         && !fetch.matches(TEXT_PATTERN_PLACEHOLDER_STRUCTURE_DISPOSABLE)
                         && !fetch.matches(TEXT_PATTERN_PLACEHOLDER_VALUE)) {
