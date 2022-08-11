@@ -54,57 +54,85 @@ import java.util.stream.Collectors;
  * structures.
  *
  * <h3>Description of the syntax</h3>
- * The syntax of the placeholders is case-insensitive, must begin with a letter
- * and is limited to the following characters:
- *     <dir>{@code a-z A-Z 0-9 _-}</dir>
- *      
+ * Placeholders support values, structures and static texts. The identifier is
+ * case-insensitive and based on the conventions of Java variables. Thus, the
+ * identifier begins with one of the following characters: a-z A-Z _ $ and ends
+ * on a word character: 0-9 a-z A-Z _ or $. In between, all word characters 0-9
+ * a-z A-Z _ as well as the currency symbol ($) and the minus sign can be used.
+ *
  * <h3>Structure and description of the placeholders</h3>
  * <table>
  *   <tr>
  *     <td valign="top" nowrap="nowrap">
- *       {@code #[value]}
+ *       <b>Value Placeholder</b><br>
+ *       <code>#[identifier]</code><br>
  *     </td>
  *     <td valign="top">
- *       Inserts the value for &lt;value&gt; and removes the placeholder.
+ *       Placeholders represent a value to the corresponding key of a level of a
+ *       structured or branched dictionary with key-value pairs. If to the identifier
+ *       a structure with the same name exists, this is applied to the value.
  *     </td>
  *   </tr>
  *   <tr>
  *     <td valign="top" nowrap="nowrap">
- *       {@code #[scope[[...]]]}
+ *       <b>Structure Placeholder</b><br>
+ *       <code>#[identifier[[...]]]</code><br>
  *     </td>
  *     <td valign="top">
- *       Defines a structure with possible nesting and further sub-structures.
- *       Structures are comparable to templates and can be reused via the
- *       simple placeholder of the same name. Because the placeholders for
- *       inserting structures are preserved, they can be used to build lists.
+ *       Structures are complex nested constructs for the output of values,
+ *       nested data structures as well as lists and function like templates.
+ *       Structures are defined once and can then be reused anywhere with
+ *       simple placeholders of the same identifier. They are rendered only if
+ *       the key-value dictionary at the appropriate level contains a key
+ *       matching the identifier. For the data type {@link Collection} and
+ *       {@link Map}, the placeholders remain after rendering and can thus be
+ *       (re)used iteratively for lists or recursive for complex nested
+ *       outputs.
  *     </td>
  *   </tr>
  *   <tr>
  *     <td valign="top" nowrap="nowrap">
- *       {@code #[scope&#123;&#123;...&#125;&#125;]}
+ *       <b>Disposable Structure Placeholder</b><br>
+ *       <code>#[identifier{{...}}]</code><br>
  *     </td>
  *     <td valign="top">
- *       Defines a disposable structure with possible nesting and further
- *       sub-structures. Disposable structures are bound to their place and,
- *       unlike a normal structure, can be defined differently multiple times,
- *       but cannot be reused or created or extracted based on their name.
- *       Because the placeholders for inserting structures are preserved, they
- *       can be used to build lists.
+ *       Disposable structures are bound to their place and, unlike a normal
+ *       structure, can be defined differently multiple times, but cannot be
+ *       reused or extracted based on their identifier.
  *     </td>
  *   </tr>
  *   <tr>
  *     <td valign="top" nowrap="nowrap">
- *       {@code #[0x0A]}<br>
- *       {@code #[0x4578616D706C6521]}
+ *       <b>Disposable Value Placeholder</b><br>
+ *       <code>#[identifier{{... #[#] ...}}]</code>
  *     </td>
  *     <td valign="top">
- *       Escaping from one or more characters. The conversion is done with
- *       {@link #extract(String, Map)}, {@link #extract(String)} or
- *       {@link #extract()} at the end of the generation.
+ *       The disposable structure placeholder can also be used for a value,
+ *       which is then represented by the placeholder {@code #[#]}.
+ *     </td>
+ *   </tr>
+ *   <tr>
+ *     <td valign="top" nowrap="nowrap">
+ *       <code>#[identifier{{...}}]</code>
+ *     </td>
+ *     <td valign="top">
+ *       Also, a conditional output of text instead of the value is possible.
+ *     </td>
+ *   </tr>
+ *   <tr>
+ *     <td valign="top" nowrap="nowrap">
+ *       <b>Escaped Placeholders</b><br>
+ *       <code>#[0x...]</code>
+ *     </td>
+ *     <td valign="top">
+ *       For the output of special and control characters a hexadecimal escape
+ *       sequence can be used, for which the identifier from the placeholder
+ *       must start with {@code 0x} and is followed by the hexadecimal code
+ *       sequence.
  *     </td>
  *   </tr>
  * </table>
- *  
+ *
  * <h3>Functionality</h3>
  * The model (byte array) is parsed initially. All placeholders are checked for
  * syntactic correctness. If necessary, invalid placeholders are removed.
@@ -187,7 +215,6 @@ class Generator {
      * @return the generator with the template passed as bytes
      */
     static Generator parse(byte[] model) {
-        
         Generator generator = new Generator();
         generator.model = generator.scan(model);
         return generator;
@@ -669,7 +696,6 @@ class Generator {
      * @param values Values
      */
     void set(String scope, Map<String, Object> values) {
-
         if (scope != null)
             scope = scope.toLowerCase().trim();
         if (scope != null
