@@ -18,10 +18,11 @@
 - Final test  
   Call `mvn clean test`
 - __Provided all tests are successful!__
+- Finalize version in the classes
+- Finalize version in CHANGES
 - Final update of CHANGES / README.md / pom.xml / PDF-Tools  
-  incl. the Maven-dependency version and update the version in `pom.xml`  
-  Call `ant -f ./development/build.xml release`  
-  The versions in the classes should be updated.
+  Call `ant -f ./development/build.xml release`
+  this also includes updating the version in `pom.xml`  
 - Final commit of the release  
   Release x.x.x
 - Create tag with the short form of the release notes  
