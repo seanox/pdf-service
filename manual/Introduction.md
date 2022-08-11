@@ -61,6 +61,7 @@ designing and testing outside and independent of projects
     * [Escaped Placeholders](#escaped-placeholders)
     * [Runtime Placeholder](#runtime-placeholder)
     * [Static Placeholder](#static-placeholder)
+    * [Static Exists Placeholder](#static-exists-placeholder)
 * [Test](#test)
 * [Mock-Up](#mock-up)
 * [Template API](#template-api)
@@ -498,8 +499,8 @@ https://github.com/seanox/pdf-service/tree/master/src/test/resources/pdf/Article
 
 #### Disposable Value Placeholder
 
-The [disposable structure](#disposable-structure-placeholder) can also be used
-for a value, which is then represented by the placeholder `#[#]`.
+The [disposable structure placeholder](#disposable-structure-placeholder) can
+also be used for a value, which is then represented by the placeholder `#[#]`.
 
 ```
 #[IDENTIFIER{{... #[#] ...}}]
@@ -525,7 +526,7 @@ https://github.com/seanox/pdf-service/tree/master/src/test/resources/pdf/Article
 As part of the [runtime placeholders](#runtime-placeholder) the exits
 placeholder is generated automatically based on the keys and values. __In the
 meantime this function is deprecated, because this is replaced by [disposable
-structures](#disposable-structure-placeholder).__
+structures placeholder](#disposable-structure-placeholder).__
 
 For each key and placeholder an exists-placeholder is provided. This can be
 used in the markup and in combination with CSS to output/display markup
@@ -561,7 +562,8 @@ https://github.com/seanox/pdf-service/tree/master/src/test/resources/pdf/Article
 #### Escaped Placeholders
 
 For the output of special and control characters a hexadecimal escape sequence
-can be used, for which the identifier from the placeholder must start with `0x`.
+can be used, for which the identifier from the placeholder must start with `0x`
+and is followed by the hexadecimal code sequence
 
 ```
 #[0x0A]
@@ -652,7 +654,7 @@ https://github.com/seanox/pdf-service/tree/master/src/test/resources/pdf
 
 __The exists-placeholder is supported for backward compatibility, but is
 deprecated and is replaced by the [disposable
-structure](#disposable-structure-placeholder).__
+structure placeholder](#disposable-structure-placeholder).__
 
 #### Static Placeholder
 
@@ -667,6 +669,11 @@ exists for a placeholder, it is removed.
 The static texts are practical, then key-value dictionary has no levels and the
 keys can be used in any level of the template structures.
 
+#### Static Exists Placeholder
+
+Analogous to the [exists placeholder](#exists-placeholder) from the group of
+[runtime placeholders](#runtime-placeholder), there is also one for static
+texts.  
 
 ## Test
 

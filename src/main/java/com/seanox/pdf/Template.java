@@ -44,58 +44,92 @@ import java.util.stream.IntStream;
  * <h3>About the templates</h3>
  * As engine {@link Generator} is used, here you can find more details.
  * The most important in short form:
- *  
- * <code>#[placeholder]</code><br>
- * Placeholder in general, representing a value or a structure with the same
- * identifier.
- *  
- * <code>#[placeholder-exists]</code><br>
- * Pendant to any placeholder, if the value is not {@code null}, not empty and
- * not blank. Then the placeholder contains the value {@code exists}.
- * The exists-placeholder is supported because of backward compatibility, but
- * is deprecated and is replaced by the value structure and value disposable
- * structure.
  *
- * <code>#[structure[[...]]]</code><br>
- * Structures are complex nested constructs for the output of objects, lists,
- * folders and much more and work like templates. Structures are defined only
- * once and can then be reused anywhere using the simple placeholder of the
- * same identifier. They are rendered only if the corresponding object exists
- * as a value. Because the placeholders for inserting structures are preserved,
- * they can be used to build lists.
+ * Placeholders support values, structures and static texts. The identifier is
+ * case-insensitive and based on the conventions of Java variables. Thus, the
+ * identifier begins with one of the following characters: a-z A-Z _ $ and ends
+ * on a word character: 0-9 a-z A-Z _ or $. In between, all word characters 0-9
+ * a-z A-Z _ as well as the currency symbol ($) and the minus sign can be used.
  *
- * <code>#[structure{{...}}]</code><br>
+ * <b>Value Placeholder</b><br>
+ * <code>#[identifier]</code><br>
+ * Placeholders represent a value to the corresponding key of a level of a
+ * structured or branched dictionary with key-value pairs. If to the identifier
+ * a structure with the same name exists, this is applied to the value.
+ *
+ * <b>Structure Placeholder</b><br>
+ * <code>#[identifier[[...]]]</code><br>
+ * Structures are complex nested constructs for the output of values, nested
+ * data structures as well as lists and function like templates. Structures are
+ * defined once and can then be reused anywhere with simple placeholders of the
+ * same identifier. They are rendered only if the key-value dictionary at the
+ * appropriate level contains a key matching the identifier. For the data type
+ * Collection and Map, the placeholders remain after rendering and can thus be
+ * (re)used iteratively for lists or recursive for complex nested outputs.
+ *
+ * <b>Disposable Structure Placeholder</b><br>
+ * <code>#[identifier{{...}}]</code><br>
  * Disposable structures are bound to their place and, unlike a normal
  * structure, can be defined differently multiple times, but cannot be reused
  * or extracted based on their identifier.
  *
- * Because of the conditional output, disposable structures can be used as a
- * replacement for the exists-placeholder.
+ * <b>Disposable Value Placeholder</b><br>
+ * <code>#[identifier{{... #[#] ...}}]</code><br>
+ * The disposable structure placeholder can also be used for a value, which is
+ * then represented by the placeholder {@code #[#]}.
  *
- * <code>#[structure{{...#[#]...}}]</code><br>
- * The disposable structure can also be used for a value, which is then
- * represented by the placeholder #[#].
+ * <code>#[identifier{{...}}]</code><br>
+ * Also, a conditional output of text instead of the value is possible.
  *
- * <code>![static-text]</code><br>
- * Placeholder for static non-structured text e.g. from the ResourceBundle.
- * 
- * <code>![static-text-exists]</code><br>
- * Pendant to any placeholder of static non-structured text, if the value is not
- * {@code null}, not empty and not blank. Then the placeholder contains the
- * value {@code exists}.
- *  
- * <code>#[locale]</code><br>
- * Placeholder provided by {@link Service} with the current language.
- * Available in all sections (header, content/data, footer).
- *  
- * <code>#[page]</code><br>
- * Placeholder provided by {@link Service} with the current page number.
- * Available in sections: header, footer
- *  
- * <code>#[pages]</code><br>
- * Placeholder provided by {@link Service} with the total page number.
- * Available in sections: header, footer<br>
- * <br>
+ * <code>#[identifier{{... #[#] ... ![identifier] ...}}]</code><br>
+ * Or the combination with static placeholders is also supported.
+ *
+ * <b>Exists Placeholder</b><br>
+ * As part of the runtime placeholders the exits placeholder is generated
+ * automatically based on the keys and values. In the meantime this function is
+ * deprecated, because this is replaced by disposable structures placeholder.
+ *
+ * For each key and placeholder an exists-placeholder is provided. This can be
+ * used in the markup and in combination with CSS to output/display markup
+ * depending on the existence of values in meta-data. The Exists placeholder
+ * contains the value `exists` if the value is not `null`, not empty and not
+ * blank.
+ *
+ * <b>Escaped Placeholders</b><br>
+ * <code>#[0x...]</code><br>
+ * For the output of special and control characters a hexadecimal escape
+ * sequence can be used, for which the identifier from the placeholder must
+ * start with {@code 0x} and is followed by the hexadecimal code sequence.
+ *
+ * <b>Runtime Placeholder</b><br>
+ * Runtime placeholders are additional automatically generated placeholders
+ * based on the keys and values in the key-value dictionary.
+ *
+ * The placeholder {@code #[locale]} is provided from the meta-locale and can
+ * be used for internationalization (i18n).
+ *
+ * The placeholders {@code #[page]} and {@code #[pages]} are available in the
+ * header and footer and contain the current page and total number of pages.
+ *
+ * For each key and placeholder an exists-placeholder is provided. This can be
+ * used in the markup and in combination with CSS to output/display markup
+ * depending on the existence of values in meta-data. The Exists placeholder
+ * contains the value {@code exists} if the value is not {@code null}, not
+ * empty and not blank.
+ *
+ * <b>Static Placeholder</b><br>
+ * <code>![identifier]</code><br>
+ * For the output of static texts from meta-statics, which uses a strictly flat
+ * and string-based key-value map without collections and branching. If no
+ * value exists for a placeholder, it is removed.
+ *
+ * The static texts are practical, then key-value dictionary has no levels and
+ * the keys can be used in any level of the template structures.
+ *
+ * <b>Static Exists Placeholder</b><br>
+ * Analogous to the exists placeholder from the group of runtime placeholders,
+ * there is also one for static texts.
+ *
  * Template 4.2.0 20220806<br>
  * Copyright (C) 2022 Seanox Software Solutions<br>
  * Alle Rechte vorbehalten.
