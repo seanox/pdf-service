@@ -24,7 +24,6 @@
       Optimized for the conventions for variables in Java.
       Identifier can start and end with characters: a-z A-Z _ $ in between the
       characters: a-z A-Z _ - $ can be used.
-      TODO: Introduction.md + docu Generator.java / Template.java
 
 4.1.2 20220713
   BF: Build: Optimization of the release info process
