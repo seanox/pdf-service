@@ -185,8 +185,6 @@ final var data = Service.render(..., meta);
 Files.write(Paths.get("example.pdf"), data, StandardOpenOption.CREATE);
 ```
 
-TODO:
-
 The render method needs an implemented template, in the best case. But you can
 also implement a universal template, which uses simple strings for the paths to
 the templates.
@@ -196,13 +194,22 @@ Why as a template implementation?
 The implementation makes the template usage traceable for the compiler and
 protects against errors. Another point is the Template API, whose
 implementation is defined by the templates. The service only uses the API and
-has no own template and markup generator.
+has no own template and markup generator. Only the implemented standard
+template defines a built-in generator.
 
 ```java
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.seanox.pdf.Service;
 import com.seanox.pdf.Service.Meta;
 import ...
+
+// Data access is only hinted at here.
+final var data = new HashMap<String, Object>() {{
+    put("outlet", new ObjectMapper().convertValue(..., Map.class));
+    put("articles", ...stream()
+        .map(entity -> new ObjectMapper().convertValue(entity, Map.class))
+        .collect(Collectors.toList()));
+    }};
 
 final var statics = new HashMap<String, String>() {{
     put("ARTICLE_NUMBER", "Article Number");
@@ -214,14 +221,8 @@ final var statics = new HashMap<String, String>() {{
 }};
 
 final var meta = new Meta(Locale.GERMANY);
-meta.setData(new HashMap<>());
+meta.setData(data);
 meta.setStatics(statics);
-
-// Data access is only hinted at here.
-meta.getData().put("outlet", new ObjectMapper().convertValue(..., Map.class));
-meta.getData().put("articles", ...stream().map(
-    entity -> new ObjectMapper().convertValue(entity, Map.class)
-).collect(Collectors.toList()));
 
 final var data = Service.render(ExampleTemplate.class, meta);
 Files.write(Paths.get("example.pdf"), data, StandardOpenOption.CREATE);
@@ -234,41 +235,10 @@ class ExampleTemplate extends Template {
 }
 ```
 
-TODO:
-
 Template need the annotation `@Resources`. This annotation defines where in the
 ClassPath the resources (CSS, images, fonts, ...) for the template are located
 and, if necessary, defines the file name of the template if this cannot be
 derived from the Java class.
-
-```java
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.seanox.pdf.Service;
-import com.seanox.pdf.Service.Meta;
-import ...
-
-final var statics = new HashMap<String, String>() {{
-    put("ARTICLE_NUMBER", "Article Number");
-    put("ARTICLE_PRICE", "Price");
-    put("ADDRESS_TEL", "Tel");
-    put("ADDRESS_FAX", "Fax");
-    put("ADDRESS_E_MAIL", "E-Mail");
-    put("ADDRESS_WEB", "Web");
-}};
-
-final var meta = new Meta(Locale.GERMANY);
-meta.setData(new HashMap<>());
-meta.setStatics(statics);
-
-// Data access is only hinted at here.
-meta.getData().put("outlet", new ObjectMapper().convertValue(..., Map.class));
-meta.getData().put("articles", ...stream().map(
-    entity -> new ObjectMapper().convertValue(entity, Map.class)
-).collect(Collectors.toList()));
-
-final var data = Service.render(ExampleTemplate.class, meta);
-Files.write(Paths.get("example.pdf"), data, StandardOpenOption.CREATE);
-```
 
 ```java
 import com.seanox.pdf.Template;
