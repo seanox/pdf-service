@@ -1,3 +1,6 @@
+4.2.1 2023xxxx
+  BF: Build: Optimization/correction of the release info process
+
 4.2.0 20220811
   BF: Review: Optimizations
   BF: Generator: Correction when parsing structures
