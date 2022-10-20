@@ -40,11 +40,7 @@ import java.util.logging.Level;
  * globs.<br>
  * <br>
  * The preview is based on the mock-up data in the properties files for the
- * templates.<br>
- * <br>
- * Preview 4.2.0 20220806<br>
- * Copyright (C) 2022 Seanox Software Solutions<br>
- * Alle Rechte vorbehalten.
+ * templates.
  *
  * @author  Seanox Software Solutions
  * @version 4.2.0 20220806

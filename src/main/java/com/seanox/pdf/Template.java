@@ -130,10 +130,6 @@ import java.util.stream.IntStream;
  * Analogous to the exists placeholder from the group of runtime placeholders,
  * there is also one for static texts.
  *
- * Template 4.2.0 20220806<br>
- * Copyright (C) 2022 Seanox Software Solutions<br>
- * Alle Rechte vorbehalten.
- *
  * @author  Seanox Software Solutions
  * @version 4.2.0 20220806
  */

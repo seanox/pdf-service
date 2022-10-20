@@ -157,11 +157,7 @@ import java.util.stream.Collectors;
  * The methods {@link #extract(String)} and {@link #extract(String, Map)} use
  * exclusive structures, which are partially filled and prepared. Both methods
  * produce final results that correspond to the call of {@link #set(Map)} in
- * combination with {@link #extract()}, but focus on only one structure.<br>
- * <br>
- * Generator 4.1.0 20220811<br>
- * Copyright (C) 2022 Seanox Software Solutions<br>
- * Alle Rechte vorbehalten.
+ * combination with {@link #extract()}, but focus on only one structure.
  *
  * @author  Seanox Software Solutions
  * @version 4.1.0 20220811

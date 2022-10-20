@@ -30,11 +30,7 @@ import com.seanox.pdf.Service.Template;
 /**
  * Not a real test class.
  * Here the implementation and use of the Template-API shall be tested and
- * protected by the compiler..<br>
- * <br>
- * InterfaceTest 4.2.0 20220806<br>
- * Copyright (C) 2022 Seanox Software Solutions<br>
- * Alle Rechte vorbehalten.
+ * protected by the compiler.
  *
  * @author  Seanox Software Solutions
  * @version 4.2.0 20220806

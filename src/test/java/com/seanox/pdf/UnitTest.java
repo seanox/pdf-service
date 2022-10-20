@@ -55,11 +55,7 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 
 /**
- * Unit test for the PDF Service and Tools.<br>
- * <br>
- * UnitTest 4.2.0 20220806<br>
- * Copyright (C) 2022 Seanox Software Solutions<br>
- * Alle Rechte vorbehalten.
+ * Unit test for the PDF Service and Tools.
  *
  * @author  Seanox Software Solutions
  * @version 4.2.0 20220806

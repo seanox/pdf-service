@@ -24,11 +24,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Unit test for Service.<br>
- * <br>
- * ServiceTest 4.2.0 20220806<br>
- * Copyright (C) 2022 Seanox Software Solutions<br>
- * Alle Rechte vorbehalten.
+ * Unit test for Service.
  *
  * @author  Seanox Software Solutions
  * @version 4.2.0 20220806

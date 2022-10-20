@@ -30,11 +30,7 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * Reader for test data.<br>
- * <br>
- * TestDataReader 1.0.0 20220806<br>
- * Copyright (C) 2022 Seanox Software Solutions<br>
- * Alle Rechte vorbehalten.
+ * Reader for test data.
  *
  * @author  Seanox Software Solutions
  * @version 1.0.0 20220806

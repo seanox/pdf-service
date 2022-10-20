@@ -28,11 +28,7 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * Unit test for Template.<br>
- * <br>
- * TemplateTest 4.2.0 20220806<br>
- * Copyright (C) 2022 Seanox Software Solutions<br>
- * Alle Rechte vorbehalten.
+ * Unit test for Template.
  *
  * @author  Seanox Software Solutions
  * @version 4.2.0 20220806

@@ -38,11 +38,7 @@ import java.util.logging.Level;
  * globs. The previews are updated when there are changes to the templates.<br>
  * <br>
  * The preview is based on the mock-up data in the properties files for the
- * templates.<br>
- * <br>
- * Designer 4.2.0 20220806<br>
- * Copyright (C) 2022 Seanox Software Solutions<br>
- * Alle Rechte vorbehalten.
+ * templates.
  *
  * @author  Seanox Software Solutions
  * @version 4.2.0 20220806

@@ -24,11 +24,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 /** 
- * Output of information on how to use the command line tools.<br>
- * <br>
- * Usage 4.2.0 20220806<br>
- * Copyright (C) 2022 Seanox Software Solutions<br>
- * Alle Rechte vorbehalten.
+ * Output of information on how to use the command line tools.
  *
  * @author  Seanox Software Solutions
  * @version 4.2.0 20220806

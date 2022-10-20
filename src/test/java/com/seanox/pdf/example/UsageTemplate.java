@@ -39,11 +39,7 @@ import com.seanox.pdf.example.data.OutletDelegate;
  * Example of using the PDF service.
  * Template and preview data are in the same package.
  * The resources (CSS, images, fonts, ...) are in the ClassPath /pdf/... and are
- * used in the template relative.<br>
- * <br>
- * UsageTemplate 4.2.0 20220806<br>
- * Copyright (C) 2022 Seanox Software Solutions<br>
- * Alle Rechte vorbehalten.
+ * used in the template relative.
  *
  * @author  Seanox Software Solutions
  * @version 4.1.0 20210817
