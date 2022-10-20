@@ -4,7 +4,7 @@
     <echo>                                                          </echo>
     <echo> the following targets are available ...                  </echo>
     <echo>                                                          </echo>
-    <echo>   changes    synchronizes the README.md with CHANGES     </echo>
+    <echo>   changes    synchronizes README.md with CHANGES         </echo>
     <echo>                                                          </echo>
     <echo>   tools      Builds the release of the PDF tools         </echo>
     <echo>              Synchronizes the version output of the tools</echo>
@@ -19,7 +19,7 @@
   <property name="workspace.sources.filter" value="**/*.java,**/pom.xml"/>
   <property name="workspace.development" value="${workspace}/development"/>
   <property name="workspace.target" value="${workspace}/target"/>
-  <property name="workspace.releases" value="${workspace}/releases"/>
+  <property name="workspace.release" value="${workspace}/release"/>
 
   <macrodef name="release-info-locate">
     <sequential>
@@ -37,6 +37,12 @@
           match="(?&lt;=\d+)\." byline="true" replace="&#x000D;release.patch="/>
       <loadproperties srcfile="${workspace}/CHANGES.tmp"/>
       <delete file="${workspace}/CHANGES.tmp"/>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="release-info-reset">
+    <sequential>
+      <release-info-insert version="0.0.0 00000000"/>
     </sequential>
   </macrodef>
 
@@ -109,13 +115,14 @@
       <arg value="/c"/>
       <arg value="mvn clean compile assembly:single"/>
     </exec>
-    <move todir="${workspace.releases}">
+    <move todir="${workspace.release}">
       <fileset dir="${workspace.target}">
         <include name="seanox-${ant.project.name}-*-jar-with-dependencies.jar"/>
       </fileset>
       <mapper type="glob" from="seanox-${ant.project.name}-*-jar-with-dependencies.jar" to="seanox-pdf-tools-${release.version}.jar"/>
     </move>
-    <touch datetime="${release.date}" pattern="yyyyMMdd" file="${workspace.releases}/seanox-pdf-tools-${release.version}.jar"/>
+    <touch datetime="${release.date}" pattern="yyyyMMdd" file="${workspace.release}/seanox-pdf-tools-${release.version}.jar"/>
+    <release-info-reset/>
   </target>
 
   <target name="release" depends="changes,tools">
@@ -137,6 +144,7 @@
     <replaceregexp file="${workspace}/README.md"
         match="(\[Seanox\s+PDF-Tools\s+)\d[\d\.]+(\])"
         replace="\1${release.version}\2" flags="g" byline="false"/>
+    <release-info-reset/>
   </target>
 
   <target name="deploy" depends="release">
@@ -146,5 +154,6 @@
       <arg value="/c"/>
       <arg value="mvn clean deploy"/>
     </exec>
+    <release-info-reset/>
   </target>
 </project>
