@@ -93,7 +93,7 @@ https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
 - [Introduction](https://github.com/seanox/pdf-service/blob/master/manual/Introduction.md)
 
 
-# Changes (Change Log)
+# Changes
 ## 4.2.0 20220811 (summary of the current version)  
 BF: Review: Optimizations  
 BF: Generator: Correction when parsing structures  
