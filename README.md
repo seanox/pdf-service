@@ -94,7 +94,7 @@ https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
 
 
 # Changes
-## 4.2.0 20220811 (summary of the current version)  
+## 4.2.0 20220811  
 BF: Review: Optimizations  
 BF: Generator: Correction when parsing structures  
 CR: Change from wording segment, which is now called structure  
