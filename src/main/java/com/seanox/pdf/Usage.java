@@ -60,8 +60,8 @@ public class Usage {
      */
     public static void main(final String... options) {
         
-        System.out.println("Seanox PDF Tools Usage [Version 4.2.0 20220811]");
-        System.out.println("Copyright (C) 2022 Seanox Software Solutions");
+        System.out.println("Seanox PDF Tools Usage [Version 0.0.0 00000000]");
+        System.out.println("Copyright (C) 0000 Seanox Software Solutions");
         System.out.println();
         System.out.println("This java archive contains several command line tools.");
         System.out.println();
