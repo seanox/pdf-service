@@ -1,17 +1,16 @@
 <?xml version="1.0" ?>
 <project name="pdf-service" default="usage" basedir="..">
   <target name="usage">
-    <echo>                                                          </echo>
-    <echo> the following targets are available ...                  </echo>
-    <echo>                                                          </echo>
-    <echo>   changes    synchronizes README.md with CHANGES         </echo>
-    <echo>                                                          </echo>
-    <echo>   tools      Builds the release of the PDF tools         </echo>
-    <echo>              Synchronizes the version output of the tools</echo>
-    <echo>                                                          </echo>
-    <echo>   release    Builds the complete release                 </echo>
-    <echo>              Combined changes and tools                  </echo>
-    <echo>              Synchronizes the version in README.md       </echo>
+    <echo>Following targets are available:                               </echo>
+    <echo>                                                               </echo>
+    <echo>  changes    Synchronizes README.md with CHANGES               </echo>
+    <echo>                                                               </echo>
+    <echo>  tools      Builds the release of the PDF tools               </echo>
+    <echo>             Synchronizes the version output of the tools      </echo>
+    <echo>                                                               </echo>
+    <echo>  release    Builds the complete release                       </echo>
+    <echo>             Combined changes and tools                        </echo>
+    <echo>             Synchronizes the version in README.md             </echo>
   </target>
 
   <property name="workspace" value="${basedir}"/>
