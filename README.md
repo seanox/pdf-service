@@ -41,6 +41,7 @@ used by the header and footer.
 - I18n support  
 Language setting is also transferred to the template and thus fonts matching
 the language can be used.
+- Supports signatures and encryption
 - Creation of markup as preview e.g. for the frontend
 - API for templates and other renderer and markup generators  
 Abstract templates for individual renderer and generators.

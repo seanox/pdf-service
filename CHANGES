@@ -1,5 +1,7 @@
-4.2.1 2023xxxx
+4.3.0 2022xxxx
 BF: Build: Optimization/correction of the release info process
+CR: Template: Added methods to customize document and/or pages
+    To add signatures, encryption, comments, remove blank pages, add new pages, ...
 
 4.2.0 20220811
 BF: Review: Optimizations

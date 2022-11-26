@@ -30,6 +30,8 @@ import org.apache.pdfbox.multipdf.Overlay;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.multipdf.Splitter;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.w3c.dom.Document;
@@ -721,7 +723,42 @@ public class Service {
 
             return string;
         }
-        
+
+        /**
+         * Customize the document before adding the header and footer.
+         * The method can be used to manipulate the document or to manipulate,
+         * sort, filter and add pages. If the document has no pages after
+         * customize, it will be a blank PDF without header and footer based on
+         * the first original page.
+         * @param  document that can be customized
+         * @throws Exception
+         *     In case of unexpected errors.
+         */
+        protected void customize(final PDDocument document)
+                throws Exception {
+        }
+
+        /**
+         * Customize the document before adding the header and footer.
+         * The method can be used to manipulate, sort, filter and add pages. If
+         * no pages after customize, it will be a blank PDF without header and
+         * footer based on the first original page.
+         * @param  pages pages that can be customized
+         * @throws Exception
+         *     In case of unexpected errors.
+         */
+        protected void customize(final PDPageTree pages)
+                throws Exception {
+        }
+
+        private static PDPage createBlankPage(final PDDocument document) {
+            final var page = new PDPage();
+            final var template = document.getPage(0);
+            page.setMediaBox(template.getMediaBox());
+            page.setRotation(template.getRotation());
+            return page;
+        }
+
         /**
          * Creates the PDF based on the data records as meta-object.
          * @param  meta data records as map array
@@ -763,6 +800,16 @@ public class Service {
             builder.run();
 
             try (final var document = PDDocument.load(content.toByteArray())) {
+
+                final var blank = Template.createBlankPage(document);
+                this.customize(document);
+                this.customize(document.getPages());
+                if (document.getPages().getCount() <= 0) {
+                    document.addPage(blank);
+                    final var output = new ByteArrayOutputStream();
+                    document.save(output);
+                    return output.toByteArray();
+                }
 
                 // without header and footer no overlay and merging is necessary
                 // the byte array from the document can be returned
