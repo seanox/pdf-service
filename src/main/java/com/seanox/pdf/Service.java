@@ -48,6 +48,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Documented;
@@ -195,7 +196,7 @@ import java.util.stream.Stream;
  * there is also one for static texts.
  *
  * @author  Seanox Software Solutions
- * @version 4.2.0 20220806
+ * @version 4.3.0 20221126
  */
 public class Service {
     
@@ -753,19 +754,16 @@ public class Service {
             final var markup = this.getMarkup();
             final var multiplex = Multiplex.demux(markup);
 
-            final var artifacts = new ArrayList<PDDocument>();
-            
-            try {
+            PdfRendererBuilder builder;
 
-                PdfRendererBuilder builder;
+            final var content = new ByteArrayOutputStream();
+            builder = new PdfRendererBuilder();
+            builder.withHtmlContent(this.generate(multiplex.content, Type.DATA, meta), base.toString());
+            builder.toStream(content);
+            builder.run();
 
-                final var content = new ByteArrayOutputStream();
-                builder = new PdfRendererBuilder();
-                builder.withHtmlContent(this.generate(multiplex.content, Type.DATA, meta), base.toString());
-                builder.toStream(content);
-                builder.run();
-                artifacts.add(PDDocument.load(content.toByteArray()));
-                
+            try (final var document = PDDocument.load(content.toByteArray())) {
+
                 // without header and footer no overlay and merging is necessary
                 // the byte array from the document can be returned
                 if ((Objects.isNull(multiplex.header)
@@ -773,13 +771,13 @@ public class Service {
                         && (Objects.isNull(multiplex.footer)
                                 || multiplex.footer.trim().isEmpty()))
                     return content.toByteArray();
-                    
-                try (final var document = Template.merge(artifacts)) {
-                    final var splitter = new Splitter();
-                    final var pages = splitter.split(document);
-                    meta.data.put("pages", String.valueOf(pages.size()));
-                    
-                    for (var page : new ArrayList<>(pages)) {
+
+                meta.data.put("pages", String.valueOf(document.getNumberOfPages()));
+
+                try (final var pages = new CloseableList<>(new Splitter().split(document));
+                        final var closeables = new CloseableList<>()) {
+
+                    for (var page : pages) {
                         var offset = pages.indexOf(page);
                         meta.data.put("page", String.valueOf(offset +1));
                         
@@ -796,8 +794,8 @@ public class Service {
                                 overlay.setAllPagesOverlayPDF(PDDocument.load(header.toByteArray()));
                                 ByteArrayOutputStream output = new ByteArrayOutputStream();
                                 overlay.overlay(new HashMap<>()).save(output);
-                                page.close();
                                 page = PDDocument.load(output.toByteArray());
+                                closeables.add(page);
                             }
                         }
 
@@ -807,35 +805,27 @@ public class Service {
                             builder = new PdfRendererBuilder();
                             builder.withHtmlContent(this.generate(multiplex.footer, Type.FOOTER, meta), base.toString());
                             builder.toStream(footer);
-                            builder.run();  
-                            
+                            builder.run();
+
                             try (final var overlay = new Overlay()) {
                                 overlay.setInputPDF(page);
                                 overlay.setAllPagesOverlayPDF(PDDocument.load(footer.toByteArray()));
                                 ByteArrayOutputStream output = new ByteArrayOutputStream();
                                 overlay.overlay(new HashMap<>()).save(output);
-                                page.close();
                                 page = PDDocument.load(output.toByteArray());
+                                closeables.add(page);
                             }
                         }
-                        
-                        pages.add(offset +1, page);
-                        pages.remove(offset).close();
-                    }
-                    
-                    try (final var release = Template.merge(pages)) {
-                        final var output = new ByteArrayOutputStream();
-                        release.save(output);
-                        return output.toByteArray();
-                    } finally {
-                        for (final var page : pages)
-                            page.close();
-                    }
-                }
 
-            } finally {
-                for (final var artifact : artifacts)
-                    artifact.close();
+                        final var pageTree = document.getPages();
+                        pageTree.insertAfter(page.getPage(0), pageTree.get(offset));
+                        pageTree.remove(offset);
+                    }
+
+                    final var output = new ByteArrayOutputStream();
+                    document.save(output);
+                    return output.toByteArray();
+                }
             }
         }
          
@@ -1072,6 +1062,24 @@ public class Service {
                 }
                 
                 return multiplex;
+            }
+        }
+
+        private static class CloseableList<C extends Closeable> extends ArrayList<C> implements Closeable {
+
+            private CloseableList() {
+                super();
+            }
+
+            private CloseableList(List<C> entries) {
+                super(entries);
+            }
+
+            @Override
+            public void close()
+                    throws IOException {
+                for (final C closeable : this)
+                    closeable.close();
             }
         }
         
