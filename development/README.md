@@ -30,8 +30,6 @@
 
 ### Maven Repository
 - __Based on the previous step__
-- Call `ant -f ./development/build.xml release`  
-  Ignore the changes, after that rollback can be used  
-  Call `ant -f ./development/build.xml deploy`  
+- Call `ant -f ./development/build.xml publish`  
   see also https://oss.sonatype.org/#nexus-search;quick~com.seanox  
   see also https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service

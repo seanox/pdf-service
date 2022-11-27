@@ -11,6 +11,11 @@
     <echo>  release    Builds the complete release                       </echo>
     <echo>             Combined changes and tools                        </echo>
     <echo>             Synchronizes the version in README.md             </echo>
+    <echo>                                                               </echo>
+    <echo>  publish    Builds the complete release                       </echo>
+    <echo>             Combined changes and tools                        </echo>
+    <echo>             Synchronizes the version in README.md             </echo>
+    <echo>             Publish to the Maven Repository                   </echo>
   </target>
 
   <property name="workspace" value="${basedir}"/>
@@ -146,7 +151,7 @@
     <release-info-reset/>
   </target>
 
-  <target name="deploy" depends="release">
+  <target name="publish" depends="release">
     <release-info-locate/>
     <release-info-insert/>
     <exec executable="cmd">
