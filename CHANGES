@@ -1,6 +1,7 @@
 4.3.0 20221127
 BF: Build: Optimization/correction of the release info process
 BF: Build: Added test before release
+BF: Maven: Update of dependencies
 CR: Template: Added methods to customize document and/or pages
     - for signatures, encryption, annotations, ...
     - to manipulate, filter, sort, remove, add, ...
