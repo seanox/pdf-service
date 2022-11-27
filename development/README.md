@@ -25,8 +25,7 @@
   this also includes updating the version in `pom.xml`  
 - Final commit of the release  
   Release x.x.x
-- Create tag with the short form of the release notes  
-  first line: Version x.x.x xxxxxxxx
+- Create a tag without comments  
 
 ### Maven Repository
 - __Based on the previous step__
