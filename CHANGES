@@ -2,6 +2,7 @@
 BF: Build: Optimization/correction of the release info process
 BF: Build: Added test before release
 BF: Maven: Update of dependencies
+    CVE-2022-42004, CVE-2022-42003
 CR: Template: Added methods to customize document and/or pages
     - for signatures, encryption, annotations, ...
     - to manipulate, filter, sort, remove, add, ...
