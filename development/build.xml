@@ -115,7 +115,7 @@
     <release-info-insert/>
 
     <delete dir="${workspace.target}" includes="*jar-with-dependencies.jar"/>
-    <exec executable="cmd">
+    <exec executable="cmd" failonerror="true">
       <arg value="/c"/>
       <arg value="mvn clean compile assembly:single"/>
     </exec>
@@ -130,6 +130,12 @@
   </target>
 
   <target name="release" depends="changes,tools">
+
+    <exec executable="cmd" failonerror="true">
+      <arg value="/c"/>
+      <arg value="mvn clean test"/>
+    </exec>
+
     <release-info-locate/>
     <release-info-insert/>
 
@@ -154,7 +160,7 @@
   <target name="publish" depends="release">
     <release-info-locate/>
     <release-info-insert/>
-    <exec executable="cmd">
+    <exec executable="cmd" failonerror="true">
       <arg value="/c"/>
       <arg value="mvn clean deploy"/>
     </exec>

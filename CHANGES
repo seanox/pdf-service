@@ -1,7 +1,9 @@
 4.3.0 2022xxxx
 BF: Build: Optimization/correction of the release info process
+BF: Build: Added test before release
 CR: Template: Added methods to customize document and/or pages
-    To add signatures, encryption, comments, remove blank pages, add new pages, ...
+    - for signatures, encryption, annotations, ...
+    - to manipulate, filter, sort, remove, add, ...
 
 4.2.0 20220811
 BF: Review: Optimizations
