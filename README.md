@@ -98,6 +98,7 @@ https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
 ## 4.3.0 20221127  
 BF: Build: Optimization/correction of the release info process  
 BF: Build: Added test before release  
+BF: Maven: Update of dependencies  
 CR: Template: Added methods to customize document and/or pages  
 
 [Read more](https://raw.githubusercontent.com/seanox/pdf-service/master/CHANGES)
