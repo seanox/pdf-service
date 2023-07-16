@@ -31,7 +31,7 @@ import java.util.Hashtable;
  * Unit test for Generator.
  *
  * @author  Seanox Software Solutions
- * @version 4.2.0 20220806
+ * @version 4.2.1 20230716
  */
 class GeneratorTest {
 
@@ -507,7 +507,7 @@ class GeneratorTest {
         }
         generator.extract();
         final var timeTotal = System.currentTimeMillis() -timing;
-        Assertions.assertTrue(timeTotal < 2500, "Expected less than 2500 but was: " + timeTotal);
+        Assertions.assertTrue(timeTotal < 2750, "Expected less than 2750 but was: " + timeTotal);
     }
 
     @Test

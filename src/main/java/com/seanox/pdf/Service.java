@@ -25,6 +25,7 @@ import com.seanox.pdf.Service.Template.Resources;
 import com.seanox.pdf.Service.Template.TemplateException;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.multipdf.Overlay;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
@@ -68,6 +69,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 /**
@@ -198,7 +200,7 @@ import java.util.stream.Stream;
  * there is also one for static texts.
  *
  * @author  Seanox Software Solutions
- * @version 4.3.0 20221126
+ * @version 4.4.0 20230716
  */
 public class Service {
     
@@ -759,6 +761,28 @@ public class Service {
             return page;
         }
 
+        private static String normalizeHtmlEntities(String text) {
+            if (Objects.isNull(text))
+                return "";
+
+            text = text.replace("&amp;", "&#38;");
+            text = text.replace("&lt;", "&#60;");
+            text = text.replace("&gt;", "&#62;");
+
+            final var buffer = new StringBuffer();
+            final var pattern = Pattern.compile("&\\w+;");
+            final var matcher = pattern.matcher(text);
+            while (matcher.find()) {
+                var entity = matcher.group(0);
+                entity = StringEscapeUtils.unescapeHtml4(entity);
+                if (entity.charAt(0) > 0x7F)
+                    entity = "&#" + ((int)entity.charAt(0)) + ";";
+                matcher.appendReplacement(buffer, entity);
+            }
+            matcher.appendTail(buffer);
+            return buffer.toString();
+        }
+
         /**
          * Creates the PDF based on the data records as meta-object.
          * @param  meta data records as map array
@@ -795,7 +819,7 @@ public class Service {
 
             final var content = new ByteArrayOutputStream();
             builder = new PdfRendererBuilder();
-            builder.withHtmlContent(this.generate(multiplex.content, Type.DATA, meta), base.toString());
+            builder.withHtmlContent(Template.normalizeHtmlEntities(this.generate(multiplex.content, Type.DATA, meta)), base.toString());
             builder.toStream(content);
             builder.run();
 
