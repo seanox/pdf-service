@@ -1,4 +1,4 @@
-4.4.0 2023xxxx
+4.4.0 20230716
 BF: Maven: Update of dependencies
 CR: Service: Optimization of the use of HTML-Entities
     e.g. &nbsp; ... previously caused XML errors in the renderer
