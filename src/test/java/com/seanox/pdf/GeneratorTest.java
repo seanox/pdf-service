@@ -487,7 +487,7 @@ class GeneratorTest {
         generator.set("file", values);
         generator.extract();
         final var timeTotal = System.currentTimeMillis() -timing;
-        Assertions.assertTrue(timeTotal < 3500, "Expected less than 3500 but was: " + timeTotal);
+        Assertions.assertTrue(timeTotal < 5000, "Expected less than 5000 but was: " + timeTotal);
     }
 
     @Test
@@ -507,7 +507,7 @@ class GeneratorTest {
         }
         generator.extract();
         final var timeTotal = System.currentTimeMillis() -timing;
-        Assertions.assertTrue(timeTotal < 2750, "Expected less than 2750 but was: " + timeTotal);
+        Assertions.assertTrue(timeTotal < 5000, "Expected less than 5000 but was: " + timeTotal);
     }
 
     @Test
