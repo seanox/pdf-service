@@ -58,7 +58,7 @@ Folgenden Seanox Software Solutions oder kurz Seanox genannt.
  
 Diese Software unterliegt der Version 2 der Apache License.
 
-Copyright (C) 2022 Seanox Software Solutions
+Copyright (C) 2023 Seanox Software Solutions
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 this file except in compliance with the License. You may obtain a copy of the
@@ -77,17 +77,17 @@ Java 11 or higher
 
 
 # Downloads
-https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service/4.3.0  
+https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service/4.4.0  
 https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
 ```xml
 <dependency>
     <groupId>com.seanox</groupId>
     <artifactId>seanox-pdf-service</artifactId>
-    <version>4.3.0</version>
+    <version>4.4.0</version>
 </dependency>
 ```
 
-[Seanox PDF-Tools 4.3.0](https://github.com/seanox/pdf-service/releases/download/4.3.0/seanox-pdf-tools-4.3.0.jar)
+[Seanox PDF-Tools 4.4.0](https://github.com/seanox/pdf-service/releases/download/4.4.0/seanox-pdf-tools-4.4.0.jar)
 
 
 # Manuals
@@ -95,11 +95,9 @@ https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
 
 
 # Changes
-## 4.3.0 20221127  
-BF: Build: Optimization/correction of the release info process  
-BF: Build: Added test before release  
+## 4.4.0 20230716  
 BF: Maven: Update of dependencies  
-CR: Template: Added methods to customize document and/or pages  
+CR: Service: Optimization of the use of HTML-Entities  
 
 [Read more](https://raw.githubusercontent.com/seanox/pdf-service/master/CHANGES)
 
