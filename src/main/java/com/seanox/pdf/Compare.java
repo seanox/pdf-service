@@ -20,7 +20,7 @@
  */
 package com.seanox.pdf;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
 
@@ -161,14 +161,14 @@ public class Compare {
             throws IOException {
 
         final var masterImages = new ArrayList<BufferedImage>();
-        try (final var document = PDDocument.load(master)) {
+        try (final var document = Loader.loadPDF(master)) {
             final var pdfRenderer = new PDFRenderer(document);
             for (var page = 0; page < document.getNumberOfPages(); ++page)
                 masterImages.add(pdfRenderer.renderImageWithDPI(page, 300, ImageType.RGB));
         }
 
         final var compareImages = new ArrayList<BufferedImage>();
-        try (final var document = PDDocument.load(compare)) {
+        try (final var document = Loader.loadPDF(compare)) {
             final var pdfRenderer = new PDFRenderer(document);
             for (var page = 0; page < document.getNumberOfPages(); ++page)
                 compareImages.add(pdfRenderer.renderImageWithDPI(page, 300, ImageType.RGB));

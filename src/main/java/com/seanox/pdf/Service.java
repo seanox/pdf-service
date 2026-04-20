@@ -26,7 +26,9 @@ import com.seanox.pdf.Service.Template.TemplateException;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
-import org.apache.pdfbox.io.MemoryUsageSetting;
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.io.IOUtils;
+import org.apache.pdfbox.io.RandomAccessReadBuffer;
 import org.apache.pdfbox.multipdf.Overlay;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.multipdf.Splitter;
@@ -662,12 +664,12 @@ public class Service {
             for (final var document : documents) {
                 final var output = new ByteArrayOutputStream();
                 document.save(output);
-                merge.addSource(new ByteArrayInputStream(output.toByteArray()));
+                merge.addSource(new RandomAccessReadBuffer(output.toByteArray()));
             }
             final var output = new ByteArrayOutputStream();
             merge.setDestinationStream(output);
-            merge.mergeDocuments(MemoryUsageSetting.setupMainMemoryOnly());
-            return PDDocument.load(output.toByteArray());
+            merge.mergeDocuments(IOUtils.createMemoryOnlyStreamCache());
+            return Loader.loadPDF(output.toByteArray());
         }
         
         /**
@@ -823,7 +825,7 @@ public class Service {
             builder.toStream(content);
             builder.run();
 
-            try (final var document = PDDocument.load(content.toByteArray())) {
+            try (final var document = Loader.loadPDF(content.toByteArray())) {
 
                 final var blank = Template.createBlankPage(document);
                 this.customize(document);
@@ -862,10 +864,10 @@ public class Service {
                             
                             try (final var overlay = new Overlay()) {
                                 overlay.setInputPDF(page);
-                                overlay.setAllPagesOverlayPDF(PDDocument.load(header.toByteArray()));
+                                overlay.setAllPagesOverlayPDF(Loader.loadPDF(header.toByteArray()));
                                 ByteArrayOutputStream output = new ByteArrayOutputStream();
                                 overlay.overlay(new HashMap<>()).save(output);
-                                page = PDDocument.load(output.toByteArray());
+                                page = Loader.loadPDF(output.toByteArray());
                                 closeables.add(page);
                             }
                         }
@@ -880,10 +882,10 @@ public class Service {
 
                             try (final var overlay = new Overlay()) {
                                 overlay.setInputPDF(page);
-                                overlay.setAllPagesOverlayPDF(PDDocument.load(footer.toByteArray()));
+                                overlay.setAllPagesOverlayPDF(Loader.loadPDF(footer.toByteArray()));
                                 ByteArrayOutputStream output = new ByteArrayOutputStream();
                                 overlay.overlay(new HashMap<>()).save(output);
-                                page = PDDocument.load(output.toByteArray());
+                                page = Loader.loadPDF(output.toByteArray());
                                 closeables.add(page);
                             }
                         }
