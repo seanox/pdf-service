@@ -141,7 +141,14 @@ class UnitTest {
             Arrays.stream(deltaFiles).forEach(System.out::println);
         else System.out.println("none");
         Assertions.assertNull(deltaFiles, previewFile.toString());
-        Assertions.assertEquals(masterFile.length(), compareFile.length(), masterFile.toString());
+
+        // PDFs are binary files, so their file size is not stable:
+        // - CreationDate, ModDate
+        // - XRef-Table
+        // - Object stream padding / compression rounding
+        // - Font-Subsetting
+        if (Math.abs(masterFile.length() - compareFile.length()) > 2)
+            Assertions.assertEquals(masterFile.length(), compareFile.length(), masterFile.toString());
     }
 
     private static boolean compareImages(final File master, final File compare)
