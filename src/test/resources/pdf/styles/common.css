@@ -23,8 +23,7 @@ img {
 table {
   border-collapse: collapse;
   border-spacing: 0mm; 
-  table-layout: fixed; 
-  width: 100%; 
+  width: 100%;
 }
 table td {
   text-align: left;
