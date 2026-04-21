@@ -303,10 +303,10 @@ rendered separately and merged into one PDF file via page overlay.
 ```
 
 Open HTML to PDF and the used frameworks come with some custom CSS extensions,
-which are described on the homepage:
-    https://github.com/danfickle/openhtmltopdf/wiki/Page-features.  
-The specials for headers, footers and page numbers can be used or ignored
-because they have been implemented alternatively in the PDF service.
+which are described on the [page features](
+    https://github.com/danfickle/openhtmltopdf/wiki/Page-features). The specials
+for headers, footers and page numbers can be used or ignored because they have
+been implemented alternatively in the PDF service.
 
 ```html
 <html>
