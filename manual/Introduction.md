@@ -4,7 +4,7 @@
 ## What is Seanox PDF-Service?
 
 Seanox PDF-Service for generating/rendering PDFs based on
-[Open HTML to PDF](https://github.com/danfickle/openhtmltopdf).
+[Open HTML to PDF](https://github.com/openhtmltopdf/openhtmltopdf).
 
 The static service contains an abstraction of templates, an API for templates,
 renderer and markup generators, a built-in markup generator, and a preview
