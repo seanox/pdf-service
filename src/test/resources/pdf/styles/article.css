@@ -126,13 +126,17 @@ p {
 
 
 #footer {
-  display: table-cell;
+  display: table;
   height: 297mm;
-  vertical-align: bottom;
   width: 100%;
   font-size: 8.5pt;
-} 
+}
 #footer section {
+  display: table-cell;
+  vertical-align: bottom;
+}
+#footer section p {
+  padding-top: 1em;
   border-top: 1px solid #D9D9D9;
 }
 #footer table {
