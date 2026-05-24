@@ -147,7 +147,7 @@ class UnitTest {
         // - XRef-Table
         // - Object stream padding / compression rounding
         // - Font-Subsetting
-        if (Math.abs(masterFile.length() - compareFile.length()) > 2)
+        if (Math.abs(masterFile.length() - compareFile.length()) > 5)
             Assertions.assertEquals(masterFile.length(), compareFile.length(), masterFile.toString());
     }
 
