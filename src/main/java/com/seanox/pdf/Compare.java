@@ -82,10 +82,9 @@ public class Compare {
         final var files = Compare.compare(new File(options[0]), new File(options[1]));
         if (files != null
                 && files.length > 0) {
-            System.out.println("Following differences were found:");
-            System.out.println("----");
+            System.out.println("Differences were found in:");
             for (final var file : files)
-                System.out.println(file.getName());
+                System.out.printf("- %s%n", file.getName());
         } else System.out.println("No differences were found.");
     }
     
