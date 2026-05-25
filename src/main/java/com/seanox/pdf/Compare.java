@@ -51,7 +51,9 @@ import java.util.Objects;
  * @version 4.2.0 20220806
  */
 public class Compare {
-    
+
+    private static final int COLOR_VISIBILITY_THRESHOLD = 150;
+
     /**
      * Main entry for the console application.
      * @param  options optional list with paths and filters/globs of templates
@@ -87,64 +89,44 @@ public class Compare {
                 System.out.printf("- %s%n", file.getName());
         } else System.out.println("No differences were found.");
     }
-    
-    /**
-     * Calculates the increase of a color tone.
-     * The increase can be positive or negative.
-     * @param  color
-     * @param  factor
-     * @return the increased color tone
-     */
-    private static int increaseColor(final int color, final int factor) {
-        return Math.min(Math.max(color -factor, 0), 255);
+
+    private static int colorizeGrayPixel(final int grayColor) {
+        final var color = new Color(grayColor, true);
+        final var gray = color.getRed() < COLOR_VISIBILITY_THRESHOLD
+                ? COLOR_VISIBILITY_THRESHOLD +(COLOR_VISIBILITY_THRESHOLD -color.getRed())
+                : color.getRed();
+        return Math.min(255, gray);
     }
 
     /**
-     * Calculates the increase of a delta color tone.
-     * Color tones less than 127 are increased as negation.
-     * @param  color
-     * @return the increased delta color tone
-     */    
-    private static int increaseColorDelta(final int color) {
-        return color < 127 ? 255 -color : color;
-    }
-    
-    /**
-     * Calculates the increase of a color tone.
-     * The increase can be positive or negative.
-     * @param  rgba
-     * @param  tone
-     * @param  factor
-     * @return the calculated RGBA value
+     * Colorizes a grayscale pixel to highlight it for visualizing differences
+     * in image comparison.
+     *
+     * <p>The input value represents a grayscale pixel (R=G=B). Its luminance is
+     * extracted and adjusted to ensure that the applied highlight color remains
+     * clearly visible. If the grayscale value falls below the defined
+     * visibility threshold ({@code COLOR_VISIBILITY_THRESHOLD}), it is
+     * symmetrically raised above this threshold to maintain sufficient contrast
+     * against the background.</p>
+     *
+     * <p>Only the RGB channel corresponding to the selected highlight tone
+     * (RED, GREEN, or BLUE) receives the adjusted grayscale value. All other
+     * channels are set to {@code 0}, producing a clean, high‑contrast highlight
+     * color while preserving the original pixel's alpha channel.</p>
+     *
+     * @param grayColor the grayscale pixel value (ARGB), where R=G=B
+     * @param tone      the highlight color to apply (RED, GREEN, or BLUE)
+     * @return the ARGB value of the colorized highlight pixel
      */
-    private static int increaseColorTone(final int rgba, final Color tone, final int factor) {
-
-        var color = new Color(rgba, true);
-        final var r = color.getRed();
-        final var g = color.getGreen();
-        final var b = color.getBlue();
-        final var a = color.getAlpha();
-        if (Color.RED.equals(tone))
-            color = new Color(
-                    Compare.increaseColorDelta(r),
-                    Compare.increaseColor(g, factor),
-                    Compare.increaseColor(b, factor),
-                    a);
-        if (Color.GREEN.equals(tone))
-            color = new Color(
-                    Compare.increaseColor(r, factor),
-                    Compare.increaseColorDelta(g),
-                    Compare.increaseColor(b, factor),
-                    a);
-        if (Color.BLUE.equals(tone))
-            color = new Color(
-                    Compare.increaseColor(r, factor),
-                    Compare.increaseColor(g, factor),
-                    Compare.increaseColorDelta(b),
-                    a);
-        return color.getRGB();
+    private static int colorizeGrayPixel(final int grayColor, final Color tone) {
+        final var gray = Compare.colorizeGrayPixel(grayColor);
+        return new Color(
+                Color.RED.equals(tone) ? gray : 0,
+                Color.GREEN.equals(tone) ? gray : 0,
+                Color.BLUE.equals(tone) ? gray : 0,
+                new Color(grayColor, true).getAlpha()).getRGB();
     }
-    
+
     /**
      * Pixel-based comparison of two PDF files.
      * Returned is a file list with delta images, if differences were found.
@@ -249,12 +231,12 @@ public class Compare {
                     // draw the grayscale pixel
                     control = false;
                     final var color = new Color(masterGray.getRGB(x, y));
-                    delta.setRGB(x, y, Compare.increaseColorTone(color.getRGB(), Color.GREEN, COLOR_TONE_FACTOR));                    
+                    delta.setRGB(x, y, Compare.colorizeGrayPixel(color.getRGB(), Color.GREEN));
                 } else if (pixelM == null) {
                     // case pixel differences with height or width mismatch
                     // draw the grayscale pixel
                     final var color = new Color(compareGray.getRGB(x, y));
-                    delta.setRGB(x, y, Compare.increaseColorTone(color.getRGB(), Color.BLUE, COLOR_TONE_FACTOR));                    
+                    delta.setRGB(x, y, Compare.colorizeGrayPixel(color.getRGB(), Color.BLUE));
                 } else if (pixelM.equals(pixelC)) {
                     // case pixel matches without height or width mismatch
                     // the pixels already exist grayscale
@@ -269,7 +251,7 @@ public class Compare {
                             (colorM.getGreen() +colorC.getGreen()) /2,
                             (colorM.getBlue() +colorC.getBlue()) /2,
                             (colorM.getAlpha() +colorC.getAlpha()) /2);
-                    delta.setRGB(x, y, Compare.increaseColorTone(colorD.getRGB(), Color.RED, COLOR_TONE_FACTOR));
+                    delta.setRGB(x, y, Compare.colorizeGrayPixel(colorD.getRGB(), Color.RED));
                 }
             }
         }
