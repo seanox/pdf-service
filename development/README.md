@@ -1,11 +1,9 @@
 # Development
 
-
 ## Contents Overview
 * [Publish a release](#publish-a-release)
    * [GitHub](#github)
    * [Maven Repository](#maven-repository)
-
 
 ## Publish a release
 
