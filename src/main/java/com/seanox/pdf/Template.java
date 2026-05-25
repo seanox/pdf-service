@@ -620,7 +620,7 @@ public abstract class Template extends Service.Template {
     @Override
     protected String generate(String markup, Type type, Meta meta) {
         
-        // Comparable behaviour to the generator:
+        // Comparable behavior to the generator:
         // - Placeholders are case-insensitive
         // - Placeholders are limited to the following characters: a-z A-Z 0-9 _-
         // - Placeholders must begin with a letter
