@@ -1,8 +1,10 @@
-4.5.0 2026xxxx
+4.5.0 20260527
 BF: Maven: Update of dependencies
 CR: Switch to io.github.openhtmltopdf 1.1.37
 CR: Switch to Apache PDF-Box 3.x
 CR: Omission of test reports (there are better CI/CD solutions)
+CR: Compare: Optimization/correction
+    Improvements in the highlighting of errors.
 
 4.4.0 20230716
 BF: Maven: Update of dependencies
