@@ -12,7 +12,7 @@
 </p>
 
 # Description
-Seanox PDF-Service for generating/rendering PDFs based on
+Seanox PDF-Service for generating/rendering and comparing PDFs based on
 [Open HTML to PDF](https://github.com/openhtmltopdf/openhtmltopdf).
 
 The static service contains an abstraction of templates, an API for templates,
@@ -45,7 +45,7 @@ the language can be used.
 - Creation of markup as preview e.g. for the frontend
 - API for templates and other renderer and markup generators  
 Abstract templates for individual renderer and generators.
-- PDF and image comparison for test automation (e.g. JUnit)  
+- PDF and image comparison for test automation (e.g. JUnit and CI/CD)  
 Pixel- and color-based with difference image generation.
 - PDF Tools as standalone Java applications  
 Includes Compare, Designer, Preview as command line applications designing and
@@ -58,7 +58,7 @@ Folgenden Seanox Software Solutions oder kurz Seanox genannt.
  
 Diese Software unterliegt der Version 2 der Apache License.
 
-Copyright (C) 2023 Seanox Software Solutions
+Copyright (C) 2026 Seanox Software Solutions
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 this file except in compliance with the License. You may obtain a copy of the
