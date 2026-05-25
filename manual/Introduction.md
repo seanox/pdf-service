@@ -675,6 +675,57 @@ Analogous to the [exists placeholder](#exists-placeholder) from the group of
 [runtime placeholders](#runtime-placeholder), there is also one for static
 texts.  
 
+## External and custom Template Engines
+
+Instead of the built‑in template engine included in the Seanox PDF‑Service, you
+can integrate any established template engine such as __Thymeleaf__,
+__Freemarker__, __Mustache__, __Pebble__, __JTE__, and others.
+
+The Seanox PDF‑Service fully supports this through its __template abstraction__.
+A template implementation can override the HTML generation step and delegate it
+to any external engine. All other features -- resource loading, `#include`
+resolution, header/content/footer multiplexing, locale handling, and PDF
+rendering -- remain unchanged.
+
+### Implementation
+
+```java
+import com.seanox.pdf.Template;
+import com.seanox.pdf.Service.Meta;
+
+@Resources(base="/pdf")
+public class CustomTemplateEngineTemplate extends Template {
+
+    @Override
+    protected String generate(final String markup, final Type type, final Meta meta) {
+
+        final Map<String, Object> model = new HashMap<>();
+        model.putAll(meta.getData());
+        model.putAll(meta.getStatics());
+        model.put("locale", meta.getLocale());
+
+        // Delegate to the custom template engine
+        return myEngine.render(markup, model);
+    }
+}
+```
+
+When using an external engine:
+
+- Includes remain supported  
+  All `#include` directives are resolved before your engine is invoked.
+- Meta‑data is passed unchanged  
+  Structured data (`Map<String,Object>`) and static texts (`Map<String,String>`)
+  can be used directly as the model for your engine.
+- Escaping is engine‑dependent  
+  If your engine performs HTML escaping, you may override additional methods to
+  adjust escaping behavior.
+- Header, content, and footer are rendered separately  
+  The Type parameter (`HEADER`, `DATA`, `FOOTER`) allows different handling per
+  fragment if needed.
+- PDF generation is unaffected  
+  The output of your engine is passed directly to OpenHTMLToPDF.
+
 ## Test
 
 In addition to PDF creation, PDF Service is also focused on the design process
