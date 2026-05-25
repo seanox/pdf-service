@@ -706,7 +706,7 @@ public class CustomTemplateEngineTemplate extends Template {
         model.put("locale", meta.getLocale());
 
         // Delegate to the custom template engine
-        return myEngine.render(markup, model);
+        return customTemplateEngine.render(markup, model);
     }
 }
 ```
