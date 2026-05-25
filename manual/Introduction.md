@@ -62,7 +62,7 @@ designing and testing outside and independent of projects
     * [Runtime Placeholder](#runtime-placeholder)
     * [Static Placeholder](#static-placeholder)
     * [Static Exists Placeholder](#static-exists-placeholder)
-* [External and Custom Template Engines](#external-and-custom-template-engines)
+* [Custom Template Engines](#custom-template-engines)
 * [Test](#test)
 * [Mock-Up](#mock-up)
 * [Template API](#template-api)
@@ -676,7 +676,7 @@ Analogous to the [exists placeholder](#exists-placeholder) from the group of
 [runtime placeholders](#runtime-placeholder), there is also one for static
 texts.  
 
-## External and custom Template Engines
+## Custom Template Engines
 
 Instead of the built‑in template engine included in the Seanox PDF‑Service, you
 can integrate any established template engine such as __Thymeleaf__,
