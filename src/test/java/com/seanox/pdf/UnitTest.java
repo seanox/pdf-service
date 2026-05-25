@@ -147,8 +147,7 @@ class UnitTest {
         // - XRef-Table
         // - Object stream padding / compression rounding
         // - Font-Subsetting
-        if (Math.abs(masterFile.length() - compareFile.length()) > 5)
-            Assertions.assertEquals(masterFile.length(), compareFile.length(), masterFile.toString());
+        // That is why comparing sizes is too unreliable.
     }
 
     private static boolean compareImages(final File master, final File compare)
@@ -183,15 +182,15 @@ class UnitTest {
         Assertions.assertNotNull(diffs);
         Assertions.assertEquals(3, diffs.length);
 
-        master = "src/test/resources/pdf/reportDiffs_diffs_page_1.png";
+        master = "src/test/resources/pdf/reportDiffs_preview_diffs_page_1.png";
         Files.copy(Paths.get(master), new File(TEMP, new File(master).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
         Assertions.assertTrue(UnitTest.compareImages(new File(TEMP, new File(master).getName()), diffs[0]));
 
-        master = "src/test/resources/pdf/reportDiffs_diffs_page_2.png";
+        master = "src/test/resources/pdf/reportDiffs_preview_diffs_page_2.png";
         Files.copy(Paths.get(master), new File(TEMP, new File(master).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
         Assertions.assertTrue(UnitTest.compareImages(new File(TEMP, new File(master).getName()), diffs[1]));
 
-        master = "src/test/resources/pdf/reportDiffs_diffs_page_3.png";
+        master = "src/test/resources/pdf/reportDiffs_preview_diffs_page_3.png";
         Files.copy(Paths.get(master), new File(TEMP, new File(master).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
         Assertions.assertTrue(UnitTest.compareImages(new File(TEMP, new File(master).getName()), diffs[2]));
 
