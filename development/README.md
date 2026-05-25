@@ -13,6 +13,7 @@
 - Check and if necessary update the version and time stamp of all components
   comparison with the tag from the last release.
 - Maven: check and update of dependencies
+- __Use Java 11__
 - Final test  
   Call `mvn clean test`
 - __Provided all tests are successful!__
