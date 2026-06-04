@@ -1,6 +1,6 @@
 /**
  * PDF Service
- * Copyright (C) 2022 Seanox Software Solutions
+ * Copyright (C) 2026 Seanox Software Solutions
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -154,9 +154,6 @@ import java.util.stream.Collectors;
  * exclusive structures, which are partially filled and prepared. Both methods
  * produce final results that correspond to the call of {@link #set(Map)} in
  * combination with {@link #extract()}, but focus on only one structure.
- *
- * @author  Seanox Software Solutions
- * @version 4.1.0 20220811
  */
 class Generator {
 

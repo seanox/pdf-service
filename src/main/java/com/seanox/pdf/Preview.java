@@ -1,6 +1,6 @@
 /**
  * PDF Service
- * Copyright (C) 2022 Seanox Software Solutions
+ * Copyright (C) 2026 Seanox Software Solutions
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -37,9 +37,6 @@ import java.util.logging.Level;
  * <br>
  * The preview is based on the mock-up data in the properties files for the
  * templates.
- *
- * @author  Seanox Software Solutions
- * @version 4.2.0 20220806
  */
 public class Preview {
     
