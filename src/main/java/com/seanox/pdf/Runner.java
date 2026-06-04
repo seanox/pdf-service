@@ -63,7 +63,7 @@ public class Runner {
             throws Exception {
         
         System.out.println("Seanox PDF Design Deamon [Version 0.0.0 00000000]");
-        System.out.println("Copyright (C) 2026 Seanox Software Solutions");
+        System.out.println("Copyright (C) 0000 Seanox Software Solutions");
         System.out.println();
 
         if (Objects.isNull(options)
