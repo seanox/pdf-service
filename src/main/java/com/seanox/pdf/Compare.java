@@ -1,6 +1,6 @@
 /**
  * PDF Service
- * Copyright (C) 2022 Seanox Software Solutions
+ * Copyright (C) 2026 Seanox Software Solutions
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -42,13 +42,20 @@ import java.util.Objects;
  * which compare causes, are marked in red. If there are discrepancies in
  * resolution or image mass, overlaps occur, which are displayed in blue (only
  * in compare) and green (only in master).
- *
- * @author  Seanox Software Solutions
- * @version 4.2.0 20220806
  */
 public class Compare {
 
     private static final int COLOR_VISIBILITY_THRESHOLD = 150;
+
+    private static final int COLOR_MODEL = BufferedImage.TYPE_INT_ARGB; 
+    
+    private static final int GRAY_MODEL = BufferedImage.TYPE_BYTE_GRAY; 
+    
+    private static final int DELTA_HIGHLIGHT_RADIUS = 25;
+
+    private static final int DELTA_HIGHLIGHT_ALPHA = 85;
+
+    private static final Color DELTA_HIGHLIGHT_COLOR = Color.YELLOW;
 
     /**
      * Main entry for the console application.
@@ -122,7 +129,7 @@ public class Compare {
                 Color.BLUE.equals(tone) ? gray : 0,
                 new Color(grayColor, true).getAlpha()).getRGB();
     }
-
+    
     /**
      * Pixel-based comparison of two PDF files.
      * Returned is a file list with delta images, if differences were found.
@@ -152,9 +159,9 @@ public class Compare {
         }
         
         while (masterImages.size() < compareImages.size())
-            masterImages.add(new BufferedImage(1, 1, BufferedImage.TYPE_4BYTE_ABGR));
+            masterImages.add(new BufferedImage(1, 1, Compare.COLOR_MODEL));
         while (masterImages.size() > compareImages.size())
-            compareImages.add(new BufferedImage(1, 1, BufferedImage.TYPE_4BYTE_ABGR));
+            compareImages.add(new BufferedImage(1, 1, Compare.COLOR_MODEL));
 
         final var deltaTimestamp = String.format("%tY%<tm%<td%<tH%<tM%<tS", new Date());
         final var deltas = new ArrayList<>();
@@ -173,6 +180,45 @@ public class Compare {
         return deltas.toArray(new File[0]);
     }
     
+    private static void colorizeDeltaMask(final float[][] deltaMask, final int centerX, final int centerY) {
+        
+        for (var offsetY = -Compare.DELTA_HIGHLIGHT_RADIUS; offsetY <= Compare.DELTA_HIGHLIGHT_RADIUS; offsetY++) {
+            for (var offsetX = -Compare.DELTA_HIGHLIGHT_RADIUS; offsetX <= Compare.DELTA_HIGHLIGHT_RADIUS; offsetX++) {
+
+                // square area around the center/delta
+                // pixels must be located within the image
+                final var pixelX = centerX + offsetX;
+                final var pixelY = centerY + offsetY;
+                if (pixelX < 0
+                        || pixelY < 0
+                        || pixelX >= deltaMask.length
+                        || pixelY >= deltaMask[0].length)
+                    continue;
+
+                // euclidean distance from the center
+                // only consider pixels within the radius
+                final var distanceFromCenter = Math.sqrt(offsetX * offsetX + offsetY * offsetY);
+                if (distanceFromCenter > Compare.DELTA_HIGHLIGHT_RADIUS)
+                    continue;
+
+                // linearly decreasing highlight value (glow)
+                final var highlightValue = (float)(1.0 - distanceFromCenter / Compare.DELTA_HIGHLIGHT_RADIUS);
+                
+                // existing values will be increased if the new value is greater
+                deltaMask[pixelX][pixelY] = Math.max(deltaMask[pixelX][pixelY], highlightValue);
+            }
+        }
+    }
+    
+    private static int blendColors(final Color base, final Color overlay) {
+        final var alpha = overlay.getAlpha() / 255f;
+        return new Color(
+                (int)(overlay.getRed() * alpha + base.getRed() * (1 - alpha)),
+                (int)(overlay.getGreen() * alpha + base.getGreen() * (1 - alpha)),
+                (int)(overlay.getBlue() * alpha + base.getBlue() * (1 - alpha)))
+            .getRGB();
+    }    
+    
     /**
      * Pixel-based comparison of two BufferedImage.
      * Returned is a delta image, if differences were found.
@@ -185,16 +231,17 @@ public class Compare {
         final var dimension = new Dimension(
                 Math.max(master.getWidth(), compare.getWidth()),
                 Math.max(master.getHeight(), compare.getHeight()));
-        final var delta = new BufferedImage((int)dimension.getWidth(), (int)dimension.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
-
+        final var delta = new BufferedImage((int)dimension.getWidth(), (int)dimension.getHeight(), Compare.COLOR_MODEL);
+        final var deltaMask = new float[(int)dimension.getWidth()][(int)dimension.getHeight()];
+        
         Graphics graphics;
 
-        final var masterGray = new BufferedImage(master.getWidth(), master.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+        final var masterGray = new BufferedImage(master.getWidth(), master.getHeight(), Compare.GRAY_MODEL);
         graphics = masterGray.getGraphics();
         graphics.drawImage(master, 0, 0, null);
         graphics.dispose();
 
-        final var compareGray = new BufferedImage(compare.getWidth(), compare.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+        final var compareGray = new BufferedImage(compare.getWidth(), compare.getHeight(), Compare.GRAY_MODEL);
         graphics = compareGray.getGraphics();
         graphics.drawImage(compare, 0, 0, null);
         graphics.dispose();
@@ -204,7 +251,7 @@ public class Compare {
         graphics.dispose();
 
         final var COLOR_TONE_FACTOR = 127;
-
+        
         var control = true;
         for (var y = 0; y < dimension.getHeight(); y++) {
             for (var x = 0; x < dimension.getWidth(); x++) {
@@ -228,11 +275,13 @@ public class Compare {
                     control = false;
                     final var color = new Color(masterGray.getRGB(x, y));
                     delta.setRGB(x, y, Compare.colorizeGrayPixel(color.getRGB(), Color.GREEN));
+                    Compare.colorizeDeltaMask(deltaMask, x, y);
                 } else if (pixelM == null) {
                     // case pixel differences with height or width mismatch
                     // draw the grayscale pixel
                     final var color = new Color(compareGray.getRGB(x, y));
                     delta.setRGB(x, y, Compare.colorizeGrayPixel(color.getRGB(), Color.BLUE));
+                    Compare.colorizeDeltaMask(deltaMask, x, y);
                 } else if (pixelM.equals(pixelC)) {
                     // case pixel matches without height or width mismatch
                     // the pixels already exist grayscale
@@ -248,11 +297,28 @@ public class Compare {
                             (colorM.getBlue() +colorC.getBlue()) /2,
                             (colorM.getAlpha() +colorC.getAlpha()) /2);
                     delta.setRGB(x, y, Compare.colorizeGrayPixel(colorD.getRGB(), Color.RED));
+                    Compare.colorizeDeltaMask(deltaMask, x, y);
                 }
             }
         }
         if (control)
             return null;
+        
+        for (var y = 0; y < delta.getHeight(); y++) {
+            for (var x = 0; x < delta.getWidth(); x++) {
+                final var highlight = deltaMask[x][y];
+                if (highlight <= 0)
+                    continue;
+                final var originalColor = new Color(delta.getRGB(x, y), true);
+                final var highlightColor = new Color(
+                        DELTA_HIGHLIGHT_COLOR.getRed(),
+                        DELTA_HIGHLIGHT_COLOR.getGreen(),
+                        DELTA_HIGHLIGHT_COLOR.getBlue(),
+                        (int)(highlight *Compare.DELTA_HIGHLIGHT_ALPHA));
+                delta.setRGB(x, y, blendColors(originalColor, highlightColor));
+            }
+        }        
+        
         return delta;
     }
 }
