@@ -131,13 +131,13 @@
 
   <target name="release" depends="changes,tools">
 
-    <exec executable="cmd" failonerror="true">
-      <arg value="/c"/>
-      <arg value="mvn clean test"/>
-    </exec>
-
     <release-info-locate/>
     <release-info-insert/>
+
+    <exec executable="cmd" failonerror="true">
+      <arg value="/c"/>
+      <arg value="mvn clean verify"/>
+    </exec>
 
     <replaceregexp file="${workspace}/README.md"
         match="(?si)(&lt;artifactId&gt;seanox-${ant.project.name}\b.*?&lt;version&gt;)\d[\d\.]+(&lt;/version&gt;)"
@@ -162,7 +162,7 @@
     <release-info-insert/>
     <exec executable="cmd" failonerror="true">
       <arg value="/c"/>
-      <arg value="mvn clean deploy"/>
+      <arg value="mvn clean verify org.sonatype.central:central-publishing-maven-plugin:publish -DskipTests"/>
     </exec>
     <release-info-reset/>
   </target>
