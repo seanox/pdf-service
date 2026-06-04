@@ -30,7 +30,7 @@ supported.
 # Features
 - Built-in markup generator   
 Very simple syntax, supports placeholders, structures and includes.
-- Built-in preview and designer with mock-up support  
+- Built-in preview and runner with mock-up support  
 Simplifies the design process by allowing previewing without the target 
 application  .
 - Independent header, data and footer areas in one template (without magic)  
@@ -48,7 +48,7 @@ Abstract templates for individual renderer and generators.
 - PDF and image comparison for test automation (e.g. JUnit and CI/CD)  
 Pixel- and color-based with difference image generation.
 - PDF Tools as standalone Java applications  
-Includes Compare, Designer, Preview as command line applications designing and
+Includes Compare, Runner, Preview as command line applications designing and
 testing outside and independent of projects.
 
 # License Terms

@@ -1,6 +1,6 @@
 /**
  * PDF Service
- * Copyright (C) 2022 Seanox Software Solutions
+ * Copyright (C) 2026 Seanox Software Solutions
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -19,12 +19,7 @@ package com.seanox.pdf;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-/** 
- * Output of information on how to use the command line tools.
- *
- * @author  Seanox Software Solutions
- * @version 4.2.0 20220806
- */
+/** Output of information on how to use the command line tools. */
 public class Usage {
 
     private static String catchToolInfos(final Class<?> tool) {
@@ -60,7 +55,7 @@ public class Usage {
         
         System.out.println(Usage.catchToolInfos(Compare.class));
         System.out.println();
-        System.out.println(Usage.catchToolInfos(Designer.class));
+        System.out.println(Usage.catchToolInfos(Runner.class));
         System.out.println();
         System.out.println(Usage.catchToolInfos(Preview.class));
         System.out.println();

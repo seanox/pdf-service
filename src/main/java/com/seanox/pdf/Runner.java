@@ -1,6 +1,6 @@
 /**
  * PDF Service
- * Copyright (C) 2022 Seanox Software Solutions
+ * Copyright (C) 2026 Seanox Software Solutions
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -35,11 +35,8 @@ import java.util.logging.Level;
  * <br>
  * The preview is based on the mock-up data in the properties files for the
  * templates.
- *
- * @author  Seanox Software Solutions
- * @version 4.2.0 20220806
  */
-public class Designer {
+public class Runner {
     
     static {
         XRLog.setLevel("com.openhtmltopdf.config", Level.WARNING);
@@ -66,12 +63,12 @@ public class Designer {
             throws Exception {
         
         System.out.println("Seanox PDF Design Deamon [Version 0.0.0 00000000]");
-        System.out.println("Copyright (C) 0000 Seanox Software Solutions");
+        System.out.println("Copyright (C) 2026 Seanox Software Solutions");
         System.out.println();
 
         if (Objects.isNull(options)
                 || Arrays.stream(options).anyMatch(option -> option.matches("(?i)^-h(elp)?$"))) {
-            System.out.println("usage: java -cp seanox-pdf-tools.jar com.seanox.pdf.Designer <path> ...");
+            System.out.println("usage: java -cp seanox-pdf-tools.jar com.seanox.pdf.Runner <path> ...");
             System.out.println();
             System.out.println("- Paths support glob patterns and @Resources to scan the classpath.");
             System.out.println("- When using paths without @Resources, the classpath is not scanned.");

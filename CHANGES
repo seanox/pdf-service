@@ -1,3 +1,7 @@
+4.6.0 2026xxxx
+BF: Maven: Update of dependencies
+CR: Runner: Renaming Designer to Runner
+
 4.5.0 20260531
 BF: Maven: Update of dependencies
 CR: Maven: Switch to org.sonatype.central
