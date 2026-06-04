@@ -2,7 +2,8 @@
 BF: Maven: Update of dependencies
 CR: Runner: Renaming Designer to Runner
 CR: Compare: Optimization/correction
-    Improving the visualization of differences
+    Improving the visualization of differences.
+    A transparent glow effect for better visualization of even small differences.
 
 4.5.0 20260531
 BF: Maven: Update of dependencies
@@ -11,7 +12,7 @@ CR: Service: Switch to io.github.openhtmltopdf 1.1.37
 CR: Service: Switch to Apache PDF-Box 3.x
 CR: Test: Omission of test reports (there are better CI/CD solutions)
 CR: Compare: Optimization/correction
-    Improving the visualization of differences
+    Improving the visualization of differences.
 
 4.4.0 20230716
 BF: Maven: Update of dependencies
