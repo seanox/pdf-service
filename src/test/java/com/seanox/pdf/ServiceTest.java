@@ -1,6 +1,6 @@
 /**
  * PDF Service
- * Copyright (C) 2022 Seanox Software Solutions
+ * Copyright (C) 2026 Seanox Software Solutions
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -19,12 +19,6 @@ package com.seanox.pdf;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-/**
- * Unit test for Service.
- *
- * @author  Seanox Software Solutions
- * @version 4.2.0 20220806
- */
 public class ServiceTest {
 
     private static String normalizePath(final String path)

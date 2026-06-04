@@ -1,6 +1,6 @@
 /**
  * PDF Service
- * Copyright (C) 2022 Seanox Software Solutions
+ * Copyright (C) 2026 Seanox Software Solutions
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -23,12 +23,6 @@ import org.junit.jupiter.api.Test;
 import java.util.Map;
 import java.util.Properties;
 
-/**
- * Unit test for Template.
- *
- * @author  Seanox Software Solutions
- * @version 4.2.0 20220806
- */
 public class TemplateTest {
 
     private Map<String, Object> getPreviewData(final String properties)

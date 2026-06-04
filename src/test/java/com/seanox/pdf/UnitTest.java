@@ -1,6 +1,6 @@
 /**
  * PDF Service
- * Copyright (C) 2022 Seanox Software Solutions
+ * Copyright (C) 2026 Seanox Software Solutions
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -50,12 +50,6 @@ import java.util.Objects;
 import java.util.TreeMap;
 import java.util.logging.Level;
 
-/**
- * Unit test for the PDF Service and Tools.
- *
- * @author  Seanox Software Solutions
- * @version 4.2.0 20220806
- */
 @ExtendWith(UnitTest.Watcher.class)
 class UnitTest {
     
