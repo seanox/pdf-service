@@ -90,8 +90,8 @@ public class Compare {
         final var color = new Color(grayColor, true);
         final var gray = color.getRed() < COLOR_VISIBILITY_THRESHOLD
                 ? COLOR_VISIBILITY_THRESHOLD +(COLOR_VISIBILITY_THRESHOLD -color.getRed())
-                : COLOR_VISIBILITY_THRESHOLD -(color.getRed() -COLOR_VISIBILITY_THRESHOLD);
-        return Math.max(0, Math.min(255, gray));
+                : color.getRed();
+        return Math.min(255, gray);
     }
 
     /**
