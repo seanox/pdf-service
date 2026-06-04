@@ -1,8 +1,9 @@
 4.5.0 20260531
 BF: Maven: Update of dependencies
-CR: Switch to io.github.openhtmltopdf 1.1.37
-CR: Switch to Apache PDF-Box 3.x
-CR: Omission of test reports (there are better CI/CD solutions)
+CR: Maven: Switch to org.sonatype.central
+CR: Service: Switch to io.github.openhtmltopdf 1.1.37
+CR: Service: Switch to Apache PDF-Box 3.x
+CR: Test: Omission of test reports (there are better CI/CD solutions)
 CR: Compare: Optimization/correction
     Improvements in the highlighting of errors.
 
