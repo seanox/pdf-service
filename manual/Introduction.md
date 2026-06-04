@@ -23,7 +23,7 @@ supported.
 
 - Built-in markup generator  
 very simple syntax, supports placeholders, structures and includes
-- Built-in preview and designer with mock-up support  
+- Built-in preview and runner with mock-up support  
 simplifies the design process by allowing previewing without the target
 application  
 - Independent header, data and footer areas in one template (without magic)  
@@ -40,7 +40,7 @@ abstract templates for individual renderer and generators
 - PDF and image comparison for test automation (e.g. JUnit)  
 pixel- and color-based with difference image generation
 - PDF Tools as standalone Java applications  
-includes Compare, Designer, Preview as command line applications  
+includes Compare, Runner, Preview as command line applications  
 designing and testing outside and independent of projects
 
 
@@ -77,7 +77,7 @@ designing and testing outside and independent of projects
 * [PDF-Tools](#pdf-tools)
   * [Compare](#compare)
   * [Preview](#preview)
-  * [Designer](#designer)
+  * [Runner](#runner)
 
 
 ## Getting Started
@@ -859,7 +859,7 @@ Exception for endless recursions in the context of the templates.
 
 The command line tools include helpers that focus on the design process and
 testing outside and independent of projects.  
-Includes: Compare, Designer, Preview  
+Includes: Compare, Runner, Preview  
 
 ### Download
 
@@ -897,7 +897,7 @@ java -cp seanox-pdf-tools.jar com.seanox.pdf.Preview <paths/filters/globs> ...
 The preview is based on the mock-up data in the properties files for the
 templates.
 
-### Designer
+### Runner
 
 Command line daemon which continuously creates a PDF preview of all templates
 with the annotation `@Resources` in the ClassPath and of all files found for
@@ -905,7 +905,7 @@ the specified paths, filters and globs. The previews are updated when there are
 changes to the templates.
 
 ```
-java -cp seanox-pdf-tools.jar com.seanox.pdf.Designer <paths/filters/globs> ...
+java -cp seanox-pdf-tools.jar com.seanox.pdf.Runner <paths/filters/globs> ...
 ```
 
 The preview is based on the mock-up data in the properties files for the
