@@ -77,17 +77,17 @@ Java 11 or higher
 
 
 # Downloads
-https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service/4.4.0  
+https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service/4.5.0  
 https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
 ```xml
 <dependency>
     <groupId>com.seanox</groupId>
     <artifactId>seanox-pdf-service</artifactId>
-    <version>4.4.0</version>
+    <version>4.5.0</version>
 </dependency>
 ```
 
-[Seanox PDF-Tools 4.4.0](https://github.com/seanox/pdf-service/releases/download/4.4.0/seanox-pdf-tools-4.4.0.jar)
+[Seanox PDF-Tools 4.5.0](https://github.com/seanox/pdf-service/releases/download/4.5.0/seanox-pdf-tools-4.5.0.jar)
 
 
 # Manuals
@@ -95,9 +95,13 @@ https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
 
 
 # Changes
-## 4.4.0 20230716  
+## 4.5.0 20260531  
 BF: Maven: Update of dependencies  
-CR: Service: Optimization of the use of HTML-Entities  
+CR: Maven: Switch to org.sonatype.central  
+CR: Service: Switch to io.github.openhtmltopdf 1.1.37  
+CR: Service: Switch to Apache PDF-Box 3.x  
+CR: Test: Omission of test reports (there are better CI/CD solutions)  
+CR: Compare: Optimization/correction  
 
 [Read more](https://raw.githubusercontent.com/seanox/pdf-service/master/CHANGES)
 
