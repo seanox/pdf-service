@@ -1,4 +1,4 @@
-4.6.0 2026xxxx
+4.6.0 20260701
 BF: Maven: Update of dependencies
 BF: Maven: Correction to Java 11 compatibility
     Switching from Spring ClassPathScanning to ClassGraph
