@@ -1,7 +1,12 @@
-/.idea/
-/.settings/
-/release/
-/target/
-/temp/
+/release
+/target
+/temp
+
+.idea
+.settings
 .classpath
 .project
+
+/src/test/resources/pdf/*.pdf
+
+!/src/test/resources/pdf/*_preview.pdf
