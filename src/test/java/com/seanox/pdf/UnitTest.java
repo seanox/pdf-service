@@ -160,13 +160,16 @@ class UnitTest {
     }
 
     @Test
-    void checkTemplateGeneration()
+    void checkTemplateGeneration_1()
             throws Exception {
-
-        Preview.main("src/test/resources/pdf/*.html", "@resourceS");
-
+        Preview.main("src/test/resources/pdf/*.html", "@Resources");
         UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/report_preview.pdf"));
-
+    }
+    
+    @Test
+    void checkTemplateGeneration_2()
+            throws Exception {
+        
         String master;
 
         master = "src/test/resources/pdf/reportDiffs_preview.pdf";
@@ -186,7 +189,11 @@ class UnitTest {
         master = "src/test/resources/pdf/reportDiffs_preview_diffs_page_3.png";
         Files.copy(Paths.get(master), new File(TEMP, new File(master).getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
         Assertions.assertTrue(UnitTest.compareImages(new File(TEMP, new File(master).getName()), diffs[2]));
-
+    }
+    
+    @Test
+    void checkTemplateGeneration_3()
+            throws Exception {
         UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/articleC_preview.pdf"));
         UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/articleB_preview.pdf"));
         UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/articleA_preview.pdf"));
@@ -202,7 +209,7 @@ class UnitTest {
         UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/encoding_utf_8_preview.pdf"));
         UnitTest.validatePreviewPdf(new File(ROOT, "src/test/resources/pdf/generator_preview.pdf"));
     }
-
+    
     @Test
     void checkCompatibility()
             throws Exception {
