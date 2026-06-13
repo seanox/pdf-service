@@ -98,7 +98,7 @@ class UnitTest {
     static void init()
             throws IOException {
         
-        Assertions.assertEquals(11, Runtime.version().feature(), "Java 11 is required");
+        Assertions.assertEquals("Java 11", "Java " + Runtime.version().feature(), "Java 11 is required");
         
         if (TEMP.exists())
             Files.walk(TEMP.toPath())
