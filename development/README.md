@@ -31,5 +31,5 @@
 ### Maven Repository
 - __Based on the previous step__
 - Call `ant -f ./development/build.xml publish`  
-  see also https://oss.sonatype.org/#nexus-search;quick~com.seanox  
+  see also https://central.sonatype.com/artifact/com.seanox/seanox-pdf-service  
   see also https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
