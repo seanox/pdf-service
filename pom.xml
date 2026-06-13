@@ -40,25 +40,16 @@
   <dependencies>
     <!--
       For scanning to find annotated PDF templates in the classpath encloses:
-          org.springframework: spring-core / spring-context / spring-beans / spring-expression -->
+          io.github.classgraph -->
     <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context</artifactId>
-      <version>7.0.7</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.springframework</groupId>
-          <artifactId>spring-aop</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.springframework</groupId>
-          <artifactId>spring-jcl</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
+      <groupId>io.github.classgraph</groupId>
+      <artifactId>classgraph</artifactId>
+      <version>4.8.184</version>
+      <scope>compile</scope>
+    </dependency> 
 
     <!--
-      Apache Commons spring-aop
+      Apache Commons:
           org.apache.commons / commons-lang3 / commons-logging -->
     <dependency>
       <groupId>org.apache.commons</groupId>

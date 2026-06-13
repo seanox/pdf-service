@@ -1,5 +1,7 @@
 4.6.0 2026xxxx
 BF: Maven: Update of dependencies
+BF: Maven: Correction to Java 11 compatibility
+    Switching from Spring ClassPathScanning to ClassGraph
 CR: Runner: Renaming Designer to Runner
 CR: Compare: Optimization/correction
     Improving the visualization of differences.

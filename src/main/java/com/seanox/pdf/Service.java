@@ -19,6 +19,8 @@ package com.seanox.pdf;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import com.seanox.pdf.Service.Template.Resources;
 import com.seanox.pdf.Service.Template.TemplateException;
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ScanResult;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
@@ -31,8 +33,6 @@ import org.apache.pdfbox.multipdf.Splitter;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageTree;
-import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
-import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -69,6 +69,37 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+
+import org.apache.commons.lang3.SerializationUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.io.IOUtils;
+import org.apache.pdfbox.io.RandomAccessReadBuffer;
+import org.apache.pdfbox.multipdf.Overlay;
+import org.apache.pdfbox.multipdf.PDFMergerUtility;
+import org.apache.pdfbox.multipdf.Splitter;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageTree;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
+import com.seanox.pdf.Service.Template.Resources;
+import com.seanox.pdf.Service.Template.TemplateException;
 
 /**
  * Static service for creating PDF based on templates and meta-objects.
@@ -436,9 +467,9 @@ public class Service {
         /**
          * Detects all template implementations in the ClassPath.
          * The detection is based on using the annotation {@link Resources} and
-         * the implementation of {@link Template}.
-         * The detection is time-consuming and is therefore only executed once
-         * at runtime and the result is cached.
+         * the implementation of {@link Template}. Since the detection process
+         * is time-consuming, it is performed only once at runtime, and the
+         * result is cached.
          * @return the detected template implementations as an array
          * @throws Exception
          *     In case of unexpected errors.
@@ -450,22 +481,29 @@ public class Service {
             if (Objects.nonNull(Template.templates))
                 return Template.templates.clone();
             
-            final var templates = new ArrayList<>();
-            for (final var basePackage : Stream.of(new Throwable().getStackTrace())
-                    .map(element -> element.getClassName().replaceAll("\\W.*$", ""))
-                    .distinct()
-                    .toArray(String[]::new)) {
-                final var provider = new ClassPathScanningCandidateComponentProvider(false);
-                provider.addIncludeFilter(new AnnotationTypeFilter(Resources.class));
-                for (final var beanDefinition : provider.findCandidateComponents(basePackage)) {
-                    final var template = Class.forName(beanDefinition.getBeanClassName());
-                    if (Template.class.isAssignableFrom(template))
-                        templates.add(template);
+            synchronized (Template.class) {
+                
+                if (Objects.nonNull(Template.templates))
+                    return Template.templates.clone();   
+                
+                final var templates = new ArrayList<Class<Template>>();
+                try (final var scanResult = new ClassGraph()
+                        .enableClassInfo()
+                        .enableAnnotationInfo()
+                        .acceptPackages()
+                        .scan()) {
+                    scanResult.getClassesWithAnnotation(Resources.class.getName())
+                            .forEach(classInfo -> {
+                                final var source = classInfo.loadClass();
+                                if (Template.class.isAssignableFrom(source))
+                                    templates.add((Class<Template>) source);
+                            });
                 }
+                
+                Template.templates = templates.toArray(new Class[0]);
+                        
+                return Template.templates.clone();
             }
-            Template.templates = templates.toArray(new Class[0]);
-
-            return Template.templates.clone();
         }
 
         /**
