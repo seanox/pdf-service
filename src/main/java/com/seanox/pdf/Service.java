@@ -488,9 +488,7 @@ public class Service {
                 
                 final var templates = new ArrayList<Class<Template>>();
                 try (final var scanResult = new ClassGraph()
-                        .enableClassInfo()
-                        .enableAnnotationInfo()
-                        .acceptPackages()
+                        .enableAllInfo()
                         .scan()) {
                     scanResult.getClassesWithAnnotation(Resources.class.getName())
                             .forEach(classInfo -> {
