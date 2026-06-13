@@ -462,7 +462,7 @@ public class Service {
         }
         
         /** Array of template implementations detected in the ClassPath */
-        private static Class<Template>[] templates;
+        private static volatile Class<Template>[] templates;
         
         /**
          * Detects all template implementations in the ClassPath.
