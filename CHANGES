@@ -6,6 +6,7 @@ CR: Runner: Renaming Designer to Runner
 CR: Compare: Optimization/correction
     Improving the visualization of differences.
     A transparent glow effect for better visualization of even small differences.
+CR: Test: Integration of JaCoCo (Java Code Coverage)    
 
 4.5.0 20260531
 BF: Maven: Update of dependencies
