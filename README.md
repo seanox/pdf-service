@@ -1,14 +1,14 @@
 <p>
   <a href="https://github.com/seanox/pdf-service/pulls"
-      title="Development is waiting for new issues / requests / ideas">
-    <img src="https://img.shields.io/badge/development-passive-blue?style=for-the-badge">
-  </a>  
-  <a href="https://github.com/seanox/pdf-service/issues">
-    <img src="https://img.shields.io/badge/maintenance-active-green?style=for-the-badge">
-  </a>
-  <a href="https://seanox.com/contact">
-    <img src="https://img.shields.io/badge/support-active-green?style=for-the-badge">
-  </a>
+      title="Development is waiting for new issues / requests / ideas"
+    ><img src="https://img.shields.io/badge/development-passive-blue?style=for-the-badge"
+  ></a>  
+  <a href="https://github.com/seanox/pdf-service/issues"
+    ><img src="https://img.shields.io/badge/maintenance-active-green?style=for-the-badge"
+  ></a>
+  <a href="https://seanox.com/contact"
+    ><img src="https://img.shields.io/badge/support-active-green?style=for-the-badge"
+  ></a>
 </p>
 
 # Description
