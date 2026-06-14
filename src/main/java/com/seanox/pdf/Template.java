@@ -366,9 +366,8 @@ public abstract class Template extends Service.Template {
         final var keySet = new TreeSet<>(new NaturalComparator());
         keySet.addAll(properties.keySet().stream().map(String::valueOf).collect(Collectors.toList()));
         for (final var key : keySet) {
-            final var source = ((String)key);
-            final var target = source.replaceAll("(^\\.+)|(\\.+$)", "");
-            Template.collectPreviewData(map, target, properties.getProperty(source));
+            final var target = key.replaceAll("(^\\.+)|(\\.+$)", "");
+            Template.collectPreviewData(map, target, properties.getProperty(key));
         }
         return map;
     }

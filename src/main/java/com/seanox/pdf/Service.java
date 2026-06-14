@@ -16,37 +16,6 @@
  */
 package com.seanox.pdf;
 
-import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
-import com.seanox.pdf.Service.Template.Resources;
-import com.seanox.pdf.Service.Template.TemplateException;
-import io.github.classgraph.ClassGraph;
-import io.github.classgraph.ScanResult;
-import org.apache.commons.lang3.SerializationUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.text.StringEscapeUtils;
-import org.apache.pdfbox.Loader;
-import org.apache.pdfbox.io.IOUtils;
-import org.apache.pdfbox.io.RandomAccessReadBuffer;
-import org.apache.pdfbox.multipdf.Overlay;
-import org.apache.pdfbox.multipdf.PDFMergerUtility;
-import org.apache.pdfbox.multipdf.Splitter;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageTree;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
@@ -68,7 +37,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -100,6 +68,8 @@ import org.w3c.dom.NodeList;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import com.seanox.pdf.Service.Template.Resources;
 import com.seanox.pdf.Service.Template.TemplateException;
+
+import io.github.classgraph.ClassGraph;
 
 /**
  * Static service for creating PDF based on templates and meta-objects.

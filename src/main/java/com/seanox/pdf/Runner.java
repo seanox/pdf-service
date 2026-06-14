@@ -62,7 +62,7 @@ public class Runner {
     public static void main(final String... options)
             throws Exception {
         
-        System.out.println("Seanox PDF Design Deamon [Version 0.0.0 00000000]");
+        System.out.println("Seanox PDF Runner [Version 0.0.0 00000000]");
         System.out.println("Copyright (C) 0000 Seanox Software Solutions");
         System.out.println();
 
