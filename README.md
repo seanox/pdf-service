@@ -6,7 +6,7 @@
   <a href="https://github.com/seanox/pdf-service/issues">
     <img src="https://img.shields.io/badge/maintenance-active-green?style=for-the-badge">
   </a>
-  <a href="https://seanox.de/contact">
+  <a href="https://seanox.com/contact">
     <img src="https://img.shields.io/badge/support-active-green?style=for-the-badge">
   </a>
 </p>
@@ -109,4 +109,4 @@ CR: Compare: Optimization/correction
 # Contact
 [Issues](https://github.com/seanox/pdf-service/issues)  
 [Requests](https://github.com/seanox/pdf-service/pulls)  
-[Mail](http://seanox.de/contact)  
+[Mail](http://seanox.com/contact)  
