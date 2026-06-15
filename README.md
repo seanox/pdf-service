@@ -51,8 +51,8 @@ Pixel- and color-based with difference image generation.
 Includes Compare, Runner, Preview as command line applications designing and
 testing outside and independent of projects.
 
-# License Terms
 
+# License Terms
 Seanox Software Solutions is an open-source project, hereinafter referred to as
 __Seanox__.
 
