@@ -29,27 +29,29 @@ supported.
 
 # Features
 - Built-in markup generator   
-Very simple syntax, supports placeholders, structures and includes.
+  Very simple syntax, supports placeholders, structures and includes.
+- Open to other template engines  
+  Thymeleaf, Freemarker, Mustache, Pebble, JTE, and others.
 - Built-in preview and runner with mock-up support  
-Simplifies the design process by allowing previewing without the target 
-application  .
+  Simplifies the design process by allowing previewing without the target 
+  application  .
 - Independent header, data and footer areas in one template (without magic)  
-Header, footer and data area are merged by overlays and can therefore be
-formatted independently of the data area e.g. margins of the document can be
-used by the header and footer.
+  Header, footer and data area are merged by overlays and can therefore be
+  formatted independently of the data area e.g. margins of the document can be
+  used by the header and footer.
 - Native support of page numbers
 - I18n support  
-Language setting is also transferred to the template and thus fonts matching
-the language can be used.
+  Language setting is also transferred to the template and thus fonts matching
+  the language can be used.
 - Supports signatures, encryption, annotations and more
 - Creation of markup as preview e.g. for the frontend
 - API for templates and other renderer and markup generators  
-Abstract templates for individual renderer and generators.
+  Abstract templates for individual renderer and generators.
 - PDF and image comparison for test automation (e.g. JUnit and CI/CD)  
-Pixel- and color-based with difference image generation.
+  Pixel- and color-based with difference image generation.
 - PDF Tools as standalone Java applications  
-Includes Compare, Runner, Preview as command line applications designing and
-testing outside and independent of projects.
+  Includes Compare, Runner, Preview as command line applications designing and
+  testing outside and independent of projects.
 
 # License Terms
 
