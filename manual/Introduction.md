@@ -6,9 +6,9 @@
 Seanox PDF-Service for generating/rendering PDFs based on
 [Open HTML to PDF](https://github.com/openhtmltopdf/openhtmltopdf).
 
-The static service contains an abstraction of templates, an API for templates,
-renderer and markup generators, a built-in markup generator, and a preview
-function with mock-up data support.
+The static component provides an abstraction for templates, a template API,
+renderer and markup generator APIs, a built-in markup generator, and preview
+support with mock-up data.
 
 Templates support includes, locale-dependent CSS, native page numbers and total
 page numbers, as well independent areas for header, content and footer, which
