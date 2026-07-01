@@ -52,7 +52,10 @@ supported.
 - PDF Tools as standalone Java applications  
   Includes Compare, Runner, Preview as command line applications designing and
   testing outside and independent of projects.
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/4.6.0
 
 # License Terms
 Seanox Software Solutions is an open-source project, hereinafter referred to as
