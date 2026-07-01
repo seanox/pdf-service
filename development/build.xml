@@ -142,7 +142,7 @@
   <target name="release" depends="changes,tools">
     <exec executable="cmd" failonerror="true">
       <arg value="/c"/>
-      <arg value="mvn verify"/>
+      <arg value="mvn clean verify"/>
     </exec>
     <release-info-locate/>
     <release-info-insert/>
