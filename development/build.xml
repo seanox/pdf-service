@@ -8,6 +8,9 @@
     <echo>  tools      Builds the release of the PDF tools               </echo>
     <echo>             Synchronizes the version output of the tools      </echo>
     <echo>                                                               </echo>
+    <echo>  test       Builds the complete release                       </echo>
+    <echo>             Runs the tests                                    </echo>
+    <echo>                                                               </echo>
     <echo>  release    Builds the complete release                       </echo>
     <echo>             Combined changes and tools                        </echo>
     <echo>             Synchronizes the version in README.md             </echo>
@@ -128,17 +131,21 @@
     <touch datetime="${release.date}" pattern="yyyyMMdd" file="${workspace.release}/seanox-pdf-tools-${release.version}.jar"/>
     <release-info-reset/>
   </target>
-
-  <target name="release" depends="changes,tools">
-
-    <release-info-locate/>
-    <release-info-insert/>
-
+  
+  <target name="test">
     <exec executable="cmd" failonerror="true">
       <arg value="/c"/>
-      <arg value="mvn clean verify"/>
+      <arg value="mvn clean test"/>
     </exec>
-
+  </target>
+  
+  <target name="release" depends="changes,tools">
+    <exec executable="cmd" failonerror="true">
+      <arg value="/c"/>
+      <arg value="mvn verify"/>
+    </exec>
+    <release-info-locate/>
+    <release-info-insert/>
     <replaceregexp file="${workspace}/README.md"
         match="(?si)(&lt;artifactId&gt;seanox-${ant.project.name}\b.*?&lt;version&gt;)\d[\d\.]+(&lt;/version&gt;)"
         replace="\1${release.version}\2" flags="g" byline="false"/>
