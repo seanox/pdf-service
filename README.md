@@ -12,24 +12,22 @@
 </p>
 
 # Description
-Seanox PDF-Service for generating/rendering and comparing PDFs based on
-[Open HTML to PDF](https://github.com/openhtmltopdf/openhtmltopdf).
+Seanox PDF-Service is a Java library for generating, rendering and comparing PDF
+documents based on [Open HTML to PDF](
+    https://github.com/openhtmltopdf/openhtmltopdf).
 
-The static component provides an abstraction for templates, a template API,
-renderer and markup generator APIs, a built-in markup generator, and preview
-support with mock-up data.
+It provides a template abstraction, APIs for templates, renderers and markup
+generators, a built-in markup generator, PDF comparison, and tools for
+previewing templates with mock-up data.
 
-The templates supports includes and independent areas for header, content and
-footer, which are assembled by overlay for each page. Header and footer are
-borderless overlays and can therefore also use the border area of the content.
-
-Locale dependent CSS and native page numbers and total page number are
-supported.
+Templates support includes, locale-dependent CSS, native page numbering, and
+separate header, content and footer fragments. Header and footer are rendered
+independently and merged with the document by page overlays.
 
 
 # Features
 - Built-in markup generator   
-  Very simple syntax, supports placeholders, structures and includes.
+  Supports placeholders, structures and includes.
 - Open to other template engines  
   Thymeleaf, Freemarker, Mustache, Pebble, JTE, and others.
 - Built-in preview and runner with mock-up support  
@@ -94,7 +92,13 @@ https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service
 
 # Manuals
 - [Introduction](https://github.com/seanox/pdf-service/blob/master/manual/Introduction.md)
-
+- [Getting Started](https://github.com/seanox/pdf-service/blob/master/manual/Introduction.md#getting-started)
+- [Custom Template Engines](https://github.com/seanox/pdf-service/blob/master/manual/Introduction.md#custom-template-engines)
+- [Test](https://github.com/seanox/pdf-service/blob/master/manual/Introduction.md#test)
+- [Mock-Up](https://github.com/seanox/pdf-service/blob/master/manual/Introduction.md#mock-up)
+- [Template API](https://github.com/seanox/pdf-service/blob/master/manual/Introduction.md#template-api)
+- [PDF-Tools](https://github.com/seanox/pdf-service/blob/master/manual/Introduction.md#pdf-tools)
+  
 
 # Changes
 ## 4.6.0 20260701  

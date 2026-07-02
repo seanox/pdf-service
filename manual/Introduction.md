@@ -3,26 +3,23 @@
 
 ## What is Seanox PDF-Service?
 
-Seanox PDF-Service for generating/rendering PDFs based on
-[Open HTML to PDF](https://github.com/openhtmltopdf/openhtmltopdf).
+Seanox PDF-Service is a Java library for generating, rendering and comparing PDF
+documents based on [Open HTML to PDF](
+    https://github.com/openhtmltopdf/openhtmltopdf).
 
-The static component provides an abstraction for templates, a template API,
-renderer and markup generator APIs, a built-in markup generator, and preview
-support with mock-up data.
+It provides a template abstraction, APIs for templates, renderers and markup
+generators, a built-in markup generator, PDF comparison, and tools for
+previewing templates with mock-up data.
 
-Templates support includes, locale-dependent CSS, native page numbers and total
-page numbers, as well independent areas for header, content and footer, which
-are assembled by overlay for each page. Header and footer are borderless and
-can therefore also use the border area of the content.
-
-Locale dependent CSS and native page numbers and total page number are
-supported.
+Templates support includes, locale-dependent CSS, native page numbering, and
+separate header, content and footer fragments. Header and footer are rendered
+independently and merged with the document by page overlays.
 
 
 # Features
 
 - Built-in markup generator   
-  Very simple syntax, supports placeholders, structures and includes.
+  Supports placeholders, structures and includes.
 - Open to other template engines  
   Thymeleaf, Freemarker, Mustache, Pebble, JTE, and others.
 - Built-in preview and runner with mock-up support  
@@ -49,38 +46,38 @@ supported.
 
 ## Contents Overview
 
-* [Getting Started](#getting-started)
-  * [Integration](#integration)
-  * [Implementation](#implementation)
-  * [Markup](#markup)
-  * [Meta-Tags](#meta-tags)
-    * [#include](#include)
-  * [Placeholder](#placeholder)
-    * [Value Placeholder](#value-placeholder)
-    * [Structure Placeholder](#structure-placeholder)
-    * [Disposable Structure Placeholder](#disposable-structure-placeholder)
-    * [Disposable Value Placeholder](#disposable-value-placeholder)
-    * [Exists Placeholders](#exists-placeholder)
-    * [Escaped Placeholders](#escaped-placeholders)
-    * [Runtime Placeholder](#runtime-placeholder)
-    * [Static Placeholder](#static-placeholder)
-    * [Static Exists Placeholder](#static-exists-placeholder)
-* [Custom Template Engines](#custom-template-engines)
-* [Test](#test)
-* [Mock-Up](#mock-up)
-* [Template API](#template-api)
-  * [Template](#template)
-  * [Resources](#resources)
-  * [Multiplex](#multiplex)
-  * [Type](#type)
-  * [TemplateException](#templateexception)
-  * [TemplateResourceException](#templateresourceexception)
-  * [TemplateResourceNotFoundException](#templateresourcenotfoundexception)
-  * [TemplateRecursionException](#templaterecursionexception)
-* [PDF-Tools](#pdf-tools)
-  * [Compare](#compare)
-  * [Preview](#preview)
-  * [Runner](#runner)
+- [Getting Started](#getting-started)
+  - [Integration](#integration)
+  - [Implementation](#implementation)
+  - [Markup](#markup)
+  - [Meta-Tags](#meta-tags)
+    - [#include](#include)
+  - [Placeholder](#placeholder)
+    - [Value Placeholder](#value-placeholder)
+    - [Structure Placeholder](#structure-placeholder)
+    - [Disposable Structure Placeholder](#disposable-structure-placeholder)
+    - [Disposable Value Placeholder](#disposable-value-placeholder)
+    - [Exists Placeholders](#exists-placeholder)
+    - [Escaped Placeholders](#escaped-placeholders)
+    - [Runtime Placeholder](#runtime-placeholder)
+    - [Static Placeholder](#static-placeholder)
+    - [Static Exists Placeholder](#static-exists-placeholder)
+- [Custom Template Engines](#custom-template-engines)
+- [Test](#test)
+- [Mock-Up](#mock-up)
+- [Template API](#template-api)
+  - [Template](#template)
+  - [Resources](#resources)
+  - [Multiplex](#multiplex)
+  - [Type](#type)
+  - [TemplateException](#templateexception)
+  - [TemplateResourceException](#templateresourceexception)
+  - [TemplateResourceNotFoundException](#templateresourcenotfoundexception)
+  - [TemplateRecursionException](#templaterecursionexception)
+- [PDF-Tools](#pdf-tools)
+  - [Compare](#compare)
+  - [Preview](#preview)
+  - [Runner](#runner)
 
 
 ## Getting Started
@@ -90,7 +87,8 @@ supported.
 Use the current version dependency  
 https://mvnrepository.com/artifact/com.seanox/seanox-pdf-service  
 or use the Java archive of the Seanox PDF-Tools, which contains all libraries  
-https://github.com/seanox/pdf-service/raw/master/releases
+https://github.com/seanox/pdf-service/releases
+
 
 ### Implementation
 
