@@ -17,12 +17,12 @@ documents based on [Open HTML to PDF](
     https://github.com/openhtmltopdf/openhtmltopdf).
 
 It provides a template abstraction, APIs for templates, renderers and markup
-generators, a built-in markup generator, PDF comparison, and tools for
+generators, a built-in markup generator, PDF and image comparison, and tools for
 previewing templates with mock-up data.
 
-Templates support includes, locale-dependent CSS, native page numbering, and
-separate header, content and footer fragments. Header and footer are rendered
-independently and merged with the document by page overlays.
+Templates support includes, native page numbering, and separate header, content
+and footer fragments. Header and footer are rendered independently and merged
+with the document by page overlays.
 
 
 # Features
